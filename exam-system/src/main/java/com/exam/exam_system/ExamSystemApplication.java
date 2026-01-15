@@ -8,6 +8,6 @@ public class ExamSystemApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ExamSystemApplication.class, args);
+		System.out.println("Exam System Application is running...");
 	}
-
 }
