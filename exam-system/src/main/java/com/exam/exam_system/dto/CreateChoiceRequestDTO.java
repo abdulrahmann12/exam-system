@@ -7,15 +7,15 @@ import lombok.Data;
 @Data
 public class CreateChoiceRequestDTO {
 
-    @NotBlank
+    @NotBlank(message = "Choice text cannot be blank")
     @Size(max = 1000)
     private String choiceText;
 
-    @NotNull
+    @NotNull(message = "isCorrect cannot be null")
     private Boolean isCorrect;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "Choice order cannot be null")
+    @Min(value = 1, message = "Choice order must be at least 1")
     private Integer choiceOrder;
 }
 

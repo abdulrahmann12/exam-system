@@ -15,6 +15,8 @@ public class ExamSummaryDTO {
 
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    
+    private Integer totalQuestions;
 
     private Boolean isActive;
 }

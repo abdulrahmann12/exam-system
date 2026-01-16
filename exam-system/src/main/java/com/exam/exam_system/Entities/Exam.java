@@ -55,6 +55,12 @@ public class Exam {
 
     @Column(nullable = false)
     private Boolean randomizeQuestions;
+    
+    private Integer totalQuestions;
+    
+	@Column(nullable = false)
+	@Builder.Default
+	private Boolean isActive = true;
 
     /* ================= Timing ================= */
 

@@ -7,12 +7,12 @@ import lombok.Data;
 @Builder
 public class ExamResultDTO {
 
-    private Long examId;
-    private String examTitle;
+	private Long examId;
+	private String examTitle;
 
-    private Integer totalMarks;
-    private Integer obtainedMarks;
+	private Integer totalMarks;
+	private Integer obtainedMarks;
 
-    private String grade;
-    private Boolean passed;
+	private String grade;
+	private Boolean passed;
 }
