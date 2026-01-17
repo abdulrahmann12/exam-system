@@ -89,6 +89,7 @@ public class GlobalExceptionHandler {
         RoleAlreadyExistsException.class,
         RoleDeletionNotAllowedException.class,
         CollegeDeletionNotAllowedException.class,
+        DepartmentDeletionNotAllowedException.class,
         
         
     })

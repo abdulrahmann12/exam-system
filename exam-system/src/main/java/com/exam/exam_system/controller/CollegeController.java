@@ -58,7 +58,7 @@ public class CollegeController {
 		CollegeGetResponseDTO response = collegeService.getCollegeByName(collegeName);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
-
+	
 	@Operation(summary = "Search colleges by name")
 	@GetMapping("/search")
 	@PreAuthorize("isAuthenticated()")

@@ -57,14 +57,16 @@ public class Messages {
     public static final String DELETE_DEPARTMENT = "Department deleted successfully";
     public static final String ADD_DEPARTMENT = "Department added successfully";
     public static final String CANNOT_DELETE_DEPARTMENT = "Cannot delete department with assigned users.";
-	
+    public static final String CANNOT_DELETE_DEPARTMENT_SUBJECS = "Cannot delete department with assigned subjects.";
+
 	// ==================== College Messages ====================
     public static final String COLLEGE_NOT_FOUND = "College not found";
     public static final String COLLEGE_ALREADY_EXISTS = "College with this name already exist";
     public static final String COLLEGE_UPDATE= "College updated successfully";
     public static final String DELETE_COLLEGE = "College deleted successfully";
     public static final String ADD_COLLEGE = "College added successfully";
-    public static final String CANNOT_DELETE_COLLEGE = "Cannot delete College with assigned subjects.";
+    public static final String CANNOT_DELETE_COLLEGE_SUBJECS = "Cannot delete College with assigned subjects.";
+    public static final String CANNOT_DELETE_COLLEGE_DEPARTMENT = "Cannot delete College with assigned departments.";
     
 	// ==================== Role Messages ====================
     public static final String ROLE_NOT_FOUND = "Role not found";

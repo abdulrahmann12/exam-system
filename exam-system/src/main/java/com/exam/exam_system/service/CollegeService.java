@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.exam.exam_system.Entities.College;
+import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.CollegeCreateRequestDTO;
 import com.exam.exam_system.dto.CollegeGetResponseDTO;
 import com.exam.exam_system.dto.CollegeUpdateRequestDTO;
@@ -14,6 +15,7 @@ import com.exam.exam_system.exception.CollegeDeletionNotAllowedException;
 import com.exam.exam_system.exception.CollegeNotFoundException;
 import com.exam.exam_system.mapper.CollegeMapper;
 import com.exam.exam_system.repository.CollegeRepository;
+import com.exam.exam_system.repository.DepartmentRepository;
 import com.exam.exam_system.repository.SubjectRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,6 +30,7 @@ public class CollegeService {
 	private final CollegeRepository collegeRepository;
 	private final CollegeMapper collegeMapper;
 	private final SubjectRepository subjectRepository;
+	private final DepartmentRepository departmentRepository;
 
 	@Transactional
 	public CollegeGetResponseDTO createCollege(@Valid CollegeCreateRequestDTO dto) {
@@ -70,15 +73,12 @@ public class CollegeService {
 
 		return collegeMapper.toDto(college);
 	}
-	
+
 	public List<CollegeGetResponseDTO> searchColleges(String keyword) {
 
-		List<College> colleges =
-				collegeRepository.findByCollegeNameContainingIgnoreCase(keyword);
+		List<College> colleges = collegeRepository.findByCollegeNameContainingIgnoreCase(keyword);
 
-		return colleges.stream()
-				.map(collegeMapper::toDto)
-				.toList();
+		return colleges.stream().map(collegeMapper::toDto).toList();
 	}
 
 	public List<CollegeGetResponseDTO> getAllColleges() {
@@ -95,7 +95,11 @@ public class CollegeService {
 		}
 
 		if (subjectRepository.existsByCollege_CollegeId(collegeId)) {
-			throw new CollegeDeletionNotAllowedException();
+			throw new CollegeDeletionNotAllowedException(Messages.CANNOT_DELETE_COLLEGE_SUBJECS);
+		}
+
+		if (departmentRepository.existsByCollege_CollegeId(collegeId)) {
+			throw new CollegeDeletionNotAllowedException(Messages.CANNOT_DELETE_COLLEGE_DEPARTMENT);
 		}
 
 		collegeRepository.deleteById(collegeId);

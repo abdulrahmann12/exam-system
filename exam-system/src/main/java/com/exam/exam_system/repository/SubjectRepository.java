@@ -23,4 +23,5 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findAllByCollege_CollegeId(Long collegeId);
 
     boolean existsByCollege_CollegeId(Long collegeId);
+    boolean existsByDepartment_DepartmentId(Long departmentId);
 }
