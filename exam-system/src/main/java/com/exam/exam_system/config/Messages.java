@@ -55,6 +55,22 @@ public class Messages {
     public static final String ADD_DEPARTMENT = "Department added successfully";
     public static final String CANNOT_DELETE_DEPARTMENT = "Cannot delete department with assigned users.";
 	
+	// ==================== College Messages ====================
+    public static final String COLLEGE_NOT_FOUND = "College not found";
+    public static final String COLLEGE_ALREADY_EXISTS = "College with this name already exist";
+    public static final String COLLEGE_UPDATE= "College updated successfully";
+    public static final String DELETE_COLLEGE = "College deleted successfully";
+    public static final String ADD_COLLEGE = "College added successfully";
+    public static final String CANNOT_DELETE_COLLEGE = "Cannot delete College with assigned users.";
+    
+	// ==================== Role Messages ====================
+    public static final String ROLE_NOT_FOUND = "Role not found";
+    public static final String ROLE_ALREADY_EXISTS = "Role with this name already exist";
+    public static final String ROLE_UPDATE= "Role updated successfully";
+    public static final String DELETE_ROLE = "Role deleted successfully";
+    public static final String ADD_ROLE = "Role added successfully";
+    public static final String CANNOT_DELETE_ROLE = "Cannot delete Role with assigned users.";
+    
 	// ==================== Error Messages ====================
     public static final String FORMAT_ERROR = "Malformed JSON request";
     public static final String INVALID_DATA = "Invalid data. Please check your request body";

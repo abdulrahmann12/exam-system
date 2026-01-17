@@ -43,6 +43,8 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	@Builder.Default
 	private Boolean isActive = true;
+	
+	private String requestCode;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "role_id", nullable = false)

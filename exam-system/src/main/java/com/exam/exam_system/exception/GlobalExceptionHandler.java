@@ -82,7 +82,11 @@ public class GlobalExceptionHandler {
         InsufficientStockException.class,
         DepartmentNotFoundException.class,
         DuplicateResourceException.class,
-
+        UsernameAlreadyExistsException.class,
+        CollegeAlreadyExistsException.class,
+        CollegeNotFoundException.class,
+        RoleNotFoundException.class,
+        RoleAlreadyExistsException.class,
         
         
     })
