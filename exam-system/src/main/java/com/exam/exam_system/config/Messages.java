@@ -3,6 +3,9 @@ package com.exam.exam_system.config;
 public class Messages {
 
 	// ==================== Email Messages ====================
+	public static final String FETCH_SUCCESS = "Data fetched successfully";
+	
+	// ==================== Email Messages ====================
     public static final String RESET_PASSWORD = "Reset your password";
     public static final String RESEND_CODE = "A new code was sent";
     public static final String FAILED_EMAIL = "Failed to send email. Please try again later";
@@ -41,7 +44,7 @@ public class Messages {
     public static final String USER_NOT_FOUND = "User not found";
     public static final String USERNAME_NOT_FOUND = "User not found with username or email: ";
     public static final String USER_NOT_AUTHENTICATED = "User not authenticated";
-    public static final String CHANGE_ROLES_ERROR = "Invalid role. Please provide one of: ADMIN, CUSTOMER, etc.";
+    public static final String CHANGE_ROLES_ERROR = "Invalid role. Please provide one of: ADMIN, DOCTOR, etc.";
     public static final String USER_UPDATE_PROFILE = "User role updated successfully";
     public static final String USER_UPDATE_IMAGE = "User image updated successfully";
     public static final String DELETE_USER = "User deleted successfully";
