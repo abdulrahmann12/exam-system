@@ -64,7 +64,7 @@ public class Messages {
     public static final String COLLEGE_UPDATE= "College updated successfully";
     public static final String DELETE_COLLEGE = "College deleted successfully";
     public static final String ADD_COLLEGE = "College added successfully";
-    public static final String CANNOT_DELETE_COLLEGE = "Cannot delete College with assigned users.";
+    public static final String CANNOT_DELETE_COLLEGE = "Cannot delete College with assigned subjects.";
     
 	// ==================== Role Messages ====================
     public static final String ROLE_NOT_FOUND = "Role not found";

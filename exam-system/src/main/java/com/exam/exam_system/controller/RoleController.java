@@ -12,7 +12,6 @@ import com.exam.exam_system.service.RoleService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Role Controller", description = "API for managing system roles")
@@ -26,7 +25,7 @@ public class RoleController {
 
 	@Operation(summary = "Create new role")
 	@PostMapping
-	public ResponseEntity<BasicResponse> createRole(@Valid @RequestBody RoleCreateRequestDTO request) {
+	public ResponseEntity<BasicResponse> createRole(@RequestBody RoleCreateRequestDTO request) {
 
 		RoleGetResponseDTO response = roleService.createRole(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.ADD_ROLE, response));
@@ -35,7 +34,7 @@ public class RoleController {
 	@Operation(summary = "Update existing role")
 	@PutMapping("/{roleId}")
 	public ResponseEntity<BasicResponse> updateRole(@PathVariable Long roleId,
-			@Valid @RequestBody RoleUpdateRequestDTO request) {
+			@RequestBody RoleUpdateRequestDTO request) {
 
 		RoleGetResponseDTO response = roleService.updateRole(roleId, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.ROLE_UPDATE, response));

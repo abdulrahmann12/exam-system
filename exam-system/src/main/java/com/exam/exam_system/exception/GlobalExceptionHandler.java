@@ -87,7 +87,9 @@ public class GlobalExceptionHandler {
         CollegeNotFoundException.class,
         RoleNotFoundException.class,
         RoleAlreadyExistsException.class,
-        RoleDeletionNotAllowedException.class
+        RoleDeletionNotAllowedException.class,
+        CollegeDeletionNotAllowedException.class,
+        
         
     })
     public ResponseEntity<BasicResponse> handleNotFoundBusinessExceptions(Exception ex, WebRequest request) {
