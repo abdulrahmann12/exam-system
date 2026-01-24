@@ -21,6 +21,8 @@ public interface UserMapper {
 	@Mapping(target = "college", ignore = true)
 	@Mapping(target = "department", ignore = true)
 	@Mapping(target = "role", ignore = true)
+	@Mapping(target = "password", source = "dto.password")
+	@Mapping(target = "requestCode", ignore = true)
 	User toEntity(CreateUserRequestDTO dto);
 	
 	@Mapping(target = "roleName", source = "role.roleName")

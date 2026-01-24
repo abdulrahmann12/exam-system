@@ -2,6 +2,7 @@ package com.exam.exam_system.Entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +22,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "subjects",
 uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"name", "department_id"})
+        @UniqueConstraint(columnNames = {"subject_code"}),
+		@UniqueConstraint(columnNames = {"subject_name", "department_id"})
 }
 )@Data
 @Builder
@@ -34,6 +36,9 @@ public class Subject {
 	private Long subjectId;
 	
 	private String subjectName;
+	
+	@Column(name = "subject_code", nullable = false, unique = true)
+	private String subjectCode;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id", nullable = false)

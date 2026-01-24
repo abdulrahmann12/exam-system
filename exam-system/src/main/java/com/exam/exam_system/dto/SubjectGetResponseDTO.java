@@ -1,6 +1,7 @@
 package com.exam.exam_system.dto;
 
 import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ public class SubjectGetResponseDTO {
     private String subjectName;
     private Long departmentId;
     private String departmentName;
+	private String subjectCode;
     private Long collegeId;
     private String collegeName;
     private LocalDateTime createdAt;

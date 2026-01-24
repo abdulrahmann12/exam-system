@@ -17,4 +17,7 @@ public class SubjectCreateRequestDTO {
 
     @NotNull(message = "College ID is required")
     private Long collegeId;
+    
+    @NotBlank(message = "Subject Code is required")
+	private String subjectCode;
 }

@@ -90,6 +90,11 @@ public class GlobalExceptionHandler {
         RoleDeletionNotAllowedException.class,
         CollegeDeletionNotAllowedException.class,
         DepartmentDeletionNotAllowedException.class,
+        SubjectAlreadyExistsException.class,
+        SubjectCodeAlreadyExistsException.class,
+        SubjectNotFoundException.class,
+        SubjectDeletionNotAllowedException.class,
+        DepartmentCollegeMismatchException.class,
         
         
     })

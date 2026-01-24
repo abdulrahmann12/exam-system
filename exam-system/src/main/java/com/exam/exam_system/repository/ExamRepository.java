@@ -12,4 +12,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> findByDepartment_DepartmentId(Long departmentId);
     List<Exam> findBySubject_SubjectId(Long subjectId);
     List<Exam> findByCreatedBy_UserId(Long userId);
+    boolean existsBySubject_SubjectId(Long subjectId);
 }
