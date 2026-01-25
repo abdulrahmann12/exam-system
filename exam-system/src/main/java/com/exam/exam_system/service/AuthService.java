@@ -62,6 +62,10 @@ public class AuthService {
 			throw new EmailAlreadyExistsException();
 		}
 
+		if(createUserRequestDTO.getPhone() != null &&
+		   userRepository.existsByPhone(createUserRequestDTO.getPhone())) {
+			throw new PhoneAlreadyExistsException();
+		}
 		Department department = departmentRepository.findById(createUserRequestDTO.getDepartmentId())
 				.orElseThrow(DepartmentNotFoundException::new);
 
@@ -70,6 +74,9 @@ public class AuthService {
 
 		Role role = roleRepository.findById(createUserRequestDTO.getRoleId()).orElseThrow(RoleNotFoundException::new);
 
+		if (!department.getCollege().getCollegeId().equals(college.getCollegeId())) {
+			throw new DepartmentCollegeMismatchException();
+		}
 		user.setDepartment(department);
 		user.setCollege(college);
 		user.setRole(role);
@@ -107,8 +114,8 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	public void changePassword(String email, @Valid UserChangePasswordRequestDTO changePasswordRequestDTO) {
-		User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException());
+	public void changePassword(User currentUser, @Valid UserChangePasswordRequestDTO changePasswordRequestDTO) {
+		User user = userRepository.findByEmail(currentUser.getEmail()).orElseThrow(() -> new UserNotFoundException());
 
 		if (!passwordEncoder.matches(changePasswordRequestDTO.getOldPassword(), user.getPassword())) {
 			throw new InvalidCurrentPasswordException();
@@ -117,8 +124,8 @@ public class AuthService {
 		userRepository.save(user);
 	}
 
-	public void reGenerateCode(String email) {
-		User user = userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+	public void reGenerateCode(User currentUser) {
+		User user = userRepository.findByEmail(currentUser.getEmail()).orElseThrow(UserNotFoundException::new);
 
 		String newCode = generateConfirmationCode();
 		user.setRequestCode(newCode);

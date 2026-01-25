@@ -29,6 +29,8 @@ public class Messages {
 	public static final String REQUEST_NOT_SUPPORTED = "Request method not supported";
 	public static final String NOT_SALES_EMPLOYEE = "User does not have SALES_EMPLOYEE role.";
 	public static final String NOT_PURCHASES_EMPLOYEE = "User does not have PURCHASING_OFFICER role.";
+	public static final String PHONE_ALREADY_EXISTS = "Phone with this name already exist";
+
 
 	// ==================== Token Messages ====================
 	public static final String INVALID_REFRESH_TOKEN = "Invalid or missing refresh token";

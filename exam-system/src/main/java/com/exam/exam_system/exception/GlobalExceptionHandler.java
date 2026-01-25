@@ -95,6 +95,7 @@ public class GlobalExceptionHandler {
         SubjectNotFoundException.class,
         SubjectDeletionNotAllowedException.class,
         DepartmentCollegeMismatchException.class,
+        PhoneAlreadyExistsException.class,
         
         
     })

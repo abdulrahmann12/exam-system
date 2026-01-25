@@ -65,7 +65,7 @@ public class AuthController {
 	@PostMapping("/change-password")
 	public ResponseEntity<BasicResponse> changePassword(@AuthenticationPrincipal User user,
 			@RequestBody UserChangePasswordRequestDTO request) {
-		authService.changePassword(user.getEmail(), request);
+		authService.changePassword(user, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.CHANGE_PASSWORD));
 	}
 
@@ -73,7 +73,7 @@ public class AuthController {
 	@PostMapping("/regenerate-code")
 	public ResponseEntity<BasicResponse> regenerateCode(@AuthenticationPrincipal User user) {
 
-		authService.reGenerateCode(user.getEmail());
+		authService.reGenerateCode(user);
 		return ResponseEntity.ok(new BasicResponse(Messages.CODE_SENT));
 	}
 
