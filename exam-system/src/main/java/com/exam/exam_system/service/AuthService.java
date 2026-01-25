@@ -2,8 +2,10 @@ package com.exam.exam_system.service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -44,6 +46,10 @@ public class AuthService {
 				.or(() -> userRepository.findByEmail(loginRequestDTO.getUsernameOrEmail()))
 				.orElseThrow(UserNotFoundException::new);
 
+		if (!user.getIsActive()) {
+			throw new UserDeactivatedException();
+		}
+
 		String jwtToken = jwtService.generateToken(user);
 		String refreshToken = jwtService.generateRefreshToken(user);
 		jwtService.revokeAllUserTokens(user);
@@ -56,14 +62,13 @@ public class AuthService {
 		User user = userMapper.toEntity(createUserRequestDTO);
 
 		if (userRepository.existsByUsername(createUserRequestDTO.getUsername())) {
-			throw new EmailAlreadyExistsException();
+			throw new UsernameAlreadyExistsException();
 		}
 		if (userRepository.existsByEmail(createUserRequestDTO.getEmail())) {
 			throw new EmailAlreadyExistsException();
 		}
 
-		if(createUserRequestDTO.getPhone() != null &&
-		   userRepository.existsByPhone(createUserRequestDTO.getPhone())) {
+		if (createUserRequestDTO.getPhone() != null && userRepository.existsByPhone(createUserRequestDTO.getPhone())) {
 			throw new PhoneAlreadyExistsException();
 		}
 		Department department = departmentRepository.findById(createUserRequestDTO.getDepartmentId())
@@ -95,6 +100,7 @@ public class AuthService {
 
 		String resetCode = generateConfirmationCode();
 		user.setRequestCode(resetCode);
+		user.setRequestCodeExpiry(LocalDateTime.now().plusMinutes(10));
 
 		User savedUser = userRepository.save(user);
 
@@ -103,14 +109,20 @@ public class AuthService {
 		rabbitTemplate.convertAndSend(AUTH_EXCHANGE, PASSWORD_RESET_KEY, passwordResetRequestedEvent);
 	}
 
-	public void resetPassword(@Valid ResetPasswordRequestDTO resetPasswodDTO) {
-		User user = userRepository.findByEmail(resetPasswodDTO.getEmail()).orElseThrow(UserNotFoundException::new);
+	public void resetPassword(@Valid ResetPasswordRequestDTO resetPasswordDTO) {
+		User user = userRepository.findByEmail(resetPasswordDTO.getEmail()).orElseThrow(UserNotFoundException::new);
 
-		if (!resetPasswodDTO.getCode().equals(user.getRequestCode())) {
+		if (user.getRequestCodeExpiry() == null || user.getRequestCodeExpiry().isBefore(LocalDateTime.now())) {
+			throw new ExpiredResetCodeException();
+		}
+
+		if (!resetPasswordDTO.getCode().equals(user.getRequestCode())) {
 			throw new InvalidResetCodeException();
 		}
-		user.setPassword(passwordEncoder.encode(resetPasswodDTO.getNewPassword()));
+
+		user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));
 		user.setRequestCode(null);
+		user.setRequestCodeExpiry(null);
 		userRepository.save(user);
 	}
 
@@ -129,15 +141,16 @@ public class AuthService {
 
 		String newCode = generateConfirmationCode();
 		user.setRequestCode(newCode);
+		user.setRequestCodeExpiry(LocalDateTime.now().plusMinutes(10));
 
 		User savedUser = userRepository.save(user);
 
 		CodeRegeneratedEvent codeRegeneratedEvent = new CodeRegeneratedEvent(savedUser.getEmail(),
-				savedUser.getUsernameField(), newCode);
+				savedUser.getUsernameField(), newCode, LocalDateTime.now());
 		rabbitTemplate.convertAndSend(AUTH_EXCHANGE, CODE_REGENERATED_KEY, codeRegeneratedEvent);
 	}
 
-	private String generateConfirmationCode() {
+	public String generateConfirmationCode() {
 		SecureRandom random = new SecureRandom();
 		int code = 10000 + random.nextInt(90000);
 		return String.valueOf(code);
@@ -192,4 +205,18 @@ public class AuthService {
 		final String token = authHeader.substring(7);
 		logout(token);
 	}
+
+	@Transactional
+	public void logoutAllTokensForUser(Long userId) {
+		List<Token> tokens = tokenRepository.findAllValidTokensByUser(userId);
+
+		for (Token token : tokens) {
+			token.setExpired(true);
+			token.setRevoked(true);
+			tokenRepository.save(token);
+		}
+
+		SecurityContextHolder.clearContext();
+	}
+
 }

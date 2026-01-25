@@ -96,6 +96,14 @@ public class GlobalExceptionHandler {
         SubjectDeletionNotAllowedException.class,
         DepartmentCollegeMismatchException.class,
         PhoneAlreadyExistsException.class,
+        UsernameAlreadyExistsException.class,
+        InvalidVerificationCodeException.class,
+        InvalidEmailChangeRequestException.class,
+        TooManyRequestsException.class,
+        VerificationCodeExpiredException.class,
+        UserAlreadyDeactivatedException.class,
+        UserDeactivatedException.class,
+        ExpiredResetCodeException.class,
         
         
     })

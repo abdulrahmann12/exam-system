@@ -49,6 +49,13 @@ public class User implements UserDetails {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
+	
+	@Column(unique = true)
+	private String pendingEmail;
+	
+	private LocalDateTime requestCodeExpiry;
+
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "college_id")

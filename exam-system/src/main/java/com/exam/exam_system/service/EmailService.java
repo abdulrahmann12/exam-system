@@ -13,6 +13,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import com.exam.exam_system.events.CodeRegeneratedEvent;
+import com.exam.exam_system.events.EmailChangeEvent;
 import com.exam.exam_system.events.PasswordResetRequestedEvent;
 import com.exam.exam_system.events.UserRegisteredEvent;
 
@@ -43,6 +44,18 @@ public class EmailService {
     public void sendCode(PasswordResetRequestedEvent user, String subject) {
         sendEmail(
                 user.getEmail(),
+                subject,
+                "emails/send-code", // template path inside /resources/templates
+                new ContextBuilder()
+                        .add("name", user.getUsername())
+                        .add("code", user.getCode())
+                        .build()
+        );
+    }
+    
+    public void sendCode(EmailChangeEvent user, String subject) {
+        sendEmail(
+                user.getNewEmail(),
                 subject,
                 "emails/send-code", // template path inside /resources/templates
                 new ContextBuilder()

@@ -21,7 +21,9 @@ public class Messages {
 	public static final String INVALID_PASSWORD = "Current password is incorrect";
 	public static final String CHANGE_PASSWORD = "Password changed successfully";
 	public static final String CODE_SENT = "Code sent successfully";
+	public static final String INVALID_VERIFICATION_CODE = "Invalid verfication code";
 	public static final String INVALID_RESET_CODE = "Invalid reset code";
+	public static final String EXPIRED_RESET_CODE = "Expired reset code";
 	public static final String EMAIL_ALREADY_EXISTS = "Email already exists";
 	public static final String USERNAME_ALREADY_EXISTS = "Username already exists";
 	public static final String BAD_CREDENTIALS = "Invalid username or password";
@@ -30,8 +32,15 @@ public class Messages {
 	public static final String NOT_SALES_EMPLOYEE = "User does not have SALES_EMPLOYEE role.";
 	public static final String NOT_PURCHASES_EMPLOYEE = "User does not have PURCHASING_OFFICER role.";
 	public static final String PHONE_ALREADY_EXISTS = "Phone with this name already exist";
+	public static final String TOO_MANY_REQUESTS = "Too many requests. Please try again later.";
+	public static final String INVALID_EMAIL_CHANGE_REQUEST = "Invalid email change request";
+	public static final String EXPIRED_CODE = "Code has expired. Please request a new one.";
+	public static final String PROFILE_UPDATED = "Profile updated successfully";
+	public static final String USERNAME_UPDATED = "Username updated successfully. Please log in again";
+	public static final String EMAIL_CHANGE_REQUESTED = "Verification code has been sent to the new email address";
+	public static final String EMAIL_CHANGED = "Email address updated successfully. Please log in again";
 
-
+	
 	// ==================== Token Messages ====================
 	public static final String INVALID_REFRESH_TOKEN = "Invalid or missing refresh token";
 	public static final String NEW_TOKEN_GENERATED = "New token generated successfully";
@@ -49,9 +58,10 @@ public class Messages {
 	public static final String CHANGE_ROLES_ERROR = "Invalid role. Please provide one of: ADMIN, DOCTOR, etc.";
 	public static final String USER_UPDATE_PROFILE = "User role updated successfully";
 	public static final String USER_UPDATE_IMAGE = "User image updated successfully";
-	public static final String DELETE_USER = "User deleted successfully";
+	public static final String DEACTIVATE_USER = "User deactivated successfully";
 	public static final String UPDATE_USER = "User updated successfully";
-
+	public static final String USER_ALREADY_DEACTIVATE = "User already deactivated";
+	public static final String USER_DEACTIVATED_EXCEPTION = "Your account has been deactivated. Please contact support.";
 	// ==================== Department Messages ====================
 	public static final String DEPARTMENT_NOT_FOUND = "Department not found";
 	public static final String DEPARTMENT_ALREADY_EXISTS = "Department with this name already exist";

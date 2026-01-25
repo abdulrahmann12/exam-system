@@ -15,6 +15,11 @@ public class AuthRabbitConfig {
 	}
 
 	@Bean
+	public Queue userChangeEmailQueue() {
+	    return new Queue(EMAIL_CHANGE_QUEUE, true);
+	}
+	
+	@Bean
 	public Queue userRegisteredQueue() {
 	    return new Queue(USER_REGISTERED_QUEUE, true);
 	}
@@ -29,6 +34,11 @@ public class AuthRabbitConfig {
 	    return new Queue(CODE_REGENERATED_QUEUE, true);
 	}
 
+	@Bean
+	public Binding userChangeEmailBinding(TopicExchange authExchange, Queue userChangeEmailQueue) {
+	    return BindingBuilder.bind(userChangeEmailQueue).to(authExchange).with(EMAIL_CHANGE_KEY);
+	}
+	
 	@Bean
 	public Binding userRegisteredBinding(TopicExchange authExchange, Queue userRegisteredQueue) {
 	    return BindingBuilder.bind(userRegisteredQueue).to(authExchange).with(USER_REGISTERED_KEY);
