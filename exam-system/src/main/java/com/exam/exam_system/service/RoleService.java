@@ -1,18 +1,24 @@
 package com.exam.exam_system.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import com.exam.exam_system.Entities.Permission;
 import com.exam.exam_system.Entities.Role;
 import com.exam.exam_system.dto.RoleCreateRequestDTO;
 import com.exam.exam_system.dto.RoleGetResponseDTO;
 import com.exam.exam_system.dto.RoleUpdateRequestDTO;
+import com.exam.exam_system.exception.PermissionNotFoundException;
 import com.exam.exam_system.exception.RoleAlreadyExistsException;
 import com.exam.exam_system.exception.RoleDeletionNotAllowedException;
 import com.exam.exam_system.exception.RoleNotFoundException;
 import com.exam.exam_system.mapper.RoleMapper;
+import com.exam.exam_system.repository.PermissionRepository;
 import com.exam.exam_system.repository.RoleRepository;
 import com.exam.exam_system.repository.UserRepository;
 
@@ -28,30 +34,60 @@ public class RoleService {
 	private final RoleRepository roleRepository;
 	private final RoleMapper roleMapper;
 	private final UserRepository userRepository;
+	private final PermissionRepository permissionRepository;
 
 	@Transactional
-	public RoleGetResponseDTO createRole(@Valid RoleCreateRequestDTO roleCreateRequestDTO) {
+	public RoleGetResponseDTO createRole(@Valid RoleCreateRequestDTO dto) {
 
-		if (roleRepository.existsByRoleName(roleCreateRequestDTO.getRoleName())) {
+		if (roleRepository.existsByRoleName(dto.getRoleName())) {
 			throw new RoleAlreadyExistsException();
 		}
-		Role role = roleMapper.toEntity(roleCreateRequestDTO);
 
-		Role savedRole = roleRepository.save(role);
-		return roleMapper.toDto(savedRole);
+		Role role = new Role();
+		role.setRoleName(dto.getRoleName());
 
+		if (dto.getPermissionIds() != null && !dto.getPermissionIds().isEmpty()) {
+
+			List<Permission> permissions = permissionRepository.findAllById(dto.getPermissionIds());
+
+			Set<Long> foundIds = permissions.stream().map(Permission::getPermissionId).collect(Collectors.toSet());
+
+			List<Long> missingIds = dto.getPermissionIds().stream().filter(id -> !foundIds.contains(id)).toList();
+
+			if (!missingIds.isEmpty()) {
+				throw new PermissionNotFoundException(missingIds);
+			}
+
+			role.setPermissions(new HashSet<>(permissions));
+		}
+
+		return roleMapper.toDto(roleRepository.save(role));
 	}
 
 	@Transactional
-	public RoleGetResponseDTO updateRole(Long roleId, @Valid RoleUpdateRequestDTO roleCreateRequestDTO) {
+	public RoleGetResponseDTO updateRole(Long roleId, @Valid RoleUpdateRequestDTO dto) {
 
 		Role role = roleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
 
-		if (roleRepository.existsByRoleNameAndRoleIdNot(roleCreateRequestDTO.getRoleName(), roleId)) {
+		if (roleRepository.existsByRoleNameAndRoleIdNot(dto.getRoleName(), roleId)) {
 			throw new RoleAlreadyExistsException();
 		}
+		if (dto.getPermissionIds() != null && !dto.getPermissionIds().isEmpty()) {
 
-		role.setRoleName(roleCreateRequestDTO.getRoleName());
+			List<Permission> permissions = permissionRepository.findAllById(dto.getPermissionIds());
+
+			Set<Long> foundIds = permissions.stream().map(Permission::getPermissionId).collect(Collectors.toSet());
+
+			List<Long> missingIds = dto.getPermissionIds().stream().filter(id -> !foundIds.contains(id)).toList();
+
+			if (!missingIds.isEmpty()) {
+				throw new PermissionNotFoundException(missingIds);
+			}
+
+			role.setPermissions(new HashSet<>(permissions));
+		}
+
+		role.setRoleName(dto.getRoleName());
 		Role savedRole = roleRepository.save(role);
 		return roleMapper.toDto(savedRole);
 

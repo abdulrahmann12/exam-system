@@ -98,6 +98,16 @@ public class Messages {
 	public static final String DELETE_ROLE = "Role deleted successfully";
 	public static final String ADD_ROLE = "Role added successfully";
 	public static final String CANNOT_DELETE_ROLE = "Cannot delete Role with assigned users.";
+	
+	
+	// ==================== Permission Messages ====================
+	public static final String PERMISSION_NOT_FOUND = "Permission not found";
+	public static final String PERMISSION_ALREADY_EXISTS = "Permission with this code already exists";
+	public static final String PERMISSION_UPDATE = "Permission updated successfully";
+	public static final String DELETE_PERMISSION = "Permission deleted successfully";
+	public static final String ADD_PERMISSION = "Permission added successfully";
+	public static final String CANNOT_DELETE_PERMISSION = "Cannot delete Permission assigned to a Role";
+
 
 	// ==================== Error Messages ====================
 	public static final String FORMAT_ERROR = "Malformed JSON request";

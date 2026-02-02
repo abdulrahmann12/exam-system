@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -81,9 +80,12 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return List.of(new SimpleGrantedAuthority("ROLE_" + role.getRoleName()));
+	    return role.getPermissions().stream()
+	            .filter(Permission::getActive)
+	            .map(p -> new SimpleGrantedAuthority(p.getCode()))
+	            .toList();
 	}
+
 
 	@Override
 	public String getPassword() {

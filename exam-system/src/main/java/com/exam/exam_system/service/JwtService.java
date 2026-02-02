@@ -44,11 +44,20 @@ public class JwtService {
 		return Keys.hmacShaKeyFor(secret.getBytes());
 	}
 	
-	public String generateToken(UserDetails userDetails) {
-		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, userDetails.getUsername(), expiration);
-		
+	public String generateToken(User user) {
+
+	    Map<String, Object> claims = new HashMap<>();
+
+	    claims.put("permissions",
+	            user.getRole().getPermissions().stream()
+	                    .filter(p -> Boolean.TRUE.equals(p.getActive()))
+	                    .map(p -> p.getCode())
+	                    .toList()
+	    );
+
+	    return createToken(claims, user.getUsername(), expiration);
 	}
+
 	
 	public String generateRefreshToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
@@ -111,6 +120,12 @@ public class JwtService {
 				.build();
 		repository.save(token);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> extractPermissions(String token) {
+	    return extractAllClaims(token).get("permissions", List.class);
+	}
+
 	
 	@Transactional
 	public void revokeAllUserTokens(User user) {

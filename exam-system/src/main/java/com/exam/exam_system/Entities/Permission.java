@@ -1,16 +1,12 @@
 package com.exam.exam_system.Entities;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.*;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -20,42 +16,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "permissions")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
-public class Role {
+public class Permission {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long roleId;
+	private Long permissionId;
 
-	private String roleName;
-	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-	    name = "role_permissions",
-	    joinColumns = @JoinColumn(name = "role_id"),
-	    inverseJoinColumns = @JoinColumn(name = "permission_id")
-	)
+	@Column(nullable = false, unique = true)
+	private String code;
+
+	private String description;
+
 	@Builder.Default
-	private Set<Permission> permissions = new HashSet<>();
+	private Boolean active = true;
 
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
 	@PrePersist
-	public void setCreatedAt() {
-		// TODO Auto-generated method stub
+	public void onCreate() {
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
 	}
 
 	@PreUpdate
-	public void setUpdatedAt() {
-		// TODO Auto-generated method stub
+	public void onUpdate() {
 		updatedAt = LocalDateTime.now();
 	}
 }

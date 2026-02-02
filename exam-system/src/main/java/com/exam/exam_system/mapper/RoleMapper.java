@@ -13,6 +13,7 @@ public interface RoleMapper {
 	@Mapping(target = "roleId", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "permissions", ignore = true)
 	Role toEntity(RoleCreateRequestDTO dto);
 	
 	RoleGetResponseDTO toDto(Role role);

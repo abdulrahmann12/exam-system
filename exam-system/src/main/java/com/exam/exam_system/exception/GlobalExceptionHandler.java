@@ -104,6 +104,9 @@ public class GlobalExceptionHandler {
         UserAlreadyDeactivatedException.class,
         UserDeactivatedException.class,
         ExpiredResetCodeException.class,
+        PermissionNotFoundException.class,
+        PermissionDeletionNotAllowedException.class,
+        PermissionAlreadyExistsException.class,
         
         
     })

@@ -1,6 +1,8 @@
 package com.exam.exam_system.config;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,6 +45,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String token = extractToken(request);
 			String username = jwtService.extractUsername(token);
+			List<String> permissions = Optional
+			        .ofNullable(jwtService.extractPermissions(token))
+			        .orElse(List.of());
+
+			var authorities = permissions.stream()
+			        .map(org.springframework.security.core.authority.SimpleGrantedAuthority::new)
+			        .toList();
 
 			if (username == null) {
 				throw new InvalidTokenException(Messages.COULD_NOT_EXTRACT_USER);
@@ -63,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				if (jwtService.validateToken(token, userDetails)) {
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
+					        userDetails, null, authorities);
 					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 				}
