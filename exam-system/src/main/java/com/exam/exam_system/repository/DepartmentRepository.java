@@ -1,8 +1,9 @@
 package com.exam.exam_system.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.exam.exam_system.Entities.Department;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,11 +18,11 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
 	Boolean existsByDepartmentNameAndDepartmentIdNot(String departmentName, Long departmentId);
 
-	List<Department> findByDepartmentNameContainingIgnoreCase(String keyword);
-
 	boolean existsByCollege_CollegeId(Long collegeId);
 
-	List<Department> findByCollege_CollegeId(Long collegeId);
+	Page<Department> findByDepartmentNameContainingIgnoreCase(String keyword, Pageable pageable);
+
+	Page<Department> findByCollege_CollegeId(Long collegeId, Pageable pageable);
 
 	boolean existsByDepartmentNameAndCollege_CollegeId(String departmentName, Long collegeId);
 

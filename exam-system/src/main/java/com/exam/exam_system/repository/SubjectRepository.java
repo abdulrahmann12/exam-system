@@ -1,5 +1,8 @@
 package com.exam.exam_system.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.exam.exam_system.Entities.Subject;
 
 import java.util.List;
@@ -42,45 +45,44 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
 
 	List<Subject> findBySubjectNameContainingIgnoreCaseOrSubjectCodeContainingIgnoreCase(String nameKeyword,
 			String codeKeyword);
-	
-    @Query("""
-            SELECT s FROM Subject s
-            JOIN FETCH s.department
-            JOIN FETCH s.college
-        """)
-        List<Subject> findAllWithDepartmentAndCollege();
 
-        @Query("""
-            SELECT s FROM Subject s
-            JOIN FETCH s.department
-            JOIN FETCH s.college
-            WHERE s.subjectId = :subjectId
-        """)
-        Optional<Subject> findByIdWithRelations(@Param("subjectId") Long subjectId);
+	@Query("""
+			    SELECT s FROM Subject s
+			    JOIN FETCH s.department
+			    JOIN FETCH s.college
+			""")
+	Page<Subject> findAllWithDepartmentAndCollege(Pageable pageable);
 
-        @Query("""
-            SELECT s FROM Subject s
-            JOIN FETCH s.department
-            JOIN FETCH s.college
-            WHERE s.department.departmentId = :departmentId
-        """)
-        List<Subject> findAllByDepartmentIdWithRelations(@Param("departmentId") Long departmentId);
+	@Query("""
+			    SELECT s FROM Subject s
+			    JOIN FETCH s.department
+			    JOIN FETCH s.college
+			    WHERE s.subjectId = :subjectId
+			""")
+	Optional<Subject> findByIdWithRelations(@Param("subjectId") Long subjectId);
 
-        @Query("""
-            SELECT s FROM Subject s
-            JOIN FETCH s.department
-            JOIN FETCH s.college
-            WHERE s.college.collegeId = :collegeId
-        """)
-        List<Subject> findAllByCollegeIdWithRelations(@Param("collegeId") Long collegeId);
+	@Query("""
+			    SELECT s FROM Subject s
+			    JOIN FETCH s.department d
+			    JOIN FETCH d.college
+			    WHERE d.departmentId = :departmentId
+			""")
+	Page<Subject> findAllByDepartmentIdWithRelations(Long departmentId, Pageable pageable);
 
-        @Query("""
-            SELECT s FROM Subject s
-            JOIN FETCH s.department
-            JOIN FETCH s.college
-            WHERE LOWER(s.subjectName) LIKE LOWER(CONCAT('%', :keyword, '%'))
-               OR LOWER(s.subjectCode) LIKE LOWER(CONCAT('%', :keyword, '%'))
-        """)
-        List<Subject> searchByNameOrCodeWithRelations(@Param("keyword") String keyword);
+	@Query("""
+			    SELECT s FROM Subject s
+			    JOIN FETCH s.department d
+			    JOIN FETCH d.college c
+			    WHERE c.collegeId = :collegeId
+			""")
+	Page<Subject> findAllByCollegeIdWithRelations(Long collegeId, Pageable pageable);
 
+	@Query("""
+			    SELECT s FROM Subject s
+			    JOIN FETCH s.department d
+			    JOIN FETCH d.college
+			    WHERE LOWER(s.subjectName) LIKE LOWER(CONCAT('%', :keyword, '%'))
+			       OR LOWER(s.subjectCode) LIKE LOWER(CONCAT('%', :keyword, '%'))
+			""")
+	Page<Subject> searchByNameOrCodeWithRelations(String keyword, Pageable pageable);
 }

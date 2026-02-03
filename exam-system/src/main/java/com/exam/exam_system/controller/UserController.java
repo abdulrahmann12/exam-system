@@ -1,6 +1,6 @@
 package com.exam.exam_system.controller;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -99,9 +99,43 @@ public class UserController {
 	@Operation(summary = "Get all users")
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<BasicResponse> getAllUsers() {
+	public ResponseEntity<BasicResponse> getAllUsers(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-		List<UserResponseDTO> users = userService.getAllUsers();
+		Page<UserResponseDTO> users = userService.getAllUsers(page, size);
+
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
+	}
+
+	@Operation(summary = "Get users by college")
+	@GetMapping("/by-college/{collegeId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<BasicResponse> getUsersByCollege(@PathVariable Long collegeId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+		Page<UserResponseDTO> users = userService.getUsersByCollege(collegeId, page, size);
+
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
+	}
+
+	@Operation(summary = "Get users by department")
+	@GetMapping("/by-department/{departmentId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<BasicResponse> getUsersByDepartment(@PathVariable Long departmentId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+		Page<UserResponseDTO> users = userService.getUsersByDepartment(departmentId, page, size);
+
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
+	}
+
+	@Operation(summary = "Get users by role")
+	@GetMapping("/by-role/{roleName}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<BasicResponse> getUsersByRole(@PathVariable String roleName,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+		Page<UserResponseDTO> users = userService.getUsersByRole(roleName, page, size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
 	}
@@ -134,9 +168,11 @@ public class UserController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<BasicResponse> searchUsers(@RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String role, @RequestParam(required = false) Long collegeId,
-			@RequestParam(required = false) Long departmentId, @RequestParam(required = false) Boolean isActive) {
+			@RequestParam(required = false) Long departmentId, @RequestParam(required = false) Boolean isActive,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		List<UserResponseDTO> users = userService.searchUsers(keyword, role, collegeId, departmentId, isActive);
+		Page<UserResponseDTO> users = userService.searchUsers(keyword, role, collegeId, departmentId, isActive, page,
+				size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
 	}

@@ -1,7 +1,9 @@
 package com.exam.exam_system.service;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -85,26 +87,35 @@ public class DepartmentService {
 		return departmentMapper.toDto(department);
 	}
 
-	public List<DepartmentGetResponseDTO> searchDepartments(String keyword) {
+	public Page<DepartmentGetResponseDTO> searchDepartments(String keyword, int page, int size) {
 
-		List<Department> departments = departmentRepository.findByDepartmentNameContainingIgnoreCase(keyword);
+		Pageable pageable = PageRequest.of(page, size, Sort.by("departmentName"));
 
-		return departments.stream().map(departmentMapper::toDto).toList();
+		Page<Department> departments = departmentRepository.findByDepartmentNameContainingIgnoreCase(keyword, pageable);
+
+		return departments.map(departmentMapper::toDto);
 	}
 
-	public List<DepartmentGetResponseDTO> getAllDepartments() {
+	public Page<DepartmentGetResponseDTO> getAllDepartments(int page, int size) {
 
-		List<Department> departments = departmentRepository.findAll();
-		return departments.stream().map(departmentMapper::toDto).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("departmentName"));
+
+		Page<Department> departments = departmentRepository.findAll(pageable);
+
+		return departments.map(departmentMapper::toDto);
 	}
 
-	public List<DepartmentGetResponseDTO> getDepartmentsByCollegeId(Long collegeId) {
+	public Page<DepartmentGetResponseDTO> getDepartmentsByCollegeId(Long collegeId, int page, int size) {
 
 		if (!collegeRepository.existsById(collegeId)) {
 			throw new CollegeNotFoundException();
 		}
 
-		return departmentRepository.findByCollege_CollegeId(collegeId).stream().map(departmentMapper::toDto).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("departmentName"));
+
+		Page<Department> departments = departmentRepository.findByCollege_CollegeId(collegeId, pageable);
+
+		return departments.map(departmentMapper::toDto);
 	}
 
 	@Transactional

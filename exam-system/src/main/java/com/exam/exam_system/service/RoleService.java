@@ -1,5 +1,9 @@
 package com.exam.exam_system.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -103,9 +107,13 @@ public class RoleService {
 		return roleMapper.toDto(role);
 	}
 
-	public List<RoleGetResponseDTO> getAllRoles() {
-		List<Role> roles = roleRepository.findAll();
-		return roles.stream().map(roleMapper::toDto).toList();
+	public Page<RoleGetResponseDTO> getAllRoles(int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("roleName"));
+
+		Page<Role> rolesPage = roleRepository.findAll(pageable);
+
+		return rolesPage.map(roleMapper::toDto);
 	}
 
 	@Transactional

@@ -1,5 +1,9 @@
 package com.exam.exam_system.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -17,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 import static com.exam.exam_system.rabbitconfig.RabbitConstants.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +37,9 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public UserProfileResponseDTO getProfile(User user) {
-	    User freshUser = userRepository.findById(user.getUserId())
-	            .orElseThrow(UserNotFoundException::new);
+		User freshUser = userRepository.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
 
-	    return userMapper.toUserProfileResponseDTO(freshUser);
+		return userMapper.toUserProfileResponseDTO(freshUser);
 	}
 
 	@Transactional
@@ -57,20 +59,19 @@ public class UserService {
 	@Transactional
 	public void changeUsername(User user, @Valid ChangeUsernameRequestDTO dto) {
 
-	    if (dto.getNewUsername().equals(user.getUsername())) {
-	        return;
-	    }
+		if (dto.getNewUsername().equals(user.getUsername())) {
+			return;
+		}
 
-	    if (userRepository.existsByUsernameAndUserIdNot(dto.getNewUsername(), user.getUserId())) {
-	        throw new UsernameAlreadyExistsException();
-	    }
+		if (userRepository.existsByUsernameAndUserIdNot(dto.getNewUsername(), user.getUserId())) {
+			throw new UsernameAlreadyExistsException();
+		}
 
-	    user.setUsername(dto.getNewUsername());
-	    userRepository.save(user);
+		user.setUsername(dto.getNewUsername());
+		userRepository.save(user);
 
-	    authService.logoutAllTokensForUser(user.getUserId());
+		authService.logoutAllTokensForUser(user.getUserId());
 	}
-
 
 	@Transactional
 	public void requestEmailChange(User user, @Valid ChangeEmailRequestDTO dto) {
@@ -88,7 +89,7 @@ public class UserService {
 
 		user.setRequestCode(code);
 		user.setPendingEmail(dto.getNewEmail());
-	    user.setRequestCodeExpiry(LocalDateTime.now().plusMinutes(10));
+		user.setRequestCodeExpiry(LocalDateTime.now().plusMinutes(10));
 		userRepository.save(user);
 
 		rabbitTemplate.convertAndSend(AUTH_EXCHANGE, EMAIL_CHANGE_KEY,
@@ -98,27 +99,26 @@ public class UserService {
 	@Transactional
 	public void confirmEmailChange(User user, @Valid VerifyEmailChangeRequestDTO dto) {
 
-	    if (user.getRequestCode() == null || user.getPendingEmail() == null) {
-	        throw new InvalidEmailChangeRequestException();
-	    }
+		if (user.getRequestCode() == null || user.getPendingEmail() == null) {
+			throw new InvalidEmailChangeRequestException();
+		}
 
-	    if (!dto.getCode().equals(user.getRequestCode())) {
-	        throw new InvalidVerificationCodeException();
-	    }
+		if (!dto.getCode().equals(user.getRequestCode())) {
+			throw new InvalidVerificationCodeException();
+		}
 
-	    
-	    if (user.getRequestCodeExpiry().isBefore(LocalDateTime.now())) {
-	        throw new VerificationCodeExpiredException();
-	    }
+		if (user.getRequestCodeExpiry().isBefore(LocalDateTime.now())) {
+			throw new VerificationCodeExpiredException();
+		}
 
 		user.setEmail(user.getPendingEmail());
 		user.setPendingEmail(null);
 		user.setRequestCode(null);
-	    user.setRequestCodeExpiry(null);
+		user.setRequestCodeExpiry(null);
 
 		userRepository.save(user);
 
-	    authService.logoutAllTokensForUser(user.getUserId());
+		authService.logoutAllTokensForUser(user.getUserId());
 	}
 
 	@Transactional(readOnly = true)
@@ -128,16 +128,18 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDTO> getAllUsers() {
-		List<User> users = userRepository.findAll();
-		return users.stream().map(userMapper::toDTO).toList();
+	public Page<UserResponseDTO> getAllUsers(int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
+
+		return userRepository.findAll(pageable).map(userMapper::toDTO);
 	}
 
 	@Transactional
 	public void deactivateUser(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
-		if(!user.getIsActive()) {
+		if (!user.getIsActive()) {
 			throw new UserAlreadyDeactivatedException();
 		}
 		user.setIsActive(false);
@@ -169,37 +171,45 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDTO> getUsersByRole(String roleName) {
-		return userRepository.findByRole_RoleName(roleName).stream().map(userMapper::toDTO).toList();
+	public Page<UserResponseDTO> getUsersByRole(String roleName, int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("role.roleName"));
+
+		return userRepository.findByRole_RoleName(roleName, pageable).map(userMapper::toDTO);
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDTO> getUsersByCollege(Long collegeId) {
+	public Page<UserResponseDTO> getUsersByCollege(Long collegeId, int page, int size) {
 
 		if (!collegeRepository.existsById(collegeId)) {
 			throw new CollegeNotFoundException();
 		}
 
-		return userRepository.findByCollege_CollegeId(collegeId).stream().map(userMapper::toDTO).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
+
+		return userRepository.findByCollege_CollegeId(collegeId, pageable).map(userMapper::toDTO);
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDTO> getUsersByDepartment(Long departmentId) {
+	public Page<UserResponseDTO> getUsersByDepartment(Long departmentId, int page, int size) {
 
 		if (!departmentRepository.existsById(departmentId)) {
 			throw new DepartmentNotFoundException();
 		}
 
-		return userRepository.findByDepartment_DepartmentId(departmentId).stream().map(userMapper::toDTO).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
+
+		return userRepository.findByDepartment_DepartmentId(departmentId, pageable).map(userMapper::toDTO);
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDTO> searchUsers(String keyword, String role, Long collegeId, Long departmentId,
-			Boolean isActive) {
+	public Page<UserResponseDTO> searchUsers(String keyword, String role, Long collegeId, Long departmentId,
+			Boolean isActive, int page, int size) {
 
-		List<User> users = userRepository.searchUsers(keyword, role, collegeId, departmentId, isActive);
+		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
 
-		return users.stream().map(userMapper::toDTO).toList();
+		return userRepository.searchUsers(keyword, role, collegeId, departmentId, isActive, pageable)
+				.map(userMapper::toDTO);
 	}
 
 }

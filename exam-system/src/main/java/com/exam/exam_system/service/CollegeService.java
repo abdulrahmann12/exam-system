@@ -1,6 +1,9 @@
 package com.exam.exam_system.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -74,17 +77,22 @@ public class CollegeService {
 		return collegeMapper.toDto(college);
 	}
 
-	public List<CollegeGetResponseDTO> searchColleges(String keyword) {
+	public Page<CollegeGetResponseDTO> searchColleges(String keyword, int page, int size) {
 
-		List<College> colleges = collegeRepository.findByCollegeNameContainingIgnoreCase(keyword);
+		Pageable pageable = PageRequest.of(page, size, Sort.by("collegeName"));
 
-		return colleges.stream().map(collegeMapper::toDto).toList();
+		Page<College> collegesPage = collegeRepository.findByCollegeNameContainingIgnoreCase(keyword, pageable);
+
+		return collegesPage.map(collegeMapper::toDto);
 	}
 
-	public List<CollegeGetResponseDTO> getAllColleges() {
+	public Page<CollegeGetResponseDTO> getAllColleges(int page, int size) {
 
-		List<College> colleges = collegeRepository.findAll();
-		return colleges.stream().map(collegeMapper::toDto).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("collegeName"));
+
+		Page<College> collegesPage = collegeRepository.findAll(pageable);
+
+		return collegesPage.map(collegeMapper::toDto);
 	}
 
 	@Transactional

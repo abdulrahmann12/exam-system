@@ -1,6 +1,9 @@
 package com.exam.exam_system.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -66,9 +69,13 @@ public class PermissionService {
 		return permissionMapper.toDto(permission);
 	}
 
-	public List<PermissionGetResponseDTO> getAllPermissions() {
-		List<Permission> permissions = permissionRepository.findAll();
-		return permissions.stream().map(permissionMapper::toDto).toList();
+	public Page<PermissionGetResponseDTO> getAllPermissions(int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("permissionId"));
+
+		Page<Permission> permissionsPage = permissionRepository.findAll(pageable);
+
+		return permissionsPage.map(permissionMapper::toDto);
 	}
 
 	@Transactional

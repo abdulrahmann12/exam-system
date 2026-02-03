@@ -1,6 +1,6 @@
 package com.exam.exam_system.controller;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,8 +25,7 @@ public class SubjectController {
 	@Operation(summary = "Create new subject")
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<BasicResponse> createSubject(
-			@RequestBody SubjectCreateRequestDTO request) {
+	public ResponseEntity<BasicResponse> createSubject(@RequestBody SubjectCreateRequestDTO request) {
 
 		SubjectGetResponseDTO response = subjectService.createSubject(request);
 
@@ -36,12 +35,10 @@ public class SubjectController {
 	@Operation(summary = "Update existing subject")
 	@PutMapping("/{subjectId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<BasicResponse> updateSubject(
-			@PathVariable Long subjectId,
+	public ResponseEntity<BasicResponse> updateSubject(@PathVariable Long subjectId,
 			@RequestBody SubjectUpdateRequestDTO request) {
 
-		SubjectGetResponseDTO response =
-				subjectService.updateSubject(subjectId, request);
+		SubjectGetResponseDTO response = subjectService.updateSubject(subjectId, request);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.SUBJECT_UPDATED, response));
 	}
@@ -49,11 +46,9 @@ public class SubjectController {
 	@Operation(summary = "Get subject by ID")
 	@GetMapping("/{subjectId}")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> getSubjectById(
-			@PathVariable Long subjectId) {
+	public ResponseEntity<BasicResponse> getSubjectById(@PathVariable Long subjectId) {
 
-		SubjectGetResponseDTO response =
-				subjectService.getSubjectById(subjectId);
+		SubjectGetResponseDTO response = subjectService.getSubjectById(subjectId);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
@@ -61,10 +56,10 @@ public class SubjectController {
 	@Operation(summary = "Get all subjects")
 	@GetMapping
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> getAllSubjects() {
+	public ResponseEntity<BasicResponse> getAllSubjects(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-		List<SubjectGetResponseDTO> subjects =
-				subjectService.getAllSubjects();
+		Page<SubjectGetResponseDTO> subjects = subjectService.getAllSubjects(page, size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
@@ -72,11 +67,10 @@ public class SubjectController {
 	@Operation(summary = "Get subjects by department ID")
 	@GetMapping("/by-department/{departmentId}")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> getSubjectsByDepartmentId(
-			@PathVariable Long departmentId) {
+	public ResponseEntity<BasicResponse> getSubjectsByDepartmentId(@PathVariable Long departmentId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		List<SubjectGetResponseDTO> subjects =
-				subjectService.getSubjectsByDepartmentId(departmentId);
+		Page<SubjectGetResponseDTO> subjects = subjectService.getSubjectsByDepartmentId(departmentId, page, size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
@@ -84,11 +78,10 @@ public class SubjectController {
 	@Operation(summary = "Get subjects by college ID")
 	@GetMapping("/by-college/{collegeId}")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> getSubjectsByCollegeId(
-			@PathVariable Long collegeId) {
+	public ResponseEntity<BasicResponse> getSubjectsByCollegeId(@PathVariable Long collegeId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		List<SubjectGetResponseDTO> subjects =
-				subjectService.getSubjectsByCollegeId(collegeId);
+		Page<SubjectGetResponseDTO> subjects = subjectService.getSubjectsByCollegeId(collegeId, page, size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
@@ -96,11 +89,10 @@ public class SubjectController {
 	@Operation(summary = "Search subjects by name or code")
 	@GetMapping("/search")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> searchSubjects(
-			@RequestParam String keyword) {
+	public ResponseEntity<BasicResponse> searchSubjects(@RequestParam String keyword,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		List<SubjectGetResponseDTO> subjects =
-				subjectService.searchSubjects(keyword);
+		Page<SubjectGetResponseDTO> subjects = subjectService.searchSubjects(keyword, page, size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
@@ -108,8 +100,7 @@ public class SubjectController {
 	@Operation(summary = "Delete subject by ID")
 	@DeleteMapping("/{subjectId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<BasicResponse> deleteSubject(
-			@PathVariable Long subjectId) {
+	public ResponseEntity<BasicResponse> deleteSubject(@PathVariable Long subjectId) {
 
 		subjectService.deleteSubject(subjectId);
 

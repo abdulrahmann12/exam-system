@@ -1,5 +1,6 @@
 package com.exam.exam_system.controller;
 
+import org.springframework.data.domain.Page;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,8 +55,9 @@ public class PermissionController {
 
 	@Operation(summary = "Get all permissions")
 	@GetMapping
-	public ResponseEntity<BasicResponse> getAllPermissions() {
-		List<PermissionGetResponseDTO> permissions = permissionService.getAllPermissions();
+	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(value = "0") int page,
+			@RequestParam(value = "10") int size) {
+		Page<PermissionGetResponseDTO> permissions = permissionService.getAllPermissions(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, permissions));
 	}
 

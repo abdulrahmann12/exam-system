@@ -1,7 +1,6 @@
 package com.exam.exam_system.controller;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -58,13 +57,14 @@ public class CollegeController {
 		CollegeGetResponseDTO response = collegeService.getCollegeByName(collegeName);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
-	
+
 	@Operation(summary = "Search colleges by name")
 	@GetMapping("/search")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> searchColleges(@RequestParam String keyword) {
+	public ResponseEntity<BasicResponse> searchColleges(@RequestParam String keyword,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
-		List<CollegeGetResponseDTO> colleges = collegeService.searchColleges(keyword);
+		Page<CollegeGetResponseDTO> colleges = collegeService.searchColleges(keyword, page, size);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, colleges));
 	}
@@ -72,9 +72,10 @@ public class CollegeController {
 	@Operation(summary = "Get all colleges")
 	@GetMapping
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> getAllColleges() {
+	public ResponseEntity<BasicResponse> getAllColleges(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-		List<CollegeGetResponseDTO> colleges = collegeService.getAllColleges();
+		Page<CollegeGetResponseDTO> colleges = collegeService.getAllColleges(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, colleges));
 	}
 

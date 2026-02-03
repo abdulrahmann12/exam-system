@@ -1,6 +1,7 @@
 package com.exam.exam_system.repository;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,36 +28,54 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	boolean existsByPhoneAndUserIdNot(String phone, Long userId);
 
-	List<User> findByRole_RoleName(String roleName);
+	Page<User> findByRole_RoleName(String roleName, Pageable pageable);
 
-	List<User> findByCollege_CollegeId(Long collegeId);
+	Page<User> findByCollege_CollegeId(Long collegeId, Pageable pageable);
 
-	List<User> findByDepartment_DepartmentId(Long departmentId);
+	Page<User> findByDepartment_DepartmentId(Long departmentId, Pageable pageable);
 
 	boolean existsByUsernameAndUserIdNot(String username, Long userId);
 
 	boolean existsByEmailAndUserIdNot(String email, Long userId);
 
-	@Query("""
-			SELECT u FROM User u
-			WHERE
-			(:keyword IS NULL OR
-			 LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-			 LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-			 LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-			 LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
-			 u.phone LIKE CONCAT('%', :keyword, '%'))
-			AND (:role IS NULL OR u.role.roleName = :role)
-			AND (:collegeId IS NULL OR u.college.collegeId = :collegeId)
-			AND (:departmentId IS NULL OR u.department.departmentId = :departmentId)
-			AND (:isActive IS NULL OR u.isActive = :isActive)
-		""")
-		List<User> searchUsers(
-			@Param("keyword") String keyword,
-			@Param("role") String role,
-			@Param("collegeId") Long collegeId,
-			@Param("departmentId") Long departmentId,
-			@Param("isActive") Boolean isActive
-		);
+	@Query(
+			 value = """
+			    SELECT u FROM User u
+			    WHERE
+			    (:keyword IS NULL OR
+			     LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     u.phone LIKE CONCAT('%', :keyword, '%'))
+			    AND (:role IS NULL OR u.role.roleName = :role)
+			    AND (:collegeId IS NULL OR u.college.collegeId = :collegeId)
+			    AND (:departmentId IS NULL OR u.department.departmentId = :departmentId)
+			    AND (:isActive IS NULL OR u.isActive = :isActive)
+			 """,
+			 countQuery = """
+			    SELECT COUNT(u) FROM User u
+			    WHERE
+			    (:keyword IS NULL OR
+			     LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     LOWER(u.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     LOWER(u.lastName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
+			     u.phone LIKE CONCAT('%', :keyword, '%'))
+			    AND (:role IS NULL OR u.role.roleName = :role)
+			    AND (:collegeId IS NULL OR u.college.collegeId = :collegeId)
+			    AND (:departmentId IS NULL OR u.department.departmentId = :departmentId)
+			    AND (:isActive IS NULL OR u.isActive = :isActive)
+			 """
+			)
+			Page<User> searchUsers(
+			        @Param("keyword") String keyword,
+			        @Param("role") String role,
+			        @Param("collegeId") Long collegeId,
+			        @Param("departmentId") Long departmentId,
+			        @Param("isActive") Boolean isActive,
+			        Pageable pageable
+			);
+
 
 }

@@ -1,6 +1,9 @@
 package com.exam.exam_system.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -100,32 +103,42 @@ public class SubjectService {
 		return subjectMapper.toDto(subject);
 	}
 
-	public List<SubjectGetResponseDTO> getAllSubjects() {
-		List<Subject> subjects = subjectRepository.findAllWithDepartmentAndCollege();
-		return subjects.stream().map(subjectMapper::toDto).toList();
+	public Page<SubjectGetResponseDTO> getAllSubjects(int page, int size) {
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("subjectName"));
+
+		Page<Subject> subjects = subjectRepository.findAllWithDepartmentAndCollege(pageable);
+
+		return subjects.map(subjectMapper::toDto);
 	}
 
-	public List<SubjectGetResponseDTO> getSubjectsByDepartmentId(Long departmentId) {
+	public Page<SubjectGetResponseDTO> getSubjectsByDepartmentId(Long departmentId, int page, int size) {
+
 		if (!departmentRepository.existsById(departmentId)) {
 			throw new DepartmentNotFoundException();
 		}
-		List<Subject> subjects = subjectRepository.findAllByDepartmentIdWithRelations(departmentId);
-		return subjects.stream().map(subjectMapper::toDto).toList();
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("subjectName"));
+
+		return subjectRepository.findAllByDepartmentIdWithRelations(departmentId, pageable).map(subjectMapper::toDto);
 	}
 
-	public List<SubjectGetResponseDTO> getSubjectsByCollegeId(Long collegeId) {
+	public Page<SubjectGetResponseDTO> getSubjectsByCollegeId(Long collegeId, int page, int size) {
+
 		if (!collegeRepository.existsById(collegeId)) {
 			throw new CollegeNotFoundException();
 		}
-		List<Subject> subjects = subjectRepository.findAllByCollegeIdWithRelations(collegeId);
-		return subjects.stream().map(subjectMapper::toDto).toList();
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by("subjectName"));
+
+		return subjectRepository.findAllByCollegeIdWithRelations(collegeId, pageable).map(subjectMapper::toDto);
 	}
 
-	public List<SubjectGetResponseDTO> searchSubjects(String keyword) {
+	public Page<SubjectGetResponseDTO> searchSubjects(String keyword, int page, int size) {
 
-		return subjectRepository
-				.searchByNameOrCodeWithRelations(keyword).stream()
-				.map(subjectMapper::toDto).toList();
+		Pageable pageable = PageRequest.of(page, size, Sort.by("subjectName"));
+
+		return subjectRepository.searchByNameOrCodeWithRelations(keyword, pageable).map(subjectMapper::toDto);
 	}
 
 	@Transactional

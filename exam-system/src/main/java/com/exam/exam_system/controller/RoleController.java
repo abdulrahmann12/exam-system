@@ -1,6 +1,6 @@
 package com.exam.exam_system.controller;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,9 +58,10 @@ public class RoleController {
 
 	@Operation(summary = "Get all roles")
 	@GetMapping
-	public ResponseEntity<BasicResponse> getAllRoles() {
+	public ResponseEntity<BasicResponse> getAllRoles(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 
-		List<RoleGetResponseDTO> roles = roleService.getAllRoles();
+		Page<RoleGetResponseDTO> roles = roleService.getAllRoles(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, roles));
 	}
 
