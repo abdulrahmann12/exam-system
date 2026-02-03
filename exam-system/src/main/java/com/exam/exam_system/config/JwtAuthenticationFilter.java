@@ -14,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.exam.exam_system.dto.BasicResponse;
 import com.exam.exam_system.exception.InvalidTokenException;
-import com.exam.exam_system.repository.TokenRepository;
 import com.exam.exam_system.service.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,20 +21,15 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JwtService jwtService;
-	private final TokenRepository tokenRepository;
 	private final UserDetailsService userDetailsService;
 
-	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService,
-			TokenRepository tokenRepository) {
+	public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
 		this.jwtService = jwtService;
 		this.userDetailsService = userDetailsService;
-		this.tokenRepository = tokenRepository;
 	}
 
 	@Override
@@ -45,25 +39,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		try {
 			String token = extractToken(request);
 			String username = jwtService.extractUsername(token);
-			List<String> permissions = Optional
-			        .ofNullable(jwtService.extractPermissions(token))
-			        .orElse(List.of());
+			List<String> permissions = Optional.ofNullable(jwtService.extractPermissions(token)).orElse(List.of());
 
 			var authorities = permissions.stream()
-			        .map(org.springframework.security.core.authority.SimpleGrantedAuthority::new)
-			        .toList();
+					.map(org.springframework.security.core.authority.SimpleGrantedAuthority::new).toList();
 
 			if (username == null) {
 				throw new InvalidTokenException(Messages.COULD_NOT_EXTRACT_USER);
 			}
 
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
-				var savedToken = tokenRepository.findByToken(token)
-						.orElseThrow(() -> new InvalidTokenException(Messages.TOKEN_NOT_FOUND));
-
-				if (savedToken.isExpired() || savedToken.isRevoked()) {
-					throw new InvalidTokenException(Messages.TOKEN_EXPIRED_OR_REVOKED);
-				}
 
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 				if (userDetails == null) {
@@ -72,7 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 				if (jwtService.validateToken(token, userDetails)) {
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-					        userDetails, null, authorities);
+							userDetails, null, authorities);
 					authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 				}

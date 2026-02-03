@@ -2,8 +2,10 @@ package com.exam.exam_system.service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +43,8 @@ public class AuthService {
 	private final RabbitTemplate rabbitTemplate;
 	private final TokenRepository tokenRepository;
 
+	
+	@Transactional
 	public AuthResponse login(@Valid LoginRequestDTO loginRequestDTO) {
 		User user = userRepository.findByUsername(loginRequestDTO.getUsernameOrEmail())
 				.or(() -> userRepository.findByEmail(loginRequestDTO.getUsernameOrEmail()))
@@ -50,11 +54,22 @@ public class AuthService {
 			throw new UserDeactivatedException();
 		}
 
-		String jwtToken = jwtService.generateToken(user);
-		String refreshToken = jwtService.generateRefreshToken(user);
-		jwtService.revokeAllUserTokens(user);
-		jwtService.saveUserToken(user, jwtToken);
-		return new AuthResponse(jwtToken, refreshToken);
+		String accessToken = jwtService.generateToken(user);
+
+		// 1️⃣ generate refresh (random)
+		String refreshToken = generateRefreshToken();
+
+		// 2️⃣ hash it
+		String hashedRefresh = hashToken(refreshToken);
+
+		// 3️⃣ revoke old refresh tokens
+		tokenRepository.revokeAllRefreshTokensByUser(user.getUserId());
+
+		// 4️⃣ save hashed refresh
+		tokenRepository.save(Token.builder().user(user).token(hashedRefresh).expired(false).revoked(false).build());
+
+		// 5️⃣ return both
+		return new AuthResponse(accessToken, refreshToken);
 	}
 
 	@Transactional
@@ -164,35 +179,32 @@ public class AuthService {
 		}
 
 		final String refreshToken = authHeader.substring(7);
-		final String userEmail = jwtService.extractUsername(refreshToken);
 
-		if (userEmail == null) {
+		String hashed = hashToken(refreshToken);
+
+		Token storedToken = tokenRepository.findByToken(hashed)
+				.orElseThrow(() -> new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN));
+
+		if (storedToken.isExpired() || storedToken.isRevoked()) {
 			throw new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN);
 		}
 
-		User user = userRepository.findByEmail(userEmail).orElseThrow(UserNotFoundException::new);
+		storedToken.setExpired(true);
+		storedToken.setRevoked(true);
+		tokenRepository.save(storedToken);
 
-		if (!jwtService.validateToken(refreshToken, user)) {
-			throw new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN);
-		}
+		User user = storedToken.getUser();
 
-		String accessToken = jwtService.generateToken(user);
-		jwtService.revokeAllUserTokens(user);
-		jwtService.saveUserToken(user, accessToken);
-		return new AuthResponse(accessToken, refreshToken);
+		String newAccessToken = jwtService.generateToken(user);
+		String newRefreshToken = generateRefreshToken();
+
+		tokenRepository.save(
+				Token.builder().user(user).token(hashToken(newRefreshToken)).expired(false).revoked(false).build());
+
+		return new AuthResponse(newAccessToken, newRefreshToken);
+
 	}
 
-	@Transactional
-	public void logout(String token) {
-		var storedToken = tokenRepository.findByToken(token).orElse(null);
-		if (storedToken != null && !storedToken.isExpired() && !storedToken.isRevoked()) {
-			storedToken.setExpired(true);
-			storedToken.setRevoked(true);
-			tokenRepository.save(storedToken);
-		} else {
-			throw new InvalidTokenException(Messages.ALREADY_LOGGED_OUT);
-		}
-	}
 
 	@Transactional
 	public void logoutByRequest(HttpServletRequest request) {
@@ -202,8 +214,15 @@ public class AuthService {
 			throw new InvalidTokenException(Messages.TOKEN_NOT_FOUND);
 		}
 
-		final String token = authHeader.substring(7);
-		logout(token);
+		String refreshToken = authHeader.substring(7);
+		String hash = hashToken(refreshToken);
+		Token token = tokenRepository.findByToken(hash)
+		        .orElseThrow(() -> new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN));
+
+		token.setExpired(true);
+		token.setRevoked(true);
+		tokenRepository.save(token);
+
 	}
 
 	@Transactional
@@ -217,6 +236,16 @@ public class AuthService {
 		}
 
 		SecurityContextHolder.clearContext();
+	}
+
+	private String generateRefreshToken() {
+		byte[] bytes = new byte[64];
+		new SecureRandom().nextBytes(bytes);
+		return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+	}
+
+	private String hashToken(String token) {
+		return DigestUtils.sha256Hex(token);
 	}
 
 }

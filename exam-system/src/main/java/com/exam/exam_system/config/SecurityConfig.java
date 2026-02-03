@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.exam.exam_system.repository.TokenRepository;
 import com.exam.exam_system.repository.UserRepository;
 import com.exam.exam_system.service.JwtService;
 
@@ -28,7 +27,6 @@ public class SecurityConfig {
 
 	private final JwtService jwtService;
 	private final UserRepository userRepository;
-	private final TokenRepository tokenRepository;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -48,7 +46,7 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter(jwtService, tokenRepository, userDetailsService());
+		return new JwtAuthenticationFilter(jwtService, userDetailsService());
 	}
 
 	@Bean

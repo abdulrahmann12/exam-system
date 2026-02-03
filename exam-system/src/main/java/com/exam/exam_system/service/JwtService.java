@@ -13,131 +13,79 @@ import org.springframework.stereotype.Service;
 
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.exception.InvalidTokenException;
-import com.exam.exam_system.Entities.Token;
 import com.exam.exam_system.Entities.User;
-import com.exam.exam_system.repository.TokenRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-
 
 @RequiredArgsConstructor
 @Service
 public class JwtService {
 
-	private final TokenRepository repository;
-	
 	@Value("${secret}")
 	private String secret;
-	
+
 	@Value("${expiration}")
 	private String expiration;
-	
-	@Value("${refreshExpiration}")
-	private String refreshExpiration;
-	
+
 	private Key getSignKey() {
 		return Keys.hmacShaKeyFor(secret.getBytes());
 	}
-	
+
 	public String generateToken(User user) {
 
-	    Map<String, Object> claims = new HashMap<>();
-
-	    claims.put("permissions",
-	            user.getRole().getPermissions().stream()
-	                    .filter(p -> Boolean.TRUE.equals(p.getActive()))
-	                    .map(p -> p.getCode())
-	                    .toList()
-	    );
-
-	    return createToken(claims, user.getUsername(), expiration);
-	}
-
-	
-	public String generateRefreshToken(UserDetails userDetails) {
 		Map<String, Object> claims = new HashMap<>();
-		return createToken(claims, userDetails.getUsername(), refreshExpiration);
+
+		claims.put("permissions", user.getRole().getPermissions().stream()
+				.filter(p -> Boolean.TRUE.equals(p.getActive())).map(p -> p.getCode()).toList());
+
+		return createToken(claims, user.getUsername(), expiration);
 	}
-	
+
 	private String createToken(Map<String, Object> claims, String subject, String exp) {
 
-		return Jwts.builder()
-				.setClaims(claims)
-				.setSubject(subject)
-				.setIssuedAt(new Date(System.currentTimeMillis()))
+		return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
 				.setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(exp)))
-				.signWith(getSignKey(), SignatureAlgorithm.HS256)
-				.compact();
+				.signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
 	}
-	
+
 	public Boolean validateToken(String token, UserDetails userDetails) {
 		final String username = extractUsername(token);
 		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}
-	
+
 	public String extractUsername(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
-	
+
 	public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
 		final Claims claims = extractAllClaims(token);
 		return claimsResolver.apply(claims);
 	}
-	
+
 	private Claims extractAllClaims(String token) {
-	    try {
-	        return Jwts
-	                .parserBuilder()
-	                .setSigningKey(getSignKey())
-	                .build()
-	                .parseClaimsJws(token)
-	                .getBody();
-	    } catch (Exception e) {
-	        throw new InvalidTokenException(Messages.TOKEN_NOT_FOUND);
-	    }
+		try {
+			return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
+		} catch (Exception e) {
+			throw new InvalidTokenException(Messages.TOKEN_NOT_FOUND);
+		}
 	}
-	
+
 	private Boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());
 	}
-	
+
 	private Date extractExpiration(String token) {
-		return extractClaim(token, Claims :: getExpiration);
+		return extractClaim(token, Claims::getExpiration);
 
 	}
-	
-	public void saveUserToken(User user, String jwtToken) {
-		Token token = Token.builder()
-				.user(user)
-				.token(jwtToken)
-				.expired(false)
-				.revoked(false)
-				.build();
-		repository.save(token);
-	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<String> extractPermissions(String token) {
-	    return extractAllClaims(token).get("permissions", List.class);
+		return extractAllClaims(token).get("permissions", List.class);
 	}
 
-	
-	@Transactional
-	public void revokeAllUserTokens(User user) {
-		List<Token> validUserTokens = repository.findAllValidTokenByUser(user.getUserId());
-		if (validUserTokens.isEmpty())
-			return;
-		validUserTokens.forEach(t -> {
-			t.setExpired(true);
-			t.setRevoked(true);
-		});
-		repository.saveAll(validUserTokens);
-	}
-	
-	
 }
