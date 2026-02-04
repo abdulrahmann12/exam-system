@@ -24,7 +24,7 @@ public class SubjectController {
 
 	@Operation(summary = "Create new subject")
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('SUBJECT_CREATE')")
 	public ResponseEntity<BasicResponse> createSubject(@RequestBody SubjectCreateRequestDTO request) {
 
 		SubjectGetResponseDTO response = subjectService.createSubject(request);

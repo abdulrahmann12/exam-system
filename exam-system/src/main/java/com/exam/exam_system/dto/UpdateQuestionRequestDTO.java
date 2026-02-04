@@ -2,11 +2,12 @@ package com.exam.exam_system.dto;
 
 import java.util.List;
 
+import com.exam.exam_system.Entities.QuestionType;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -20,12 +21,11 @@ public class UpdateQuestionRequestDTO {
     @Size(min = 5, max = 2000)
     private String questionText;
 
-    @NotNull
-    @Pattern(
-        regexp = "MCQ|TRUE_FALSE|ESSAY",
-        message = "Invalid question type"
-    )
-    private String questionType;
+    @NotNull(message = "Question type cannot be null")
+    private QuestionType questionType;
+    
+    @NotNull(message = "Question order cannot be null")
+    private Integer questionOrder;
 
     @NotNull
     @Min(1)

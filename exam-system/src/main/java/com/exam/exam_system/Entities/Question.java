@@ -29,7 +29,7 @@ public class Question {
     private Integer marks;
     
     @Column(nullable = false)
-    private Integer QuestionOrder;
+    private Integer questionOrder;
 
     /* ================= Relations ================= */
 

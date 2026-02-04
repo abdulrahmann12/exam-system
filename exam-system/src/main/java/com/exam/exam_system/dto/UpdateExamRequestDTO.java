@@ -27,6 +27,9 @@ public class UpdateExamRequestDTO {
     private Long subjectId;
 
     @NotNull
+    private Boolean isActive;
+    
+    @NotNull
     @Min(value = 1, message = "Duration must be at least 1 minute")
     private Integer durationMinutes;
 
@@ -34,16 +37,12 @@ public class UpdateExamRequestDTO {
     @Min(value = 10, message = "Per question time must be at least 10 seconds")
     private Integer perQuestionTimeSeconds;
 
-    @NotNull
     private Boolean allowBackNavigation;
 
-    @NotNull
     private Boolean randomizeQuestions;
 
-    @NotNull
     private LocalDateTime startTime;
 
-    @NotNull
     private LocalDateTime endTime;
 
     @NotEmpty(message = "Exam must contain at least one question")

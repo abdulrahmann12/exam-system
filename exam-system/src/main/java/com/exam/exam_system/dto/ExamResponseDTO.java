@@ -36,6 +36,7 @@ public class ExamResponseDTO {
 	private LocalDateTime endTime;
 
 	private Integer totalQuestions;
+	private Boolean isActive;
 
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

@@ -39,8 +39,8 @@ public class Messages {
 	public static final String USERNAME_UPDATED = "Username updated successfully. Please log in again";
 	public static final String EMAIL_CHANGE_REQUESTED = "Verification code has been sent to the new email address";
 	public static final String EMAIL_CHANGED = "Email address updated successfully. Please log in again";
+	public static final String UNAUTHORIZED = "You are not authorized to perform this action";
 
-	
 	// ==================== Token Messages ====================
 	public static final String INVALID_REFRESH_TOKEN = "Invalid or missing refresh token";
 	public static final String NEW_TOKEN_GENERATED = "New token generated successfully";
@@ -62,6 +62,10 @@ public class Messages {
 	public static final String UPDATE_USER = "User updated successfully";
 	public static final String USER_ALREADY_DEACTIVATE = "User already deactivated";
 	public static final String USER_DEACTIVATED_EXCEPTION = "Your account has been deactivated. Please contact support.";
+	public static final String USER_DEPARTMENT_MISMATCH = "User is not allowed to perform this action for the selected department";
+
+	public static final String USER_COLLEGE_MISMATCH = "User is not allowed to perform this action for the selected college";
+
 	// ==================== Department Messages ====================
 	public static final String DEPARTMENT_NOT_FOUND = "Department not found";
 	public static final String DEPARTMENT_ALREADY_EXISTS = "Department with this name already exist";
@@ -71,6 +75,7 @@ public class Messages {
 	public static final String CANNOT_DELETE_DEPARTMENT = "Cannot delete department with assigned users.";
 	public static final String CANNOT_DELETE_DEPARTMENT_SUBJECS = "Cannot delete department with assigned subjects.";
 	public static final String DEPARTMENT_NOT_BELONG_TO_COLLEGE = "Department does not belong to this college";
+	public static final String DEPARTMENT_COLLEGE_MISMATCH = "Department does not belong to the selected college";
 
 	// ==================== College Messages ====================
 	public static final String COLLEGE_NOT_FOUND = "College not found";
@@ -91,6 +96,8 @@ public class Messages {
 	public static final String SUBJECT_CODE_ALREADY_EXISTS = "Subject code already exists";
 	public static final String CANNOT_DELETE_SUBJECT_WITH_EXAMS = "Cannot delete subject with assigned exams";
 
+	public static final String SUBJECT_DEPARTMENT_MISMATCH = "Subject does not belong to the selected department";
+
 	// ==================== Role Messages ====================
 	public static final String ROLE_NOT_FOUND = "Role not found";
 	public static final String ROLE_ALREADY_EXISTS = "Role with this name already exist";
@@ -98,8 +105,7 @@ public class Messages {
 	public static final String DELETE_ROLE = "Role deleted successfully";
 	public static final String ADD_ROLE = "Role added successfully";
 	public static final String CANNOT_DELETE_ROLE = "Cannot delete Role with assigned users.";
-	
-	
+
 	// ==================== Permission Messages ====================
 	public static final String PERMISSION_NOT_FOUND = "Permission not found";
 	public static final String PERMISSION_ALREADY_EXISTS = "Permission with this code already exists";
@@ -107,7 +113,6 @@ public class Messages {
 	public static final String DELETE_PERMISSION = "Permission deleted successfully";
 	public static final String ADD_PERMISSION = "Permission added successfully";
 	public static final String CANNOT_DELETE_PERMISSION = "Cannot delete Permission assigned to a Role";
-
 
 	// ==================== Error Messages ====================
 	public static final String FORMAT_ERROR = "Malformed JSON request";
@@ -121,7 +126,24 @@ public class Messages {
 	public static final String EXAM_NOT_ACTIVE = "Exam is not active";
 	public static final String EXAM_ALREADY_STARTED = "Exam already started";
 	public static final String EXAM_ENDED = "Exam has ended";
+	public static final String INVALID_EXAM_TIME = "Start time must be before end time";
+	public static final String EXAM_START_IN_PAST = "Exam start time cannot be in the past";
+	public static final String EXAM_ALREADY_DEACTIVATE = "Exam already deactivated";
+	public static final String EMPTY_EXAM_QUESTIONS = "Exam must contain at least one question";
+	public static final String INVALID_QUESTION_TYPE = "Invalid question type";
+	public static final String INVALID_QUESTION_ORDER = "Question order must be unique and greater than zero";
+	public static final String INVALID_QUESTION_MARKS = "Question marks must be greater than zero";
+	public static final String INVALID_MCQ_CHOICES = "MCQ question must have at least two choices and exactly one correct answer";
+	public static final String INVALID_TRUE_FALSE_CHOICES = "TRUE/FALSE question must have exactly two choices and one correct answer";
+	public static final String ESSAY_QUESTION_HAS_CHOICES = "Essay question must not have choices";
+	public static final String COLLEGE_MISMATCH = "Department or subject does not belong to the selected college";
+	public static final String EXAM_DELETION_NOT_ALLOWED = "Cannot delete exam after it has started";
+	public static final String EXAM_LOCKED = "Exam is locked and cannot be modified after it has started";
 
+	public static final String DUPLICATE_QUESTION_ORDER = "Question order must be unique within the same exam";
+	public static final String DUPLICATE_CHOICE_ORDER = "Choice order must be unique within the same question";
+	public static final String QUESTION_NOT_BELONG_TO_EXAM = "Question does not belong to this exam";
+	public static final String CHOICE_NOT_BELONG_TO_QUESTION = "Choice does not belong to this question";
 	// ==================== QR Code Messages ====================
 	public static final String QR_GENERATED = "QR code generated successfully";
 	public static final String INVALID_QR = "Invalid or expired QR code";

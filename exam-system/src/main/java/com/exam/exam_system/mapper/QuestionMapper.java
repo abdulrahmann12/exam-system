@@ -13,8 +13,13 @@ public interface QuestionMapper {
 	@Mapping(target = "exam", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
-	@Mapping(target = "QuestionOrder", ignore = true)
 	Question toEntity(CreateQuestionRequestDTO dto);
+	
+	@Mapping(target = "questionId", ignore = true)
+	@Mapping(target = "exam", ignore = true)
+	@Mapping(target = "createdAt", ignore = true)
+	@Mapping(target = "updatedAt", ignore = true)
+	Question toEntity(UpdateQuestionRequestDTO dto);
 	
 	@Mapping(source = "exam.examId", target = "examId")
 	@Mapping(source = "exam.title", target = "examTitle")

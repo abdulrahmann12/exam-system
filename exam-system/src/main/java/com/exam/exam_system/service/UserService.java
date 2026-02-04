@@ -1,5 +1,8 @@
 package com.exam.exam_system.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -212,4 +215,20 @@ public class UserService {
 				.map(userMapper::toDTO);
 	}
 
+
+    public User getCurrentUser() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UnauthorizedException();
+        }
+
+        String username = authentication.getName();
+
+        return userRepository.findByUsername(username)
+				.or(() -> userRepository.findByEmail(username))
+				.orElseThrow(UserNotFoundException::new);
+    }
 }
