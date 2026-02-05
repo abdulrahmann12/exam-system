@@ -269,6 +269,12 @@ public class ExamService {
 		return examRepository.findByUserId(userId, pageable).map(examMapper::toDto);
 	}
 
+	public Page<ExamResponseDTO> getMyExams(int page, int size) {
+		User user = userService.getCurrentUser();
+		Pageable pageable = PageRequest.of(page, size);
+		return examRepository.findByUserId(user.getUserId(), pageable).map(examMapper::toDto);
+	}
+
 	public Page<ExamResponseDTO> getExamsBySubject(Long subjectId, int page, int size) {
 		if (!subjectRepository.existsById(subjectId)) {
 			throw new SubjectNotFoundException();

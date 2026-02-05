@@ -75,6 +75,16 @@ public class ExamController {
 
 	}
 
+	@Operation(summary = "Get my exams (paginated)")
+	@PreAuthorize("hasAuthority('EXAM_READ')")
+	@GetMapping("/my")
+	public ResponseEntity<BasicResponse> getMyExams(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+
+		Page<ExamResponseDTO> response = examService.getMyExams(page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+	}
+
 	@Operation(summary = "Get exams by subject (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/subject/{subjectId}")
