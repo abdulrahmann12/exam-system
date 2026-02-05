@@ -23,6 +23,16 @@ public class Exam {
 
     @Column(length = 1000)
     private String description;
+    
+    @Column(name = "qr_code_url")
+    private String qrCodeUrl;
+    
+    @Column(name = "qr_token")
+    private String qrToken;
+
+    @Column(name = "qr_expires_at")
+    private LocalDateTime qrExpiresAt;
+
 
     /* ================= Relations ================= */
 

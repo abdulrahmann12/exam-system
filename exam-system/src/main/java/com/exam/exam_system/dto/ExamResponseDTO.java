@@ -23,7 +23,11 @@ public class ExamResponseDTO {
 
 	private Long subjectId;
 	private String subjectName;
-
+	
+	private String qrCodeUrl;
+	private String qrToken;
+	private LocalDateTime qrExpiresAt;
+	
 	private Long createdById;
 	private String createdByName;
 

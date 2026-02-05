@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -41,6 +42,8 @@ public class ExamService {
 	private final ChoiceMapper choiceMapper;
 
 	private final UserService userService;
+	private final QrCodeService qrCodeService;
+	private final ImageService imageService;
 
 	@Transactional
 	public ExamResponseDTO createExam(@Valid CreateExamRequestDTO dto) {
@@ -115,6 +118,8 @@ public class ExamService {
 		}).collect(Collectors.toList());
 
 		exam.setQuestions(questions);
+
+		exam.setQrCodeUrl(null);
 
 		Exam savedExam = examRepository.save(exam);
 		return examMapper.toDto(savedExam);
@@ -399,6 +404,35 @@ public class ExamService {
 		}
 		default -> throw new InvalidQuestionTypeException();
 		}
+	}
+
+	@Transactional
+	public ExamQrResponseDTO generateQrForExam(Long examId) {
+
+		Exam exam = examRepository.findById(examId).orElseThrow(ExamNotFoundException::new);
+
+		if (exam.getQrExpiresAt() != null && LocalDateTime.now().isBefore(exam.getQrExpiresAt())) {
+
+			return ExamQrResponseDTO.builder().examId(exam.getExamId()).qrCodeUrl(exam.getQrCodeUrl())
+					.expiresAt(exam.getQrExpiresAt()).build();
+		}
+
+		// generate new token
+		String token = UUID.randomUUID().toString();
+
+		LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(2);
+
+		String qrContent = "https://app.com/exams/" + exam.getExamId() + "/enter?token=" + token;
+
+		byte[] qrImage = qrCodeService.generateQrCode(qrContent);
+		String qrUrl = imageService.uploadImage(qrImage);
+
+		exam.setQrToken(token);
+		exam.setQrCodeUrl(qrUrl);
+		exam.setQrExpiresAt(expiresAt);
+		examRepository.save(exam);
+
+		return ExamQrResponseDTO.builder().examId(exam.getExamId()).qrCodeUrl(qrUrl).expiresAt(expiresAt).build();
 	}
 
 }

@@ -130,6 +130,7 @@ public class GlobalExceptionHandler {
         QuestionNotBelongToExamException.class,
         ChoiceNotBelongToQuestionException.class,
         ExamAlreadyDeactivatedException.class,
+        QrGenerationException.class,
         
         
     })

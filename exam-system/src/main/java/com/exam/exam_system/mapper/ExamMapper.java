@@ -18,8 +18,11 @@ public interface ExamMapper {
 	@Mapping(target = "subject", ignore = true)
 	@Mapping(target = "totalQuestions", ignore = true)
 	@Mapping(target = "isActive", ignore = true)
+	@Mapping(target = "qrCodeUrl", ignore = true)
+	@Mapping(target = "qrExpiresAt", ignore = true)
+	@Mapping(target = "qrToken", ignore = true)
 	Exam toEntity(CreateExamRequestDTO dto);
-
+	
 	@Mapping(source = "college.collegeId", target = "collegeId")
 	@Mapping(source = "college.collegeName", target = "collegeName")
 	@Mapping(source = "department.departmentId", target = "departmentId")

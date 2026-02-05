@@ -15,11 +15,13 @@ public interface PermissionMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "active", ignore = true)
+    @Mapping(target = "code", ignore = true)
     Permission toEntity(PermissionCreateRequestDTO dto);
 
     @Mapping(target = "permissionId", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "code", ignore = true)
     Permission toEntity(PermissionUpdateRequestDTO dto);
 
     PermissionGetResponseDTO toDto(Permission permission);

@@ -148,6 +148,7 @@ public class Messages {
 	public static final String QR_GENERATED = "QR code generated successfully";
 	public static final String INVALID_QR = "Invalid or expired QR code";
 	public static final String QR_EXPIRED = "QR code expired";
+	public static final String QR_GENERATION_FAILED = "Failed to generate QR Code";
 
 	// ==================== Question Messages ====================
 	public static final String QUESTION_ADDED = "Question added successfully";

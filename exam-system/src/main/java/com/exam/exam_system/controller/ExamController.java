@@ -41,67 +41,78 @@ public class ExamController {
 	@Operation(summary = "Get exam by ID")
 	@GetMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<ExamResponseDTO> getExamById(@PathVariable Long examId) {
+	public ResponseEntity<BasicResponse> getExamById(@PathVariable Long examId) {
 		ExamResponseDTO response = examService.getExamById(examId);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
 	@Operation(summary = "Get exams by college (paginated)")
 	@GetMapping("/college/{collegeId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public Page<ExamResponseDTO> getByCollege(@PathVariable Long collegeId, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		return examService.getExamsByCollege(collegeId, page, size);
+	public ResponseEntity<BasicResponse> getByCollege(@PathVariable Long collegeId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<ExamResponseDTO> response = examService.getExamsByCollege(collegeId, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+
 	}
 
 	@Operation(summary = "Get exams by department (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/department/{departmentId}")
-	public Page<ExamResponseDTO> getByDepartment(@PathVariable Long departmentId,
+	public ResponseEntity<BasicResponse> getByDepartment(@PathVariable Long departmentId,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-		return examService.getExamsByDepartment(departmentId, page, size);
+		Page<ExamResponseDTO> response = examService.getExamsByDepartment(departmentId, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
 	@Operation(summary = "Get exams by user (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/user/{userId}")
-	public Page<ExamResponseDTO> getByUser(@PathVariable Long userId, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		return examService.getExamsByUser(userId, page, size);
+	public ResponseEntity<BasicResponse> getByUser(@PathVariable Long userId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<ExamResponseDTO> response = examService.getExamsByUser(userId, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+
 	}
 
 	@Operation(summary = "Get exams by subject (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/subject/{subjectId}")
-	public Page<ExamResponseDTO> getBySubject(@PathVariable Long subjectId, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		return examService.getExamsBySubject(subjectId, page, size);
+	public ResponseEntity<BasicResponse> getBySubject(@PathVariable Long subjectId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<ExamResponseDTO> response = examService.getExamsBySubject(subjectId, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+
 	}
 
 	@Operation(summary = "Get all exams (paginated)")
 	@GetMapping
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<Page<ExamResponseDTO>> getAllExams(@RequestParam(defaultValue = "0") int page,
+	public ResponseEntity<BasicResponse> getAllExams(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		Page<ExamResponseDTO> exams = examService.getAllExams(page, size);
-		return ResponseEntity.ok(exams);
+		Page<ExamResponseDTO> response = examService.getAllExams(page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+
 	}
-	
+
 	@Operation(summary = "Get all Active exams (paginated)")
 	@GetMapping("/active")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<Page<ExamResponseDTO>> getAllActiveExams(@RequestParam(defaultValue = "0") int page,
+	public ResponseEntity<BasicResponse> getAllActiveExams(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		Page<ExamResponseDTO> exams = examService.getAllActiveExams(page, size);
-		return ResponseEntity.ok(exams);
+		Page<ExamResponseDTO> response = examService.getAllActiveExams(page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+
 	}
 
 	@Operation(summary = "Search exams by keyword (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/search")
-	public Page<ExamResponseDTO> searchExams(@RequestParam String keyword, @RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
-		return examService.searchExams(keyword, page, size);
+	public ResponseEntity<BasicResponse> searchExams(@RequestParam String keyword,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<ExamResponseDTO> response = examService.searchExams(keyword, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+
 	}
 
 	@Operation(summary = "DeActivate exam")
@@ -111,7 +122,7 @@ public class ExamController {
 		examService.deActivateExam(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
-	
+
 	@Operation(summary = "Delete exam")
 	@DeleteMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
@@ -119,4 +130,14 @@ public class ExamController {
 		examService.deleteExam(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
+
+	@PostMapping("/{examId}/qr")
+	@PreAuthorize("hasAuthority('EXAM_CREATE')")
+	public ResponseEntity<BasicResponse> generateQr(@PathVariable Long examId) {
+
+		ExamQrResponseDTO response = examService.generateQrForExam(examId);
+
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+	}
+
 }
