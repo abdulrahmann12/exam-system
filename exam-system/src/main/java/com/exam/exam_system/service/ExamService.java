@@ -240,10 +240,10 @@ public class ExamService {
 		return examMapper.toDto(examRepository.save(exam));
 	}
 
-	public ExamResponseDTO getExamById(Long examId) {
-		Exam exam = examRepository.findExamFull(examId).orElseThrow(ExamNotFoundException::new);
+	public ExamFullAdminViewDTO getExamById(Long examId) {
+		Exam exam = examRepository.findExamWithQuestionsAndChoices(examId).orElseThrow(ExamNotFoundException::new);
 
-		return examMapper.toDto(exam);
+		return examMapper.toAdminViewDTO(exam);
 	}
 
 	public Page<ExamResponseDTO> getExamsByCollege(Long collegeId, int page, int size) {

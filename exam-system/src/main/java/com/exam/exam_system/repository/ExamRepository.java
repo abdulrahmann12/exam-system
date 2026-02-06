@@ -121,4 +121,16 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 			      and e.isActive = true
 			""")
 	Page<Exam> findBySubjectId(@Param("subjectId") Long subjectId, Pageable pageable);
+
+	@Query("""
+		    select distinct e from Exam e
+		    join fetch e.college
+		    join fetch e.department
+		    join fetch e.subject
+		    join fetch e.createdBy
+		    left join fetch e.questions q
+		    left join fetch q.choices
+		    where e.examId = :examId
+		""")
+		Optional<Exam> findExamWithQuestionsAndChoices(@Param("examId") Long examId);
 }

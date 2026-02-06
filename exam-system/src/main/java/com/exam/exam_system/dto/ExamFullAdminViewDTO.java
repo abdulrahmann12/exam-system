@@ -3,12 +3,13 @@ package com.exam.exam_system.dto;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ExamResponseDTO {
+public class ExamFullAdminViewDTO {
 
 	private Long examId;
 
@@ -23,11 +24,11 @@ public class ExamResponseDTO {
 
 	private Long subjectId;
 	private String subjectName;
-
+	
 	private String qrCodeUrl;
 	private String qrToken;
 	private LocalDateTime qrExpiresAt;
-
+	
 	private Long createdById;
 	private String createdByName;
 
@@ -44,5 +45,7 @@ public class ExamResponseDTO {
 
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+
+    private List<QuestionAdminViewDTO> questions;
 
 }

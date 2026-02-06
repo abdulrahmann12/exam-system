@@ -32,6 +32,16 @@ public interface ExamMapper {
 	@Mapping(source = "createdBy.userId", target = "createdById")
 	@Mapping(source = "createdBy.usernameField", target = "createdByName")
 	ExamResponseDTO toDto(Exam exam);
+	
+	@Mapping(source = "college.collegeId", target = "collegeId")
+	@Mapping(source = "college.collegeName", target = "collegeName")
+	@Mapping(source = "department.departmentId", target = "departmentId")
+	@Mapping(source = "department.departmentName", target = "departmentName")
+	@Mapping(source = "subject.subjectId", target = "subjectId")
+	@Mapping(source = "subject.subjectName", target = "subjectName")
+	@Mapping(source = "createdBy.userId", target = "createdById")
+	@Mapping(source = "createdBy.usernameField", target = "createdByName")
+	ExamFullAdminViewDTO toAdminViewDTO(Exam exam);
 
 	@Mapping(source = "subject.subjectName", target = "subjectName")
 	ExamSummaryDTO toSummaryDto(Exam exam);

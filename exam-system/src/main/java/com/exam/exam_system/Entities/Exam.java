@@ -84,6 +84,7 @@ public class Exam {
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
+    @OrderColumn(name = "question_list_order", nullable = false)
     private List<Question> questions;
 
     /* ================= Auditing ================= */

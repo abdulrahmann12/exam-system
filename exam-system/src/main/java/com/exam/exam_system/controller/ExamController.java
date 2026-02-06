@@ -42,7 +42,7 @@ public class ExamController {
 	@GetMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getExamById(@PathVariable Long examId) {
-		ExamResponseDTO response = examService.getExamById(examId);
+		ExamFullAdminViewDTO response = examService.getExamById(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 

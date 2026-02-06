@@ -14,49 +14,46 @@ import java.util.List;
 @Builder
 public class Question {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long questionId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long questionId;
 
-    @Column(nullable = false, length = 2000)
-    private String questionText;
+	@Column(nullable = false, length = 2000)
+	private String questionText;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private QuestionType questionType;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private QuestionType questionType;
 
-    @Column(nullable = false)
-    private Integer marks;
-    
-    @Column(nullable = false)
-    private Integer questionOrder;
+	@Column(nullable = false)
+	private Integer marks;
 
-    /* ================= Relations ================= */
+	@Column(nullable = false)
+	private Integer questionOrder;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exam_id", nullable = false)
-    private Exam exam;
+	/* ================= Relations ================= */
 
-    @OneToMany(
-        mappedBy = "question",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
-    private List<Choice> choices;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "exam_id", nullable = false)
+	private Exam exam;
 
-    /* ================= Auditing ================= */
+	@OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderColumn(name = "choice_list_order", nullable = false)
+	private List<Choice> choices;
 
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+	/* ================= Auditing ================= */
 
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
-    @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+	@PrePersist
+	public void onCreate() {
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	public void onUpdate() {
+		this.updatedAt = LocalDateTime.now();
+	}
 }
