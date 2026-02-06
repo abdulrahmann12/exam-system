@@ -42,8 +42,8 @@ public class AuthService {
 	private final RoleRepository roleRepository;
 	private final RabbitTemplate rabbitTemplate;
 	private final TokenRepository tokenRepository;
+	private final RefreshTokenProperties refreshTokenProperties;
 
-	
 	@Transactional
 	public AuthResponse login(@Valid LoginRequestDTO loginRequestDTO) {
 		User user = userRepository.findByUsername(loginRequestDTO.getUsernameOrEmail())
@@ -56,19 +56,17 @@ public class AuthService {
 
 		String accessToken = jwtService.generateToken(user);
 
-		// 1️⃣ generate refresh (random)
 		String refreshToken = generateRefreshToken();
 
-		// 2️⃣ hash it
 		String hashedRefresh = hashToken(refreshToken);
 
-		// 3️⃣ revoke old refresh tokens
+		LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(refreshTokenProperties.getExpirationMinutes());
+
 		tokenRepository.revokeAllRefreshTokensByUser(user.getUserId());
 
-		// 4️⃣ save hashed refresh
-		tokenRepository.save(Token.builder().user(user).token(hashedRefresh).expired(false).revoked(false).build());
+		tokenRepository.save(Token.builder().user(user).token(hashedRefresh).expired(false).revoked(false)
+				.expiresAt(expiresAt).build());
 
-		// 5️⃣ return both
 		return new AuthResponse(accessToken, refreshToken);
 	}
 
@@ -189,6 +187,11 @@ public class AuthService {
 			throw new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN);
 		}
 
+		if (storedToken.isExpired() || storedToken.isRevoked()
+				|| storedToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+			throw new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN);
+		}
+
 		storedToken.setExpired(true);
 		storedToken.setRevoked(true);
 		tokenRepository.save(storedToken);
@@ -198,13 +201,12 @@ public class AuthService {
 		String newAccessToken = jwtService.generateToken(user);
 		String newRefreshToken = generateRefreshToken();
 
-		tokenRepository.save(
-				Token.builder().user(user).token(hashToken(newRefreshToken)).expired(false).revoked(false).build());
+		tokenRepository.save(Token.builder().user(user).token(hashToken(newRefreshToken)).expired(false).revoked(false)
+				.expiresAt(LocalDateTime.now().plusMinutes(refreshTokenProperties.getExpirationMinutes())).build());
 
 		return new AuthResponse(newAccessToken, newRefreshToken);
 
 	}
-
 
 	@Transactional
 	public void logoutByRequest(HttpServletRequest request) {
@@ -217,7 +219,7 @@ public class AuthService {
 		String refreshToken = authHeader.substring(7);
 		String hash = hashToken(refreshToken);
 		Token token = tokenRepository.findByToken(hash)
-		        .orElseThrow(() -> new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN));
+				.orElseThrow(() -> new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN));
 
 		token.setExpired(true);
 		token.setRevoked(true);

@@ -1,5 +1,6 @@
 package com.exam.exam_system.Entities;
 
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,4 +37,6 @@ public class Token {
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	private LocalDateTime expiresAt;
 }
