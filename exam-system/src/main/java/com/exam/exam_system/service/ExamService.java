@@ -45,6 +45,8 @@ public class ExamService {
 	private final QrCodeService qrCodeService;
 	private final ImageService imageService;
 
+	private final QrProperties qrProperties;
+
 	@Transactional
 	public ExamResponseDTO createExam(@Valid CreateExamRequestDTO dto) {
 		College college = collegeRepository.findById(dto.getCollegeId())
@@ -426,7 +428,7 @@ public class ExamService {
 		// generate new token
 		String token = UUID.randomUUID().toString();
 
-		LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(2);
+		LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(qrProperties.getExpirationMinutes());
 
 		String qrContent = "https://app.com/exams/" + exam.getExamId() + "/enter?token=" + token;
 
