@@ -24,7 +24,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Create new department")
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('DEPARTMENT_CREATE')")
 	public ResponseEntity<BasicResponse> createDepartment(@RequestBody DepartmentCreateRequestDTO request) {
 
 		DepartmentGetResponseDTO response = departmentService.createDepartment(request);
@@ -34,7 +34,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Update existing department")
 	@PutMapping("/{departmentId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('DEPARTMENT_UPDATE')")
 	public ResponseEntity<BasicResponse> updateDepartment(@PathVariable Long departmentId,
 			@RequestBody DepartmentUpdateRequestDTO request) {
 
@@ -45,7 +45,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Get department by ID")
 	@GetMapping("/{departmentId}")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getDepartmentById(@PathVariable Long departmentId) {
 
 		DepartmentGetResponseDTO response = departmentService.getDepartmentById(departmentId);
@@ -55,7 +55,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Get department by name")
 	@GetMapping("/by-name")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getDepartmentByName(@RequestParam String departmentName) {
 
 		DepartmentGetResponseDTO response = departmentService.getDepartmentByName(departmentName);
@@ -65,7 +65,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Search departments by name")
 	@GetMapping("/search")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> searchDepartments(@RequestParam String keyword,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -76,7 +76,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Get all departments")
 	@GetMapping
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getAllDepartments(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
 
@@ -87,7 +87,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Get all departments by college ID")
 	@GetMapping("/by-college/{collegeId}")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getDepartmentsByCollegeId(@PathVariable Long collegeId,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -98,7 +98,7 @@ public class DepartmentController {
 
 	@Operation(summary = "Delete department by ID")
 	@DeleteMapping("/{departmentId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('DEPARTMENT_DELETE')")
 	public ResponseEntity<BasicResponse> deleteDepartment(@PathVariable Long departmentId) {
 
 		departmentService.deleteDepartmentById(departmentId);

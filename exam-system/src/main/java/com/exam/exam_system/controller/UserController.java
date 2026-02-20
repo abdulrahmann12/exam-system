@@ -88,7 +88,7 @@ public class UserController {
 
 	@Operation(summary = "Get user by ID")
 	@GetMapping("/{userId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUserById(@PathVariable Long userId) {
 
 		UserResponseDTO response = userService.getUserById(userId);
@@ -98,7 +98,7 @@ public class UserController {
 
 	@Operation(summary = "Get all users")
 	@GetMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getAllUsers(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
 
@@ -109,7 +109,7 @@ public class UserController {
 
 	@Operation(summary = "Get users by college")
 	@GetMapping("/by-college/{collegeId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUsersByCollege(@PathVariable Long collegeId,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -120,7 +120,7 @@ public class UserController {
 
 	@Operation(summary = "Get users by department")
 	@GetMapping("/by-department/{departmentId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUsersByDepartment(@PathVariable Long departmentId,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -131,7 +131,7 @@ public class UserController {
 
 	@Operation(summary = "Get users by role")
 	@GetMapping("/by-role/{roleName}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUsersByRole(@PathVariable String roleName,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -142,7 +142,7 @@ public class UserController {
 
 	@Operation(summary = "Update user by admin")
 	@PutMapping("/{userId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_UPDATE')")
 	public ResponseEntity<BasicResponse> adminUpdateUser(@PathVariable Long userId,
 			@RequestBody AdminUserUpdateRequestDTO request) {
 
@@ -153,7 +153,7 @@ public class UserController {
 
 	@Operation(summary = "Deactivate user")
 	@DeleteMapping("/{userId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_DELETE')")
 	public ResponseEntity<BasicResponse> deactivateUser(@PathVariable Long userId) {
 
 		userService.deactivateUser(userId);
@@ -165,7 +165,7 @@ public class UserController {
 
 	@Operation(summary = "Search users")
 	@GetMapping("/search")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> searchUsers(@RequestParam(required = false) String keyword,
 			@RequestParam(required = false) String role, @RequestParam(required = false) Long collegeId,
 			@RequestParam(required = false) Long departmentId, @RequestParam(required = false) Boolean isActive,

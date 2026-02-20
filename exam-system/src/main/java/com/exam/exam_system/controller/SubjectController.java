@@ -34,7 +34,7 @@ public class SubjectController {
 
 	@Operation(summary = "Update existing subject")
 	@PutMapping("/{subjectId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('SUBJECT_UPDATE')")
 	public ResponseEntity<BasicResponse> updateSubject(@PathVariable Long subjectId,
 			@RequestBody SubjectUpdateRequestDTO request) {
 
@@ -45,7 +45,7 @@ public class SubjectController {
 
 	@Operation(summary = "Get subject by ID")
 	@GetMapping("/{subjectId}")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getSubjectById(@PathVariable Long subjectId) {
 
 		SubjectGetResponseDTO response = subjectService.getSubjectById(subjectId);
@@ -55,7 +55,7 @@ public class SubjectController {
 
 	@Operation(summary = "Get all subjects")
 	@GetMapping
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getAllSubjects(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
 
@@ -66,7 +66,7 @@ public class SubjectController {
 
 	@Operation(summary = "Get subjects by department ID")
 	@GetMapping("/by-department/{departmentId}")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getSubjectsByDepartmentId(@PathVariable Long departmentId,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -77,7 +77,7 @@ public class SubjectController {
 
 	@Operation(summary = "Get subjects by college ID")
 	@GetMapping("/by-college/{collegeId}")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getSubjectsByCollegeId(@PathVariable Long collegeId,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -88,7 +88,7 @@ public class SubjectController {
 
 	@Operation(summary = "Search subjects by name or code")
 	@GetMapping("/search")
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> searchSubjects(@RequestParam String keyword,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
@@ -99,7 +99,7 @@ public class SubjectController {
 
 	@Operation(summary = "Delete subject by ID")
 	@DeleteMapping("/{subjectId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('SUBJECT_DELETE')")
 	public ResponseEntity<BasicResponse> deleteSubject(@PathVariable Long subjectId) {
 
 		subjectService.deleteSubject(subjectId);

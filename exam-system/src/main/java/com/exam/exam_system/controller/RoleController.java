@@ -18,13 +18,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class RoleController {
 
 	private final RoleService roleService;
 
 	@Operation(summary = "Create new role")
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CREATE')")
 	public ResponseEntity<BasicResponse> createRole(@RequestBody RoleCreateRequestDTO request) {
 
 		RoleGetResponseDTO response = roleService.createRole(request);
@@ -33,6 +33,7 @@ public class RoleController {
 
 	@Operation(summary = "Update existing role")
 	@PutMapping("/{roleId}")
+	@PreAuthorize("hasAuthority('ROLE_UPDATE')")
 	public ResponseEntity<BasicResponse> updateRole(@PathVariable Long roleId,
 			@RequestBody RoleUpdateRequestDTO request) {
 
@@ -42,6 +43,7 @@ public class RoleController {
 
 	@Operation(summary = "Get role by ID")
 	@GetMapping("/{roleId}")
+	@PreAuthorize("hasAuthority('ROLE_READ')")
 	public ResponseEntity<BasicResponse> getRoleById(@PathVariable Long roleId) {
 
 		RoleGetResponseDTO response = roleService.getRoleById(roleId);
@@ -50,6 +52,7 @@ public class RoleController {
 
 	@Operation(summary = "Get role by name")
 	@GetMapping("/by-name")
+	@PreAuthorize("hasAuthority('ROLE_READ')")
 	public ResponseEntity<BasicResponse> getRoleByName(@RequestParam String roleName) {
 
 		RoleGetResponseDTO response = roleService.getRoleByName(roleName);
@@ -58,6 +61,7 @@ public class RoleController {
 
 	@Operation(summary = "Get all roles")
 	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_READ')")
 	public ResponseEntity<BasicResponse> getAllRoles(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
 
@@ -67,6 +71,7 @@ public class RoleController {
 
 	@Operation(summary = "Delete role by ID")
 	@DeleteMapping("/{roleId}")
+	@PreAuthorize("hasAuthority('ROLE_DELETE')")
 	public ResponseEntity<BasicResponse> deleteRole(@PathVariable Long roleId) {
 
 		roleService.deleteRoleById(roleId);

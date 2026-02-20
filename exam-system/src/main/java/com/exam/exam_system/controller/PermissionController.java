@@ -26,13 +26,13 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/permissions")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('PERMISSION_CREATE')")
 public class PermissionController {
 
 	private final PermissionService permissionService;
 
 	@Operation(summary = "Create new permission")
 	@PostMapping
+	@PreAuthorize("hasAuthority('PERMISSION_CREATE')")
 	public ResponseEntity<BasicResponse> createPermission(@RequestBody PermissionCreateRequestDTO request) {
 		PermissionGetResponseDTO response = permissionService.createPermission(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.ADD_PERMISSION, response));
@@ -40,6 +40,7 @@ public class PermissionController {
 
 	@Operation(summary = "Update existing permission")
 	@PutMapping("/{permissionId}")
+	@PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
 	public ResponseEntity<BasicResponse> updatePermission(@PathVariable Long permissionId,
 			@RequestBody PermissionUpdateRequestDTO request) {
 		PermissionGetResponseDTO response = permissionService.updatePermission(permissionId, request);
@@ -48,6 +49,7 @@ public class PermissionController {
 
 	@Operation(summary = "Get permission by ID")
 	@GetMapping("/{permissionId}")
+	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public ResponseEntity<BasicResponse> getPermissionById(@PathVariable Long permissionId) {
 		PermissionGetResponseDTO response = permissionService.getPermissionById(permissionId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
@@ -55,14 +57,16 @@ public class PermissionController {
 
 	@Operation(summary = "Get all permissions")
 	@GetMapping
-	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(value = "0") int page,
-			@RequestParam(value = "10") int size) {
+	@PreAuthorize("hasAuthority('PERMISSION_READ')")
+	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
 		Page<PermissionGetResponseDTO> permissions = permissionService.getAllPermissions(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, permissions));
 	}
 
 	@Operation(summary = "Delete permission by ID")
 	@DeleteMapping("/{permissionId}")
+	@PreAuthorize("hasAuthority('PERMISSION_DELETE')")
 	public ResponseEntity<BasicResponse> deletePermission(@PathVariable Long permissionId) {
 		permissionService.deletePermissionById(permissionId);
 		return ResponseEntity.ok(new BasicResponse(Messages.DELETE_PERMISSION));
@@ -70,12 +74,14 @@ public class PermissionController {
 
 	@Operation(summary = "Get all permissions modules")
 	@GetMapping("/modules")
+	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public List<String> getModules() {
 		return Arrays.stream(PermissionModules.values()).map(Enum::name).collect(Collectors.toList());
 	}
 
 	@Operation(summary = "Get all permissions actions")
 	@GetMapping("/actions")
+	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public List<String> getActions() {
 		return Arrays.stream(PermissionActions.values()).map(Enum::name).collect(Collectors.toList());
 	}

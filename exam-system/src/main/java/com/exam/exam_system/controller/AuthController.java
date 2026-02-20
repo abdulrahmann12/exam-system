@@ -55,7 +55,7 @@ public class AuthController {
 
 	@Operation(summary = "Create new user", description = "Admin creates a new user account with a specific role.")
 	@PostMapping("/create-user")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('USER_CREATE')")
 	public ResponseEntity<BasicResponse> createUser(@RequestBody CreateUserRequestDTO createUserRequestDTO) {
 		UserResponseDTO userResponseDTO = authService.register(createUserRequestDTO);
 		return ResponseEntity.ok(new BasicResponse(Messages.CREATE_NEW_USER, userResponseDTO));
