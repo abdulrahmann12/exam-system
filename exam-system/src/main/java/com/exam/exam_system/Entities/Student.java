@@ -1,0 +1,42 @@
+package com.exam.exam_system.Entities;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "students")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Student {
+
+    @Id
+    private Long studentId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @Column(nullable = false, unique = true)
+    private String studentCode;
+
+    @Column(nullable = false)
+    private Integer academicYear;
+    
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isActive = true;
+
+    private LocalDateTime deactivatedAt;
+
+    private LocalDateTime enrolledAt;
+
+    @PrePersist
+    public void onCreate() {
+        this.enrolledAt = LocalDateTime.now();
+    }
+}

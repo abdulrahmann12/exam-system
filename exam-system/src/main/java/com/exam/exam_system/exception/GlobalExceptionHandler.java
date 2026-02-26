@@ -131,7 +131,10 @@ public class GlobalExceptionHandler {
         ChoiceNotBelongToQuestionException.class,
         ExamAlreadyDeactivatedException.class,
         QrGenerationException.class,
-        
+        StudentNotFoundException.class,
+        StudentAlreadyExistsException.class,
+        StudentCodeAlreadyExistsException.class,
+        StudentAlreadyDeactivatedException.class,
         
     })
     public ResponseEntity<BasicResponse> handleNotFoundBusinessExceptions(Exception ex, WebRequest request) {

@@ -173,4 +173,18 @@ public class Messages {
 	public static final String RESULT_CALCULATED = "Result calculated successfully";
 	public static final String RESULT_NOT_FOUND = "Result not found";
 	public static final String RESULT_PUBLISHED = "Result published successfully";
+
+	// ==================== Students Messages ====================
+
+	public static final String STUDENT_NOT_FOUND = "Student not found";
+
+	public static final String STUDENT_ALREADY_EXISTS = "Student already exists for this user";
+
+	public static final String STUDENT_CODE_ALREADY_EXISTS = "Student code already exists";
+
+	public static final String STUDENT_ALREADY_DEACTIVATED = "Student is already deactivated";
+    public static final String STUDENT_CREATED = "Student created successfully";
+    public static final String STUDENT_UPDATED = "Student updated successfully";
+    public static final String STUDENT_DELETED = "Student deleted successfully";
+    public static final String STUDENT_DEACTIVATED = "Student deactivated successfully";
 }

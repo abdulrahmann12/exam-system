@@ -33,6 +33,7 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final CollegeRepository collegeRepository;
+	private final StudentRepository studentRepository;
 	private final DepartmentRepository departmentRepository;
 	private final UserMapper userMapper;
 	private final RabbitTemplate rabbitTemplate;
@@ -145,6 +146,11 @@ public class UserService {
 		if (!user.getIsActive()) {
 			throw new UserAlreadyDeactivatedException();
 		}
+		studentRepository.findById(userId)
+        .ifPresent(student -> {
+            student.setIsActive(false);
+            student.setDeactivatedAt(LocalDateTime.now());
+        });
 		user.setIsActive(false);
 		userRepository.save(user);
 	}
