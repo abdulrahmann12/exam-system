@@ -5,13 +5,13 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
-import com.exam.exam_system.Entities.Student;
-import com.exam.exam_system.Entities.User;
 import com.exam.exam_system.dto.StudentCreateRequestDTO;
 import com.exam.exam_system.dto.StudentGetResponseDTO;
 import com.exam.exam_system.dto.StudentProfileResponseDTO;
 import com.exam.exam_system.dto.StudentUpdateRequestDTO;
 import com.exam.exam_system.dto.UserProfileResponseDTO;
+import com.exam.exam_system.entities.Student;
+import com.exam.exam_system.entities.User;
 
 @Mapper(componentModel = "spring")
 public interface StudentMapper {

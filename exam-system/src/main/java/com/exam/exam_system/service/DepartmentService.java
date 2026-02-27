@@ -7,11 +7,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.College;
-import com.exam.exam_system.Entities.Department;
 import com.exam.exam_system.dto.DepartmentCreateRequestDTO;
 import com.exam.exam_system.dto.DepartmentGetResponseDTO;
 import com.exam.exam_system.dto.DepartmentUpdateRequestDTO;
+import com.exam.exam_system.entities.College;
+import com.exam.exam_system.entities.Department;
 import com.exam.exam_system.exception.CollegeNotFoundException;
 import com.exam.exam_system.exception.DepartmentAlreadyExistsException;
 import com.exam.exam_system.exception.DepartmentDeletionNotAllowedException;

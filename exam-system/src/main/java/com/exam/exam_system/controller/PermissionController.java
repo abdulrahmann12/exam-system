@@ -14,9 +14,9 @@ import com.exam.exam_system.dto.BasicResponse;
 import com.exam.exam_system.dto.PermissionCreateRequestDTO;
 import com.exam.exam_system.dto.PermissionGetResponseDTO;
 import com.exam.exam_system.dto.PermissionUpdateRequestDTO;
+import com.exam.exam_system.entities.PermissionActions;
+import com.exam.exam_system.entities.PermissionModules;
 import com.exam.exam_system.service.PermissionService;
-import com.exam.exam_system.Entities.PermissionActions;
-import com.exam.exam_system.Entities.PermissionModules;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

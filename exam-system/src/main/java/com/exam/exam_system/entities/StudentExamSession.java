@@ -1,4 +1,4 @@
-package com.exam.exam_system.Entities;
+package com.exam.exam_system.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

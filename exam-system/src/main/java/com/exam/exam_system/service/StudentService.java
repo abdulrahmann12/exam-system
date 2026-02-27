@@ -9,9 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.*;
 import com.exam.exam_system.dto.*;
-
+import com.exam.exam_system.entities.*;
 import com.exam.exam_system.exception.*;
 import com.exam.exam_system.mapper.StudentMapper;
 import com.exam.exam_system.repository.CollegeRepository;

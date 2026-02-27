@@ -2,12 +2,13 @@ package com.exam.exam_system.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.exam.exam_system.Entities.Department;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.exam.exam_system.entities.Department;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long> {

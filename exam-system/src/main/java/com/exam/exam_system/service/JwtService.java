@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.exam.exam_system.config.Messages;
+import com.exam.exam_system.entities.User;
 import com.exam.exam_system.exception.InvalidTokenException;
-import com.exam.exam_system.Entities.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
