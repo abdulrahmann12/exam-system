@@ -3,7 +3,7 @@ package com.exam.exam_system.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.exam.exam_system.Entities.Subject;
+import com.exam.exam_system.entities.Subject;
 
 import java.util.List;
 import java.util.Optional;

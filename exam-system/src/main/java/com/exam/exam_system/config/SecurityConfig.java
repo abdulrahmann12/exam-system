@@ -36,6 +36,7 @@ public class SecurityConfig {
 						.permitAll().requestMatchers("/actuator/**").permitAll().requestMatchers("/index.html")
 						.permitAll().requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**")
 						.permitAll().requestMatchers("/api/auth/**").permitAll()
+						.requestMatchers("/api/sessions/enter").permitAll()
 						.requestMatchers("/api/auth/refresh-token").permitAll()
 						.requestMatchers("/api/auth/change-password").permitAll().anyRequest().authenticated())
 				.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -10,6 +10,7 @@ public class StudentExamSessionResponseDTO {
 
     private Long sessionId;
     private Long examId;
+    private Long studentId;
     private String sessionCode;
     private Boolean isActive;
 

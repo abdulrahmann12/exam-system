@@ -3,7 +3,7 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.StudentExamSession;
+import com.exam.exam_system.entities.StudentExamSession;
 import com.exam.exam_system.dto.CreateStudentExamSessionRequestDTO;
 import com.exam.exam_system.dto.StudentExamSessionResponseDTO;
 
@@ -20,5 +20,6 @@ public interface StudentExamSessionMapper {
 	
 
     @Mapping(target = "examId", source = "exam.examId")
+    @Mapping(target = "studentId", source = "student.studentId")
     StudentExamSessionResponseDTO toResponseDTO(StudentExamSession session);
 }

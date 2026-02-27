@@ -1,6 +1,6 @@
 package com.exam.exam_system.repository;
 
-import com.exam.exam_system.Entities.StudentExamSession;
+import com.exam.exam_system.entities.StudentExamSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

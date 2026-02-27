@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exam.exam_system.Entities.User;
+import com.exam.exam_system.entities.User;
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.*;
 

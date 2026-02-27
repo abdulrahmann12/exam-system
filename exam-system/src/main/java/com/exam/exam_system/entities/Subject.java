@@ -1,48 +1,53 @@
-package com.exam.exam_system.Entities;
+package com.exam.exam_system.entities;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.*;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
-@Data
+@Table(name = "subjects",
+uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"subject_code"}),
+		@UniqueConstraint(columnNames = {"subject_name", "department_id"})
+}
+)@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-
-public class Role {
+public class Subject {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long roleId;
-
-	private String roleName;
+	private Long subjectId;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(
-	    name = "role_permissions",
-	    joinColumns = @JoinColumn(name = "role_id"),
-	    inverseJoinColumns = @JoinColumn(name = "permission_id")
-	)
-	@Builder.Default
-	private Set<Permission> permissions = new HashSet<>();
-
+	private String subjectName;
+	
+	@Column(name = "subject_code", nullable = false, unique = true)
+	private String subjectCode;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "department_id", nullable = false)
+	private Department department;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "college_id", nullable = false)
+	private College college;
+	
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 

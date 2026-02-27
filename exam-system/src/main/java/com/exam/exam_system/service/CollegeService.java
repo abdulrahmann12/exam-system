@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.College;
+import com.exam.exam_system.entities.College;
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.CollegeCreateRequestDTO;
 import com.exam.exam_system.dto.CollegeGetResponseDTO;
