@@ -37,7 +37,9 @@ public class SecurityConfig {
 						.permitAll().requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**")
 						.permitAll().requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers("/api/auth/refresh-token").permitAll()
-						.requestMatchers("/api/auth/change-password").permitAll().anyRequest().authenticated())
+						.requestMatchers("/api/auth/change-password").permitAll()
+						.requestMatchers("/api/sessions/enter").permitAll()
+						.anyRequest().authenticated())
 				.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		return http.build();

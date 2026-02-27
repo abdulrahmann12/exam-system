@@ -85,15 +85,15 @@ Implemented using:
   - `ADMIN`
   - `DOCTOR`
 
-No student accounts → They enter via QR token.
+Students have accounts (managed by Admin) → But they enter exams via QR token validation.
 
 ---
 
 ## How the QR System Works
 
 1. Doctor creates exam  
-2. System generates **unique session code**  
-3. Student scans QR → Session starts  
+2. System generates **unique session code** (QR Token)
+3. Student scans QR (or enters token) → Session starts
 4. System monitors:
 - Time per question
 - Full exam time

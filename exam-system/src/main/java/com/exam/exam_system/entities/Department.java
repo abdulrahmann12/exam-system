@@ -41,14 +41,12 @@ public class Department {
 	
 	@PrePersist
 	public void setCreatedAt() {
-		// TODO Auto-generated method stub
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
 	}
 
 	@PreUpdate
 	public void setUpdatedAt() {
-		// TODO Auto-generated method stub
 		updatedAt = LocalDateTime.now();
 	}
 }
