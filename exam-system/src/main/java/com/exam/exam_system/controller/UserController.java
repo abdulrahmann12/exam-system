@@ -29,9 +29,9 @@ public class UserController {
 	@Operation(summary = "Get current user profile")
 	@GetMapping("/profile")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> getProfile(@AuthenticationPrincipal User user) {
+	public ResponseEntity<BasicResponse> getProfile() {
 
-		UserProfileResponseDTO response = userService.getProfile(user);
+		UserProfileResponseDTO response = userService.getProfile();
 
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}

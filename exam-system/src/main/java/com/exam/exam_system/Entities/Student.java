@@ -16,7 +16,7 @@ public class Student {
     @Id
     private Long studentId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -187,4 +187,5 @@ public class Messages {
     public static final String STUDENT_UPDATED = "Student updated successfully";
     public static final String STUDENT_DELETED = "Student deleted successfully";
     public static final String STUDENT_DEACTIVATED = "Student deactivated successfully";
+    public static final String STUDENT_ACTIVATED = "Student activated successfully";
 }

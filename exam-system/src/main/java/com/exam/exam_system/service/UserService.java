@@ -4,9 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -28,19 +26,20 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 @Validated
-public class UserService {
+public class UserService extends BaseService {
 
 	private final UserRepository userRepository;
 	private final RoleRepository roleRepository;
 	private final CollegeRepository collegeRepository;
-	private final StudentRepository studentRepository;
 	private final DepartmentRepository departmentRepository;
 	private final UserMapper userMapper;
 	private final RabbitTemplate rabbitTemplate;
 	private final AuthService authService;
 
 	@Transactional(readOnly = true)
-	public UserProfileResponseDTO getProfile(User user) {
+	public UserProfileResponseDTO getProfile() {
+
+		User user = getCurrentUser();
 		User freshUser = userRepository.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
 
 		return userMapper.toUserProfileResponseDTO(freshUser);
@@ -134,8 +133,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<UserResponseDTO> getAllUsers(int page, int size) {
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
-
+		Pageable pageable = createPageRequest(page, size, "username");
 		return userRepository.findAll(pageable).map(userMapper::toDTO);
 	}
 
@@ -146,11 +144,6 @@ public class UserService {
 		if (!user.getIsActive()) {
 			throw new UserAlreadyDeactivatedException();
 		}
-		studentRepository.findById(userId)
-        .ifPresent(student -> {
-            student.setIsActive(false);
-            student.setDeactivatedAt(LocalDateTime.now());
-        });
 		user.setIsActive(false);
 		userRepository.save(user);
 	}
@@ -182,7 +175,7 @@ public class UserService {
 	@Transactional(readOnly = true)
 	public Page<UserResponseDTO> getUsersByRole(String roleName, int page, int size) {
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by("role.roleName"));
+		Pageable pageable = createPageRequest(page, size, "role.roleName");
 
 		return userRepository.findByRole_RoleName(roleName, pageable).map(userMapper::toDTO);
 	}
@@ -194,8 +187,7 @@ public class UserService {
 			throw new CollegeNotFoundException();
 		}
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
-
+		Pageable pageable = createPageRequest(page, size, "username");
 		return userRepository.findByCollege_CollegeId(collegeId, pageable).map(userMapper::toDTO);
 	}
 
@@ -206,8 +198,7 @@ public class UserService {
 			throw new DepartmentNotFoundException();
 		}
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
-
+		Pageable pageable = createPageRequest(page, size, "username");
 		return userRepository.findByDepartment_DepartmentId(departmentId, pageable).map(userMapper::toDTO);
 	}
 
@@ -215,26 +206,22 @@ public class UserService {
 	public Page<UserResponseDTO> searchUsers(String keyword, String role, Long collegeId, Long departmentId,
 			Boolean isActive, int page, int size) {
 
-		Pageable pageable = PageRequest.of(page, size, Sort.by("username"));
-
+		Pageable pageable = createPageRequest(page, size, "username");
 		return userRepository.searchUsers(keyword, role, collegeId, departmentId, isActive, pageable)
 				.map(userMapper::toDTO);
 	}
 
+	public User getCurrentUser() {
 
-    public User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null || !authentication.isAuthenticated()) {
+			throw new UnauthorizedException();
+		}
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new UnauthorizedException();
-        }
+		String username = authentication.getName();
 
-        String username = authentication.getName();
-
-        return userRepository.findByUsername(username)
-				.or(() -> userRepository.findByEmail(username))
+		return userRepository.findByUsername(username).or(() -> userRepository.findByEmail(username))
 				.orElseThrow(UserNotFoundException::new);
-    }
+	}
 }

@@ -20,82 +20,130 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StudentController {
 
-    private final StudentService studentService;
+	private final StudentService studentService;
 
-    /* ==================== CREATE ==================== */
-    @Operation(summary = "Create new student")
-    @PostMapping
-    @PreAuthorize("hasAuthority('STUDENT_CREATE')")
-    public ResponseEntity<BasicResponse> createStudent(@Valid @RequestBody StudentCreateRequestDTO request) {
-        StudentGetResponseDTO response = studentService.createStudent(request);
-        return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_CREATED, response));
-    }
+	/* ==================== CREATE / REGISTER ==================== */
+	@Operation(summary = "Register new student and return profile")
+	@PostMapping("/register")
+	@PreAuthorize("hasAuthority('STUDENT_CREATE')")
+	public ResponseEntity<BasicResponse> registerStudent(@Valid @RequestBody StudentRegisterRequestDTO request) {
+		StudentProfileResponseDTO response = studentService.registerStudentAndReturnProfile(request);
+		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_CREATED, response));
+	}
 
-    /* ==================== UPDATE ==================== */
-    @Operation(summary = "Update student by ID")
-    @PutMapping("/{studentId}")
-    @PreAuthorize("hasAuthority('STUDENT_UPDATE')")
-    public ResponseEntity<BasicResponse> updateStudent(@PathVariable Long studentId,
-                                                       @Valid @RequestBody StudentUpdateRequestDTO request) {
-        StudentGetResponseDTO response = studentService.updateStudent(studentId, request);
-        return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_UPDATED, response));
-    }
+	/* ==================== UPDATE ==================== */
+	@Operation(summary = "Update student by ID")
+	@PutMapping("/{studentId}")
+	@PreAuthorize("hasAuthority('STUDENT_UPDATE')")
+	public ResponseEntity<BasicResponse> updateStudent(@PathVariable Long studentId,
+			@Valid @RequestBody StudentUpdateRequestDTO request) {
+		StudentGetResponseDTO response = studentService.updateStudent(studentId, request);
+		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_UPDATED, response));
+	}
 
-    /* ==================== GET ==================== */
-    @Operation(summary = "Get student by ID")
-    @GetMapping("/{studentId}")
-    @PreAuthorize("hasAuthority('STUDENT_READ')")
-    public ResponseEntity<BasicResponse> getStudentById(@PathVariable Long studentId) {
-        StudentGetResponseDTO response = studentService.getStudentById(studentId);
-        return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
-    }
+	/* ==================== GET ==================== */
+	@Operation(summary = "Get student by ID")
+	@GetMapping("/{studentId}")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> getStudentById(@PathVariable Long studentId) {
+		StudentGetResponseDTO response = studentService.getStudentById(studentId);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+	}
 
-    @Operation(summary = "Get all students (paginated)")
-    @GetMapping
-    @PreAuthorize("hasAuthority('STUDENT_READ')")
-    public ResponseEntity<BasicResponse> getAllStudents(@RequestParam(defaultValue = "0") int page,
-                                                        @RequestParam(defaultValue = "10") int size) {
-        Page<StudentGetResponseDTO> students = studentService.getAllStudents(page, size);
-        return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
-    }
+	@Operation(summary = "Get all students (paginated)")
+	@GetMapping
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> getAllStudents(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		Page<StudentGetResponseDTO> students = studentService.getAllStudents(page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
+	}
 
-    @Operation(summary = "Get all active students (paginated)")
-    @GetMapping("/active")
-    @PreAuthorize("hasAuthority('STUDENT_READ')")
-    public ResponseEntity<BasicResponse> getAllActiveStudents(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int size) {
-        Page<StudentGetResponseDTO> students = studentService.getAllActiveStudents(page, size);
-        return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
-    }
+	@Operation(summary = "Get all active students (paginated)")
+	@GetMapping("/active")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> getAllActiveStudents(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		Page<StudentGetResponseDTO> students = studentService.getAllActiveStudents(page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
+	}
 
-    /* ==================== DELETE / DEACTIVATE ==================== */
-    @Operation(summary = "Delete student by ID (hard delete)")
-    @DeleteMapping("/{studentId}/delete")
-    @PreAuthorize("hasAuthority('STUDENT_DELETE')")
-    public ResponseEntity<BasicResponse> deleteStudent(@PathVariable Long studentId) {
-        studentService.deleteStudent(studentId);
-        return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_DELETED));
-    }
+	@Operation(summary = "Get my own student profile")
+	@GetMapping("/me")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> getMyProfile() {
+		StudentProfileResponseDTO response = studentService.getMyProfile();
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+	}
 
-    @Operation(summary = "Deactivate student by ID (soft delete)")
-    @DeleteMapping("/{studentId}/deactivate")
-    @PreAuthorize("hasAuthority('STUDENT_DELETE')")
-    public ResponseEntity<BasicResponse> deactivateStudent(@PathVariable Long studentId) {
-        studentService.deactivateStudent(studentId);
-        return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_DEACTIVATED));
-    }
+	/* ==================== DELETE / DEACTIVATE / ACTIVATE ==================== */
+	@Operation(summary = "Hard delete student by ID")
+	@DeleteMapping("/{studentId}/delete")
+	@PreAuthorize("hasAuthority('STUDENT_DELETE')")
+	public ResponseEntity<BasicResponse> deleteStudent(@PathVariable Long studentId) {
+		studentService.deleteStudent(studentId);
+		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_DELETED));
+	}
 
-    /* ==================== SEARCH ==================== */
-    @GetMapping("/search")
-    @PreAuthorize("hasAuthority('STUDENT_READ')")
-    public ResponseEntity<BasicResponse> searchStudents(
-            @RequestParam(required = false) String studentCode,
-            @RequestParam(required = false) Integer academicYear,
-            @RequestParam(required = false) Boolean isActive,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Page<StudentGetResponseDTO> students = studentService.searchStudents(studentCode, academicYear, isActive, page, size);
-        return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
-    }
+	@Operation(summary = "Deactivate student by ID (soft delete)")
+	@DeleteMapping("/{studentId}/deactivate")
+	@PreAuthorize("hasAuthority('STUDENT_DELETE')")
+	public ResponseEntity<BasicResponse> deactivateStudent(@PathVariable Long studentId) {
+		studentService.deactivateStudent(studentId);
+		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_DEACTIVATED));
+	}
+
+	@Operation(summary = "Activate student by ID")
+	@PostMapping("/{studentId}/activate")
+	@PreAuthorize("hasAuthority('STUDENT_UPDATE')")
+	public ResponseEntity<BasicResponse> activateStudent(@PathVariable Long studentId) {
+		studentService.activateStudent(studentId);
+		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_ACTIVATED));
+	}
+
+	/* ==================== SEARCH ==================== */
+	@Operation(summary = "Search students by studentCode, academicYear, isActive (paginated)")
+	@GetMapping("/search")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> searchStudents(@RequestParam(required = false) String studentCode,
+			@RequestParam(required = false) Integer academicYear, @RequestParam(required = false) Boolean isActive,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<StudentGetResponseDTO> students = studentService.searchStudents(studentCode, academicYear, isActive, page,
+				size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
+	}
+
+	@Operation(summary = "Get students by Department (paginated)")
+	@GetMapping("/department/{departmentId}")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> getStudentsByDepartment(@PathVariable Long departmentId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<StudentGetResponseDTO> students = studentService.getStudentsByDepartment(departmentId, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
+	}
+
+	@Operation(summary = "Get students by College (paginated)")
+	@GetMapping("/college/{collegeId}")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> getStudentsByCollege(@PathVariable Long collegeId,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+		Page<StudentGetResponseDTO> students = studentService.getStudentsByCollege(collegeId, page, size);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
+	}
+
+	@Operation(summary = "Count students by academic year")
+	@GetMapping("/count/year/{year}")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> countStudentsByYear(@PathVariable Integer year) {
+		long count = studentService.countStudentsByYear(year);
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, count));
+	}
+
+	@Operation(summary = "Count active students")
+	@GetMapping("/count/active")
+	@PreAuthorize("hasAuthority('STUDENT_READ')")
+	public ResponseEntity<BasicResponse> countActiveStudents() {
+		long count = studentService.countActiveStudents();
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, count));
+	}
 }
