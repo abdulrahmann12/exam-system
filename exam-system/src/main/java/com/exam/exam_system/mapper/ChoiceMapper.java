@@ -3,8 +3,8 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.Choice;
 import com.exam.exam_system.dto.*;
+import com.exam.exam_system.entities.Choice;
 
 @Mapper(componentModel = "spring")
 public interface ChoiceMapper {

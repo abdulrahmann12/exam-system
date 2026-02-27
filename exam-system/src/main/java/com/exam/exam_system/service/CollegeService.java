@@ -8,11 +8,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.College;
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.CollegeCreateRequestDTO;
 import com.exam.exam_system.dto.CollegeGetResponseDTO;
 import com.exam.exam_system.dto.CollegeUpdateRequestDTO;
+import com.exam.exam_system.entities.College;
 import com.exam.exam_system.exception.CollegeAlreadyExistsException;
 import com.exam.exam_system.exception.CollegeDeletionNotAllowedException;
 import com.exam.exam_system.exception.CollegeNotFoundException;

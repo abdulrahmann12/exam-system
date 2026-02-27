@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.exam.exam_system.Entities.User;
+import com.exam.exam_system.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

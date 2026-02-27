@@ -12,9 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.*;
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.*;
+import com.exam.exam_system.entities.*;
 import com.exam.exam_system.events.CodeRegeneratedEvent;
 import com.exam.exam_system.events.PasswordResetRequestedEvent;
 import com.exam.exam_system.events.UserRegisteredEvent;

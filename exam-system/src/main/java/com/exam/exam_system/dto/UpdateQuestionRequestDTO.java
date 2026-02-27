@@ -2,7 +2,7 @@ package com.exam.exam_system.dto;
 
 import java.util.List;
 
-import com.exam.exam_system.Entities.QuestionType;
+import com.exam.exam_system.entities.QuestionType;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;

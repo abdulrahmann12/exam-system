@@ -3,9 +3,9 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.StudentExamSession;
 import com.exam.exam_system.dto.CreateStudentExamSessionRequestDTO;
 import com.exam.exam_system.dto.StudentExamSessionResponseDTO;
+import com.exam.exam_system.entities.StudentExamSession;
 
 @Mapper(componentModel = "spring",uses = {StudentAnswerMapper.class})
 public interface StudentExamSessionMapper {

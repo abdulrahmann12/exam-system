@@ -8,12 +8,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.College;
-import com.exam.exam_system.Entities.Department;
-import com.exam.exam_system.Entities.Subject;
 import com.exam.exam_system.dto.SubjectCreateRequestDTO;
 import com.exam.exam_system.dto.SubjectGetResponseDTO;
 import com.exam.exam_system.dto.SubjectUpdateRequestDTO;
+import com.exam.exam_system.entities.College;
+import com.exam.exam_system.entities.Department;
+import com.exam.exam_system.entities.Subject;
 import com.exam.exam_system.exception.CollegeNotFoundException;
 import com.exam.exam_system.exception.DepartmentCollegeMismatchException;
 import com.exam.exam_system.exception.DepartmentNotFoundException;

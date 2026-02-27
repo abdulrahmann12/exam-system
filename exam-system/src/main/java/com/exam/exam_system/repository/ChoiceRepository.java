@@ -1,8 +1,9 @@
 package com.exam.exam_system.repository;
 
-import com.exam.exam_system.Entities.Choice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.exam.exam_system.entities.Choice;
 
 import java.util.List;
 

@@ -1,7 +1,8 @@
 package com.exam.exam_system.repository;
 
-import com.exam.exam_system.Entities.Result;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.exam.exam_system.entities.Result;
 
 import java.util.Optional;
 
