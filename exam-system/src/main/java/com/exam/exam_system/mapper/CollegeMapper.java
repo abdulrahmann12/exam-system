@@ -3,7 +3,7 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.College;
+import com.exam.exam_system.entities.College;
 import com.exam.exam_system.dto.CollegeCreateRequestDTO;
 import com.exam.exam_system.dto.CollegeGetResponseDTO;
 

@@ -1,14 +1,12 @@
-package com.exam.exam_system.Entities;
+package com.exam.exam_system.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -18,37 +16,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "permissions")
 @Data
-@Table(name = "departments")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Department {
+public class Permission {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long departmentId;
-	
-	private String departmentName;
-	
-	
+	private Long permissionId;
+
+	@Column(nullable = false, unique = true)
+	private String code;
+
+	private String description;
+
+	@Builder.Default
+	private Boolean active = true;
+
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "college_id", nullable = false)
-	private College college;
-	
 	@PrePersist
-	public void setCreatedAt() {
-		// TODO Auto-generated method stub
+	public void onCreate() {
 		createdAt = LocalDateTime.now();
 		updatedAt = LocalDateTime.now();
 	}
 
 	@PreUpdate
-	public void setUpdatedAt() {
-		// TODO Auto-generated method stub
+	public void onUpdate() {
 		updatedAt = LocalDateTime.now();
 	}
 }

@@ -1,7 +1,7 @@
 package com.exam.exam_system.dto;
 
-import com.exam.exam_system.Entities.PermissionActions;
-import com.exam.exam_system.Entities.PermissionModules;
+import com.exam.exam_system.entities.PermissionActions;
+import com.exam.exam_system.entities.PermissionModules;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

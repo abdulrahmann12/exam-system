@@ -1,4 +1,4 @@
-package com.exam.exam_system.Entities;
+package com.exam.exam_system.entities;
 
 public enum QuestionType {
     MCQ,
