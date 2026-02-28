@@ -132,5 +132,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 		    left join fetch q.choices
 		    where e.examId = :examId
 		""")
-		Optional<Exam> findExamWithQuestionsAndChoices(@Param("examId") Long examId);
+	Optional<Exam> findExamWithQuestionsAndChoices(@Param("examId") Long examId);
+
+	Optional<Exam> findByQrToken(String qrToken);
 }

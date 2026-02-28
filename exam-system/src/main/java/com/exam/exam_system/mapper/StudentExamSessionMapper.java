@@ -10,6 +10,7 @@ import com.exam.exam_system.entities.StudentExamSession;
 @Mapper(componentModel = "spring",uses = {StudentAnswerMapper.class})
 public interface StudentExamSessionMapper {
 
+	@Mapping(target = "student", ignore = true)
 	@Mapping(target = "sessionId", ignore = true)
 	@Mapping(target = "exam", ignore = true)
 	@Mapping(target = "isActive", ignore = true)
@@ -20,5 +21,6 @@ public interface StudentExamSessionMapper {
 	
 
     @Mapping(target = "examId", source = "exam.examId")
+    @Mapping(target = "studentId", source = "student.studentId")
     StudentExamSessionResponseDTO toResponseDTO(StudentExamSession session);
 }

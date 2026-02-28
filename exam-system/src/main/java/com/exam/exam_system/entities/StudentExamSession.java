@@ -22,6 +22,10 @@ public class StudentExamSession {
     @JoinColumn(name = "exam_id", nullable = false)
     private Exam exam;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
+
     @Column(nullable = false, unique = true)
     private String sessionCode;
 
