@@ -22,7 +22,7 @@ WORKDIR /app
 COPY --from=builder /build/target/exam-system-*.jar app.jar
 
 # Expose port (default Spring Boot port)
-EXPOSE 8080
+EXPOSE 7860
 
 
 # Run the application
