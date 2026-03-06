@@ -32,14 +32,12 @@ public interface UserMapper {
 	@Mapping(target = "collegeName", source = "college.collegeName")
 	@Mapping(target = "departmentName", source = "department.departmentName")
 	@Mapping(target = "username", expression = "java(user.getUsernameField())")
-
 	UserSummaryDTO toSummaryDTO(User user);
 
 	@Mapping(target = "roleName", source = "role.roleName")
 	@Mapping(target = "collegeName", source = "college.collegeName")
 	@Mapping(target = "departmentName", source = "department.departmentName")
 	@Mapping(target = "username", expression = "java(user.getUsernameField())")
-
 	UserProfileResponseDTO toUserProfileResponseDTO(User user);
 
 }
