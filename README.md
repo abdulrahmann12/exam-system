@@ -100,3 +100,19 @@ Students have accounts (managed by Admin) → But they enter exams via QR token 
 - Tab switching
 - Auto-submit on timeout
 
+
+
+
+
+---
+title: exam-system-api
+emoji: 🚀
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
+# Exam System API
+
+Spring Boot API for managing exam system.
