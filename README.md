@@ -1,3 +1,13 @@
+---
+title: Online Exam System
+emoji: 📝
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_file: app.py
+pinned: false
+---
+
 # Online Exam System (Spring Boot)
 
 A complete backend system for managing online exams inside universities.  
