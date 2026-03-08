@@ -6,7 +6,6 @@ import org.mapstruct.Mapping;
 import com.exam.exam_system.dto.*;
 import com.exam.exam_system.entities.User;
 
-
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
