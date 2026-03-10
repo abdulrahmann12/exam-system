@@ -59,8 +59,10 @@ public class Messages {
 	public static final String USER_UPDATE_PROFILE = "User role updated successfully";
 	public static final String USER_UPDATE_IMAGE = "User image updated successfully";
 	public static final String DEACTIVATE_USER = "User deactivated successfully";
+	public static final String ACTIVATE_USER = "User activated successfully";
 	public static final String UPDATE_USER = "User updated successfully";
 	public static final String USER_ALREADY_DEACTIVATE = "User already deactivated";
+	public static final String USER_ALREADY_ACTIVE = "User is already active";
 	public static final String USER_DEACTIVATED_EXCEPTION = "Your account has been deactivated. Please contact support.";
 	public static final String USER_DEPARTMENT_MISMATCH = "User is not allowed to perform this action for the selected department";
 
@@ -183,6 +185,7 @@ public class Messages {
 	public static final String STUDENT_CODE_ALREADY_EXISTS = "Student code already exists";
 
 	public static final String STUDENT_ALREADY_DEACTIVATED = "Student is already deactivated";
+	public static final String STUDENT_ALREADY_ACTIVE = "Student is already active";
     public static final String STUDENT_CREATED = "Student created successfully";
     public static final String STUDENT_UPDATED = "Student updated successfully";
     public static final String STUDENT_DELETED = "Student deleted successfully";

@@ -32,7 +32,7 @@ public class ExamController {
 	@Operation(summary = "Update existing exam")
 	@PutMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_UPDATE')")
-	public ResponseEntity<BasicResponse> updateExam(@PathVariable Long examId,
+	public ResponseEntity<BasicResponse> updateExam(@PathVariable("examId") Long examId,
 			@RequestBody UpdateExamRequestDTO request) {
 		ExamResponseDTO response = examService.updateExam(examId, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_UPDATED, response));
@@ -41,7 +41,7 @@ public class ExamController {
 	@Operation(summary = "Get exam by ID")
 	@GetMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<BasicResponse> getExamById(@PathVariable Long examId) {
+	public ResponseEntity<BasicResponse> getExamById(@PathVariable("examId") Long examId) {
 		ExamFullAdminViewDTO response = examService.getExamById(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
@@ -49,8 +49,8 @@ public class ExamController {
 	@Operation(summary = "Get exams by college (paginated)")
 	@GetMapping("/college/{collegeId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<BasicResponse> getByCollege(@PathVariable Long collegeId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getByCollege(@PathVariable("collegeId") Long collegeId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.getExamsByCollege(collegeId, page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 
@@ -59,8 +59,8 @@ public class ExamController {
 	@Operation(summary = "Get exams by department (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/department/{departmentId}")
-	public ResponseEntity<BasicResponse> getByDepartment(@PathVariable Long departmentId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getByDepartment(@PathVariable("departmentId") Long departmentId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.getExamsByDepartment(departmentId, page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
@@ -68,8 +68,8 @@ public class ExamController {
 	@Operation(summary = "Get exams by user (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<BasicResponse> getByUser(@PathVariable Long userId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getByUser(@PathVariable("userId") Long userId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.getExamsByUser(userId, page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 
@@ -78,8 +78,8 @@ public class ExamController {
 	@Operation(summary = "Get my exams (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/my")
-	public ResponseEntity<BasicResponse> getMyExams(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getMyExams(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<ExamResponseDTO> response = examService.getMyExams(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
@@ -88,8 +88,8 @@ public class ExamController {
 	@Operation(summary = "Get exams by subject (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/subject/{subjectId}")
-	public ResponseEntity<BasicResponse> getBySubject(@PathVariable Long subjectId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getBySubject(@PathVariable("subjectId") Long subjectId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.getExamsBySubject(subjectId, page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 
@@ -98,8 +98,8 @@ public class ExamController {
 	@Operation(summary = "Get all exams (paginated)")
 	@GetMapping
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<BasicResponse> getAllExams(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllExams(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.getAllExams(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 
@@ -108,8 +108,8 @@ public class ExamController {
 	@Operation(summary = "Get all Active exams (paginated)")
 	@GetMapping("/active")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
-	public ResponseEntity<BasicResponse> getAllActiveExams(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllActiveExams(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.getAllActiveExams(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 
@@ -118,8 +118,8 @@ public class ExamController {
 	@Operation(summary = "Search exams by keyword (paginated)")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/search")
-	public ResponseEntity<BasicResponse> searchExams(@RequestParam String keyword,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> searchExams(@RequestParam(name = "keyword") String keyword,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<ExamResponseDTO> response = examService.searchExams(keyword, page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 
@@ -128,7 +128,7 @@ public class ExamController {
 	@Operation(summary = "DeActivate exam")
 	@DeleteMapping("/deactivate/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
-	public ResponseEntity<BasicResponse> deActivateExam(@PathVariable Long examId) {
+	public ResponseEntity<BasicResponse> deActivateExam(@PathVariable("examId") Long examId) {
 		examService.deActivateExam(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
@@ -136,14 +136,14 @@ public class ExamController {
 	@Operation(summary = "Delete exam")
 	@DeleteMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
-	public ResponseEntity<BasicResponse> delateExam(@PathVariable Long examId) {
+	public ResponseEntity<BasicResponse> delateExam(@PathVariable("examId") Long examId) {
 		examService.deleteExam(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
 
 	@PostMapping("/{examId}/qr")
 	@PreAuthorize("hasAuthority('EXAM_CREATE')")
-	public ResponseEntity<BasicResponse> generateQr(@PathVariable Long examId) {
+	public ResponseEntity<BasicResponse> generateQr(@PathVariable("examId") Long examId) {
 
 		ExamQrResponseDTO response = examService.generateQrForExam(examId);
 

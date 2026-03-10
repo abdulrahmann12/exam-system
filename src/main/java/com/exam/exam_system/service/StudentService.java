@@ -109,6 +109,23 @@ public class StudentService extends BaseService {
 		return studentMapper.toDto(studentRepository.save(student));
 	}
 
+	@Transactional
+	public StudentProfileResponseDTO updateMyProfile(@Valid StudentUpdateProfileRequestDTO dto) {
+
+		User user = userService.getCurrentUser();
+		Student student = studentRepository.findByUser_UserId(user.getUserId())
+				.orElseThrow(StudentNotFoundException::new);
+
+		if (studentRepository.existsByStudentCodeAndStudentIdNot(dto.getStudentCode(), student.getStudentId())) {
+			throw new StudentCodeAlreadyExistsException();
+		}
+
+		studentMapper.updateStudentProfileFromDto(dto, student);
+
+		return studentMapper.toProfileDto(studentRepository.save(student));
+	}
+
+	@Transactional(readOnly = true)
 	public StudentGetResponseDTO getStudentById(Long studentId) {
 
 		Student student = studentRepository.findById(studentId).orElseThrow(StudentNotFoundException::new);
@@ -162,6 +179,9 @@ public class StudentService extends BaseService {
 
 		Student student = studentRepository.findById(studentId).orElseThrow(StudentNotFoundException::new);
 
+		if(Boolean.TRUE.equals(student.getIsActive())) {
+			throw new StudentAlreadyActiveException();
+		}
 		student.setIsActive(true);
 		student.setDeactivatedAt(null);
 		student.getUser().setIsActive(true);
@@ -185,12 +205,18 @@ public class StudentService extends BaseService {
 
 	@Transactional(readOnly = true)
 	public Page<StudentGetResponseDTO> getStudentsByDepartment(Long departmentId, int page, int size) {
+		if (!departmentRepository.existsById(departmentId)) {
+			throw new DepartmentNotFoundException();
+		}
 		Pageable pageable = createPageRequest(page, size, "studentCode");
 		return studentRepository.findByUser_Department_DepartmentId(departmentId, pageable).map(studentMapper::toDto);
 	}
 
 	@Transactional(readOnly = true)
 	public Page<StudentGetResponseDTO> getStudentsByCollege(Long collegeId, int page, int size) {
+		if (!collegeRepository.existsById(collegeId)) {
+			throw new CollegeNotFoundException();
+		}
 		Pageable pageable = createPageRequest(page, size, "studentCode");
 		return studentRepository.findByUser_College_CollegeId(collegeId, pageable).map(studentMapper::toDto);
 	}

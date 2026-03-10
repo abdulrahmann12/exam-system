@@ -35,7 +35,7 @@ public class DepartmentController {
 	@Operation(summary = "Update existing department")
 	@PutMapping("/{departmentId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_UPDATE')")
-	public ResponseEntity<BasicResponse> updateDepartment(@PathVariable Long departmentId,
+	public ResponseEntity<BasicResponse> updateDepartment(@PathVariable("departmentId") Long departmentId,
 			@RequestBody DepartmentUpdateRequestDTO request) {
 
 		DepartmentGetResponseDTO response = departmentService.updateDepartment(departmentId, request);
@@ -46,7 +46,7 @@ public class DepartmentController {
 	@Operation(summary = "Get department by ID")
 	@GetMapping("/{departmentId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
-	public ResponseEntity<BasicResponse> getDepartmentById(@PathVariable Long departmentId) {
+	public ResponseEntity<BasicResponse> getDepartmentById(@PathVariable("departmentId") Long departmentId) {
 
 		DepartmentGetResponseDTO response = departmentService.getDepartmentById(departmentId);
 
@@ -56,7 +56,7 @@ public class DepartmentController {
 	@Operation(summary = "Get department by name")
 	@GetMapping("/by-name")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
-	public ResponseEntity<BasicResponse> getDepartmentByName(@RequestParam String departmentName) {
+	public ResponseEntity<BasicResponse> getDepartmentByName(@RequestParam(name = "departmentName") String departmentName) {
 
 		DepartmentGetResponseDTO response = departmentService.getDepartmentByName(departmentName);
 
@@ -66,8 +66,8 @@ public class DepartmentController {
 	@Operation(summary = "Search departments by name")
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
-	public ResponseEntity<BasicResponse> searchDepartments(@RequestParam String keyword,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> searchDepartments(@RequestParam(name = "keyword") String keyword,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<DepartmentGetResponseDTO> departments = departmentService.searchDepartments(keyword, page, size);
 
@@ -77,8 +77,8 @@ public class DepartmentController {
 	@Operation(summary = "Get all departments")
 	@GetMapping
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
-	public ResponseEntity<BasicResponse> getAllDepartments(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllDepartments(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<DepartmentGetResponseDTO> departments = departmentService.getAllDepartments(page, size);
 
@@ -88,8 +88,8 @@ public class DepartmentController {
 	@Operation(summary = "Get all departments by college ID")
 	@GetMapping("/by-college/{collegeId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
-	public ResponseEntity<BasicResponse> getDepartmentsByCollegeId(@PathVariable Long collegeId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getDepartmentsByCollegeId(@PathVariable("collegeId") Long collegeId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<DepartmentGetResponseDTO> departments = departmentService.getDepartmentsByCollegeId(collegeId, page, size);
 
@@ -99,7 +99,7 @@ public class DepartmentController {
 	@Operation(summary = "Delete department by ID")
 	@DeleteMapping("/{departmentId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_DELETE')")
-	public ResponseEntity<BasicResponse> deleteDepartment(@PathVariable Long departmentId) {
+	public ResponseEntity<BasicResponse> deleteDepartment(@PathVariable("departmentId") Long departmentId) {
 
 		departmentService.deleteDepartmentById(departmentId);
 

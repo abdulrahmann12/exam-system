@@ -111,6 +111,11 @@ public class AuthService {
 	public void forgetPassword(@Valid EmailRequestDTO emailRequestDTO) {
 		User user = userRepository.findByEmail(emailRequestDTO.getEmail()).orElseThrow(UserNotFoundException::new);
 
+		if (user.getRequestCode() != null && user.getRequestCodeExpiry() != null
+				&& user.getRequestCodeExpiry().isAfter(LocalDateTime.now())) {
+			throw new TooManyRequestsException();
+		}
+
 		String resetCode = generateConfirmationCode();
 		user.setRequestCode(resetCode);
 		user.setRequestCodeExpiry(LocalDateTime.now().plusMinutes(10));
@@ -152,6 +157,10 @@ public class AuthService {
 	public void reGenerateCode(User currentUser) {
 		User user = userRepository.findByEmail(currentUser.getEmail()).orElseThrow(UserNotFoundException::new);
 
+		if (user.getRequestCode() != null && user.getRequestCodeExpiry() != null
+				&& user.getRequestCodeExpiry().isAfter(LocalDateTime.now())) {
+			throw new TooManyRequestsException();
+		}
 		String newCode = generateConfirmationCode();
 		user.setRequestCode(newCode);
 		user.setRequestCodeExpiry(LocalDateTime.now().plusMinutes(10));

@@ -24,14 +24,14 @@ public class StudentExamSessionController {
 
     @Operation(summary = "Validate QR token and get exam details")
     @GetMapping("/enter")
-    public ResponseEntity<BasicResponse> enterExam(@RequestParam String token) {
+    public ResponseEntity<BasicResponse> enterExam(@RequestParam(name = "token") String token) {
         Exam exam = sessionService.validateTokenAndGetExam(token);
         return ResponseEntity.ok(new BasicResponse("Exam validated successfully", examMapper.toStudentViewDto(exam)));
     }
 
     @Operation(summary = "Start a new exam session")
     @PostMapping("/start/{examId}")
-    public ResponseEntity<BasicResponse> startSession(@PathVariable Long examId, @RequestParam String token) {
+    public ResponseEntity<BasicResponse> startSession(@PathVariable("examId") Long examId, @RequestParam(name = "token") String token) {
         StudentExamSessionResponseDTO session = sessionService.startSession(examId, token);
         return ResponseEntity.ok(new BasicResponse("Session started successfully", session));
     }
@@ -45,7 +45,7 @@ public class StudentExamSessionController {
 
     @Operation(summary = "End the exam session and calculate results")
     @PostMapping("/end/{sessionId}")
-    public ResponseEntity<BasicResponse> endSession(@PathVariable Long sessionId) {
+    public ResponseEntity<BasicResponse> endSession(@PathVariable("sessionId") Long sessionId) {
         sessionService.endSession(sessionId);
         return ResponseEntity.ok(new BasicResponse("Exam session ended successfully"));
     }

@@ -38,6 +38,7 @@ public class SecurityConfig {
 						.permitAll().requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers("/api/auth/refresh-token").permitAll()
 						.requestMatchers("/api/auth/change-password").permitAll()
+						.requestMatchers("/api/students/register").permitAll()
 						.requestMatchers("/api/sessions/enter").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

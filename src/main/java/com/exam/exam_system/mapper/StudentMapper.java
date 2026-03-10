@@ -8,6 +8,7 @@ import org.mapstruct.Named;
 import com.exam.exam_system.dto.StudentCreateRequestDTO;
 import com.exam.exam_system.dto.StudentGetResponseDTO;
 import com.exam.exam_system.dto.StudentProfileResponseDTO;
+import com.exam.exam_system.dto.StudentUpdateProfileRequestDTO;
 import com.exam.exam_system.dto.StudentUpdateRequestDTO;
 import com.exam.exam_system.dto.UserProfileResponseDTO;
 import com.exam.exam_system.entities.Student;
@@ -34,6 +35,13 @@ public interface StudentMapper {
     @Mapping(target = "deactivatedAt",ignore = true)
     @Mapping(target = "isActive",ignore = true)
     void updateStudentFromDto(StudentUpdateRequestDTO dto, @MappingTarget Student student);
+
+    @Mapping(target = "studentId", ignore = true)
+    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "enrolledAt", ignore = true)
+    @Mapping(target = "deactivatedAt", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
+    void updateStudentProfileFromDto(StudentUpdateProfileRequestDTO dto, @MappingTarget Student student);
 
    
     @Mapping(source = "studentId", target = "studentId")

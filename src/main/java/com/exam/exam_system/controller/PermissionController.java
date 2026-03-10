@@ -41,7 +41,7 @@ public class PermissionController {
 	@Operation(summary = "Update existing permission")
 	@PutMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
-	public ResponseEntity<BasicResponse> updatePermission(@PathVariable Long permissionId,
+	public ResponseEntity<BasicResponse> updatePermission(@PathVariable("permissionId") Long permissionId,
 			@RequestBody PermissionUpdateRequestDTO request) {
 		PermissionGetResponseDTO response = permissionService.updatePermission(permissionId, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.PERMISSION_UPDATE, response));
@@ -50,7 +50,7 @@ public class PermissionController {
 	@Operation(summary = "Get permission by ID")
 	@GetMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
-	public ResponseEntity<BasicResponse> getPermissionById(@PathVariable Long permissionId) {
+	public ResponseEntity<BasicResponse> getPermissionById(@PathVariable("permissionId") Long permissionId) {
 		PermissionGetResponseDTO response = permissionService.getPermissionById(permissionId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
@@ -58,8 +58,8 @@ public class PermissionController {
 	@Operation(summary = "Get all permissions")
 	@GetMapping
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
-	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<PermissionGetResponseDTO> permissions = permissionService.getAllPermissions(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, permissions));
 	}
@@ -67,7 +67,7 @@ public class PermissionController {
 	@Operation(summary = "Delete permission by ID")
 	@DeleteMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_DELETE')")
-	public ResponseEntity<BasicResponse> deletePermission(@PathVariable Long permissionId) {
+	public ResponseEntity<BasicResponse> deletePermission(@PathVariable("permissionId") Long permissionId) {
 		permissionService.deletePermissionById(permissionId);
 		return ResponseEntity.ok(new BasicResponse(Messages.DELETE_PERMISSION));
 	}

@@ -32,6 +32,7 @@ public class UserService extends BaseService {
 	private final RoleRepository roleRepository;
 	private final CollegeRepository collegeRepository;
 	private final DepartmentRepository departmentRepository;
+	private final StudentRepository studentRepository;
 	private final UserMapper userMapper;
 	private final RabbitTemplate rabbitTemplate;
 	private final AuthService authService;
@@ -146,6 +147,29 @@ public class UserService extends BaseService {
 		}
 		user.setIsActive(false);
 		userRepository.save(user);
+
+		studentRepository.findByUser_UserId(userId).ifPresent(student -> {
+			student.setIsActive(false);
+			student.setDeactivatedAt(LocalDateTime.now());
+			studentRepository.save(student);
+		});
+	}
+
+	@Transactional
+	public void activateUser(Long userId) {
+		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+
+		if (user.getIsActive()) {
+			throw new UserAlreadyActiveException();
+		}
+		user.setIsActive(true);
+		userRepository.save(user);
+
+		studentRepository.findByUser_UserId(userId).ifPresent(student -> {
+			student.setIsActive(true);
+			student.setDeactivatedAt(null);
+			studentRepository.save(student);
+		});
 	}
 
 	@Transactional

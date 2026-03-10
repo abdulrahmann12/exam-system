@@ -34,7 +34,7 @@ public class RoleController {
 	@Operation(summary = "Update existing role")
 	@PutMapping("/{roleId}")
 	@PreAuthorize("hasAuthority('ROLE_UPDATE')")
-	public ResponseEntity<BasicResponse> updateRole(@PathVariable Long roleId,
+	public ResponseEntity<BasicResponse> updateRole(@PathVariable("roleId") Long roleId,
 			@RequestBody RoleUpdateRequestDTO request) {
 
 		RoleGetResponseDTO response = roleService.updateRole(roleId, request);
@@ -44,7 +44,7 @@ public class RoleController {
 	@Operation(summary = "Get role by ID")
 	@GetMapping("/{roleId}")
 	@PreAuthorize("hasAuthority('ROLE_READ')")
-	public ResponseEntity<BasicResponse> getRoleById(@PathVariable Long roleId) {
+	public ResponseEntity<BasicResponse> getRoleById(@PathVariable("roleId") Long roleId) {
 
 		RoleGetResponseDTO response = roleService.getRoleById(roleId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
@@ -53,7 +53,7 @@ public class RoleController {
 	@Operation(summary = "Get role by name")
 	@GetMapping("/by-name")
 	@PreAuthorize("hasAuthority('ROLE_READ')")
-	public ResponseEntity<BasicResponse> getRoleByName(@RequestParam String roleName) {
+	public ResponseEntity<BasicResponse> getRoleByName(@RequestParam(name = "roleName") String roleName) {
 
 		RoleGetResponseDTO response = roleService.getRoleByName(roleName);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
@@ -62,8 +62,8 @@ public class RoleController {
 	@Operation(summary = "Get all roles")
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_READ')")
-	public ResponseEntity<BasicResponse> getAllRoles(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllRoles(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<RoleGetResponseDTO> roles = roleService.getAllRoles(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, roles));
@@ -72,7 +72,7 @@ public class RoleController {
 	@Operation(summary = "Delete role by ID")
 	@DeleteMapping("/{roleId}")
 	@PreAuthorize("hasAuthority('ROLE_DELETE')")
-	public ResponseEntity<BasicResponse> deleteRole(@PathVariable Long roleId) {
+	public ResponseEntity<BasicResponse> deleteRole(@PathVariable("roleId") Long roleId) {
 
 		roleService.deleteRoleById(roleId);
 		return ResponseEntity.ok(new BasicResponse(Messages.DELETE_ROLE));

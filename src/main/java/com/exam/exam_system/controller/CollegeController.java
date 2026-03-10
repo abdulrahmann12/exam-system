@@ -33,7 +33,7 @@ public class CollegeController {
 	@Operation(summary = "Update existing college")
 	@PutMapping("/{collegeId}")
 	@PreAuthorize("hasAuthority('COLLEGE_UPDATE')")
-	public ResponseEntity<BasicResponse> updateCollege(@PathVariable Long collegeId,
+	public ResponseEntity<BasicResponse> updateCollege(@PathVariable("collegeId") Long collegeId,
 			@RequestBody CollegeUpdateRequestDTO request) {
 
 		CollegeGetResponseDTO response = collegeService.updateCollege(collegeId, request);
@@ -43,7 +43,7 @@ public class CollegeController {
 	@Operation(summary = "Get college by ID")
 	@GetMapping("/{collegeId}")
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
-	public ResponseEntity<BasicResponse> getCollegeById(@PathVariable Long collegeId) {
+	public ResponseEntity<BasicResponse> getCollegeById(@PathVariable("collegeId") Long collegeId) {
 
 		CollegeGetResponseDTO response = collegeService.getCollegeById(collegeId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
@@ -52,7 +52,7 @@ public class CollegeController {
 	@Operation(summary = "Get college by name")
 	@GetMapping("/by-name")
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
-	public ResponseEntity<BasicResponse> getCollegeByName(@RequestParam String collegeName) {
+	public ResponseEntity<BasicResponse> getCollegeByName(@RequestParam(name = "collegeName") String collegeName) {
 
 		CollegeGetResponseDTO response = collegeService.getCollegeByName(collegeName);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
@@ -61,8 +61,8 @@ public class CollegeController {
 	@Operation(summary = "Search colleges by name")
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
-	public ResponseEntity<BasicResponse> searchColleges(@RequestParam String keyword,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> searchColleges(@RequestParam(name = "keyword") String keyword,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<CollegeGetResponseDTO> colleges = collegeService.searchColleges(keyword, page, size);
 
@@ -72,8 +72,8 @@ public class CollegeController {
 	@Operation(summary = "Get all colleges")
 	@GetMapping
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
-	public ResponseEntity<BasicResponse> getAllColleges(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllColleges(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<CollegeGetResponseDTO> colleges = collegeService.getAllColleges(page, size);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, colleges));
@@ -82,7 +82,7 @@ public class CollegeController {
 	@Operation(summary = "Delete college by ID")
 	@DeleteMapping("/{collegeId}")
 	@PreAuthorize("hasAuthority('COLLEGE_DELETE')")
-	public ResponseEntity<BasicResponse> deleteCollege(@PathVariable Long collegeId) {
+	public ResponseEntity<BasicResponse> deleteCollege(@PathVariable("collegeId") Long collegeId) {
 
 		collegeService.deleteCollegeById(collegeId);
 		return ResponseEntity.ok(new BasicResponse(Messages.DELETE_COLLEGE));

@@ -102,6 +102,7 @@ public class GlobalExceptionHandler {
         TooManyRequestsException.class,
         VerificationCodeExpiredException.class,
         UserAlreadyDeactivatedException.class,
+        UserAlreadyActiveException.class,
         UserDeactivatedException.class,
         ExpiredResetCodeException.class,
         PermissionNotFoundException.class,
@@ -135,6 +136,7 @@ public class GlobalExceptionHandler {
         StudentAlreadyExistsException.class,
         StudentCodeAlreadyExistsException.class,
         StudentAlreadyDeactivatedException.class,
+        StudentAlreadyActiveException.class,
         
     })
     public ResponseEntity<BasicResponse> handleNotFoundBusinessExceptions(Exception ex, WebRequest request) {

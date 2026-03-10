@@ -35,7 +35,7 @@ public class SubjectController {
 	@Operation(summary = "Update existing subject")
 	@PutMapping("/{subjectId}")
 	@PreAuthorize("hasAuthority('SUBJECT_UPDATE')")
-	public ResponseEntity<BasicResponse> updateSubject(@PathVariable Long subjectId,
+	public ResponseEntity<BasicResponse> updateSubject(@PathVariable("subjectId") Long subjectId,
 			@RequestBody SubjectUpdateRequestDTO request) {
 
 		SubjectGetResponseDTO response = subjectService.updateSubject(subjectId, request);
@@ -46,7 +46,7 @@ public class SubjectController {
 	@Operation(summary = "Get subject by ID")
 	@GetMapping("/{subjectId}")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
-	public ResponseEntity<BasicResponse> getSubjectById(@PathVariable Long subjectId) {
+	public ResponseEntity<BasicResponse> getSubjectById(@PathVariable("subjectId") Long subjectId) {
 
 		SubjectGetResponseDTO response = subjectService.getSubjectById(subjectId);
 
@@ -56,8 +56,8 @@ public class SubjectController {
 	@Operation(summary = "Get all subjects")
 	@GetMapping
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
-	public ResponseEntity<BasicResponse> getAllSubjects(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getAllSubjects(@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<SubjectGetResponseDTO> subjects = subjectService.getAllSubjects(page, size);
 
@@ -67,8 +67,8 @@ public class SubjectController {
 	@Operation(summary = "Get subjects by department ID")
 	@GetMapping("/by-department/{departmentId}")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
-	public ResponseEntity<BasicResponse> getSubjectsByDepartmentId(@PathVariable Long departmentId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getSubjectsByDepartmentId(@PathVariable("departmentId") Long departmentId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<SubjectGetResponseDTO> subjects = subjectService.getSubjectsByDepartmentId(departmentId, page, size);
 
@@ -78,8 +78,8 @@ public class SubjectController {
 	@Operation(summary = "Get subjects by college ID")
 	@GetMapping("/by-college/{collegeId}")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
-	public ResponseEntity<BasicResponse> getSubjectsByCollegeId(@PathVariable Long collegeId,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> getSubjectsByCollegeId(@PathVariable("collegeId") Long collegeId,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<SubjectGetResponseDTO> subjects = subjectService.getSubjectsByCollegeId(collegeId, page, size);
 
@@ -89,8 +89,8 @@ public class SubjectController {
 	@Operation(summary = "Search subjects by name or code")
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
-	public ResponseEntity<BasicResponse> searchSubjects(@RequestParam String keyword,
-			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public ResponseEntity<BasicResponse> searchSubjects(@RequestParam(name = "keyword") String keyword,
+			@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size) {
 
 		Page<SubjectGetResponseDTO> subjects = subjectService.searchSubjects(keyword, page, size);
 
@@ -100,7 +100,7 @@ public class SubjectController {
 	@Operation(summary = "Delete subject by ID")
 	@DeleteMapping("/{subjectId}")
 	@PreAuthorize("hasAuthority('SUBJECT_DELETE')")
-	public ResponseEntity<BasicResponse> deleteSubject(@PathVariable Long subjectId) {
+	public ResponseEntity<BasicResponse> deleteSubject(@PathVariable("subjectId") Long subjectId) {
 
 		subjectService.deleteSubject(subjectId);
 

@@ -7,7 +7,7 @@ import com.exam.exam_system.dto.RoleCreateRequestDTO;
 import com.exam.exam_system.dto.RoleGetResponseDTO;
 import com.exam.exam_system.entities.Role;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { PermissionMapper.class })
 public interface RoleMapper {
 
 	@Mapping(target = "roleId", ignore = true)
