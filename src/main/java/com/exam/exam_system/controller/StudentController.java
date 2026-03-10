@@ -6,6 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.exam.exam_system.config.Messages;
+import com.exam.exam_system.config.SwaggerMessages;
 import com.exam.exam_system.dto.*;
 import com.exam.exam_system.service.StudentService;
 
@@ -23,23 +24,23 @@ public class StudentController {
 	private final StudentService studentService;
 
 	/* ==================== CREATE / REGISTER ==================== */
-	@Operation(summary = "Register new student and return profile")
+	@Operation(summary = SwaggerMessages.REGISTER_STUDENT)
 	@PostMapping("/register")
-	public ResponseEntity<BasicResponse> registerStudent(@RequestBody StudentRegisterRequestDTO request) {
+	public ResponseEntity<BasicResponse> registerStudent(@Valid @RequestBody StudentRegisterRequestDTO request) {
 		StudentProfileResponseDTO response = studentService.registerStudentAndReturnProfile(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_CREATED, response));
 	}
 
 	/* ==================== UPDATE ==================== */
-	@Operation(summary = "Update my own student profile (logged-in student)")
+	@Operation(summary = SwaggerMessages.UPDATE_MY_STUDENT_PROFILE)
 	@PutMapping("/me")
 	@PreAuthorize("isAuthenticated()")
-	public ResponseEntity<BasicResponse> updateMyProfile(@RequestBody StudentUpdateProfileRequestDTO request) {
+	public ResponseEntity<BasicResponse> updateMyProfile(@Valid @RequestBody StudentUpdateProfileRequestDTO request) {
 		StudentProfileResponseDTO response = studentService.updateMyProfile(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_UPDATED, response));
 	}
 
-	@Operation(summary = "Admin update student by ID")
+	@Operation(summary = SwaggerMessages.ADMIN_UPDATE_STUDENT)
 	@PutMapping("/{studentId}")
 	@PreAuthorize("hasAuthority('STUDENTS_UPDATE')")
 	public ResponseEntity<BasicResponse> adminUpdateStudent(@PathVariable("studentId") Long studentId,
@@ -49,7 +50,7 @@ public class StudentController {
 	}
 
 	/* ==================== GET ==================== */
-	@Operation(summary = "Get student by ID")
+	@Operation(summary = SwaggerMessages.GET_STUDENT_BY_ID)
 	@GetMapping("/{studentId}")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> getStudentById(@PathVariable("studentId") Long studentId) {
@@ -57,7 +58,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = "Get all students (paginated)")
+	@Operation(summary = SwaggerMessages.GET_ALL_STUDENTS)
 	@GetMapping
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> getAllStudents(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -66,7 +67,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
 	}
 
-	@Operation(summary = "Get all active students (paginated)")
+	@Operation(summary = SwaggerMessages.GET_ALL_ACTIVE_STUDENTS)
 	@GetMapping("/active")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> getAllActiveStudents(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -75,7 +76,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
 	}
 
-	@Operation(summary = "Get my own student profile")
+	@Operation(summary = SwaggerMessages.GET_MY_STUDENT_PROFILE)
 	@GetMapping("/me")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> getMyProfile() {
@@ -84,7 +85,7 @@ public class StudentController {
 	}
 
 	/* ==================== DELETE / DEACTIVATE / ACTIVATE ==================== */
-	@Operation(summary = "Hard delete student by ID")
+	@Operation(summary = SwaggerMessages.DELETE_STUDENT)
 	@DeleteMapping("/{studentId}/delete")
 	@PreAuthorize("hasAuthority('STUDENTS_DELETE')")
 	public ResponseEntity<BasicResponse> deleteStudent(@PathVariable("studentId") Long studentId) {
@@ -92,7 +93,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_DELETED));
 	}
 
-	@Operation(summary = "Deactivate student by ID (soft delete)")
+	@Operation(summary = SwaggerMessages.DEACTIVATE_STUDENT)
 	@DeleteMapping("/{studentId}/deactivate")
 	@PreAuthorize("hasAuthority('STUDENTS_DELETE')")
 	public ResponseEntity<BasicResponse> deactivateStudent(@PathVariable("studentId") Long studentId) {
@@ -100,7 +101,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.STUDENT_DEACTIVATED));
 	}
 
-	@Operation(summary = "Activate student by ID")
+	@Operation(summary = SwaggerMessages.ACTIVATE_STUDENT)
 	@PostMapping("/{studentId}/activate")
 	@PreAuthorize("hasAuthority('STUDENTS_UPDATE')")
 	public ResponseEntity<BasicResponse> activateStudent(@PathVariable("studentId") Long studentId) {
@@ -109,7 +110,7 @@ public class StudentController {
 	}
 
 	/* ==================== SEARCH ==================== */
-	@Operation(summary = "Search students by studentCode, academicYear, isActive (paginated)")
+	@Operation(summary = SwaggerMessages.SEARCH_STUDENTS)
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> searchStudents(
@@ -123,7 +124,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
 	}
 
-	@Operation(summary = "Get students by Department (paginated)")
+	@Operation(summary = SwaggerMessages.GET_STUDENTS_BY_DEPARTMENT)
 	@GetMapping("/department/{departmentId}")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> getStudentsByDepartment(@PathVariable("departmentId") Long departmentId,
@@ -133,7 +134,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
 	}
 
-	@Operation(summary = "Get students by College (paginated)")
+	@Operation(summary = SwaggerMessages.GET_STUDENTS_BY_COLLEGE)
 	@GetMapping("/college/{collegeId}")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> getStudentsByCollege(@PathVariable("collegeId") Long collegeId,
@@ -143,7 +144,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, students));
 	}
 
-	@Operation(summary = "Count students by academic year")
+	@Operation(summary = SwaggerMessages.COUNT_STUDENTS_BY_YEAR)
 	@GetMapping("/count/year")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> countStudentsByYear(@RequestParam("year") Integer year) {
@@ -151,7 +152,7 @@ public class StudentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, count));
 	}
 
-	@Operation(summary = "Count active students")
+	@Operation(summary = SwaggerMessages.COUNT_ACTIVE_STUDENTS)
 	@GetMapping("/count/active")
 	@PreAuthorize("hasAuthority('STUDENTS_READ')")
 	public ResponseEntity<BasicResponse> countActiveStudents() {

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.exam.exam_system.config.Messages;
+import com.exam.exam_system.config.SwaggerMessages;
 import com.exam.exam_system.dto.BasicResponse;
 import com.exam.exam_system.dto.PermissionCreateRequestDTO;
 import com.exam.exam_system.dto.PermissionGetResponseDTO;
@@ -20,6 +21,7 @@ import com.exam.exam_system.service.PermissionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Permission Controller", description = "API for managing system permissions")
@@ -30,24 +32,24 @@ public class PermissionController {
 
 	private final PermissionService permissionService;
 
-	@Operation(summary = "Create new permission")
+	@Operation(summary = SwaggerMessages.CREATE_PERMISSION)
 	@PostMapping
 	@PreAuthorize("hasAuthority('PERMISSION_CREATE')")
-	public ResponseEntity<BasicResponse> createPermission(@RequestBody PermissionCreateRequestDTO request) {
+	public ResponseEntity<BasicResponse> createPermission(@Valid @RequestBody PermissionCreateRequestDTO request) {
 		PermissionGetResponseDTO response = permissionService.createPermission(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.ADD_PERMISSION, response));
 	}
 
-	@Operation(summary = "Update existing permission")
+	@Operation(summary = SwaggerMessages.UPDATE_PERMISSION)
 	@PutMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
 	public ResponseEntity<BasicResponse> updatePermission(@PathVariable("permissionId") Long permissionId,
-			@RequestBody PermissionUpdateRequestDTO request) {
+			@Valid @RequestBody PermissionUpdateRequestDTO request) {
 		PermissionGetResponseDTO response = permissionService.updatePermission(permissionId, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.PERMISSION_UPDATE, response));
 	}
 
-	@Operation(summary = "Get permission by ID")
+	@Operation(summary = SwaggerMessages.GET_PERMISSION_BY_ID)
 	@GetMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public ResponseEntity<BasicResponse> getPermissionById(@PathVariable("permissionId") Long permissionId) {
@@ -55,7 +57,7 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = "Get all permissions")
+	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSIONS)
 	@GetMapping
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -64,7 +66,7 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, permissions));
 	}
 
-	@Operation(summary = "Delete permission by ID")
+	@Operation(summary = SwaggerMessages.DELETE_PERMISSION)
 	@DeleteMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_DELETE')")
 	public ResponseEntity<BasicResponse> deletePermission(@PathVariable("permissionId") Long permissionId) {
@@ -72,14 +74,14 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.DELETE_PERMISSION));
 	}
 
-	@Operation(summary = "Get all permissions modules")
+	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSION_MODULES)
 	@GetMapping("/modules")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public List<String> getModules() {
 		return Arrays.stream(PermissionModules.values()).map(Enum::name).collect(Collectors.toList());
 	}
 
-	@Operation(summary = "Get all permissions actions")
+	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSION_ACTIONS)
 	@GetMapping("/actions")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public List<String> getActions() {

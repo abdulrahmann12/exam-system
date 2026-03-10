@@ -104,9 +104,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String path = request.getServletPath();
 		return path.equals("/") || path.equals("/index.html") || path.startsWith("/images/")
 				|| path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui") || path.equals("/api/auth/login")
-				|| path.equals("/actuator/health") || path.equals("/actuator/info") || path.equals("/actuator/metrics")
+				|| path.equals("/actuator/health") || path.equals("/actuator/info")
 				|| path.equals("/api/auth/forget-password") || path.equals("/api/auth/reset-password")
-				|| path.equals("/api/auth/logout") || path.startsWith("/oauth2")
-				|| path.equals("/api/auth/refresh-token") || path.equals("/api/students/register") ;
+				|| path.equals("/api/auth/logout")
+				|| path.equals("/api/auth/refresh-token") || path.equals("/api/students/register")
+				|| path.equals("/api/sessions/enter");
 	}
 }

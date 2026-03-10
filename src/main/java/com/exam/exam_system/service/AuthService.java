@@ -142,6 +142,9 @@ public class AuthService {
 		user.setRequestCode(null);
 		user.setRequestCodeExpiry(null);
 		userRepository.save(user);
+
+		// Invalidate all refresh tokens after password reset
+		tokenRepository.revokeAllRefreshTokensByUser(user.getUserId());
 	}
 
 	public void changePassword(User currentUser, @Valid UserChangePasswordRequestDTO changePasswordRequestDTO) {
@@ -152,6 +155,9 @@ public class AuthService {
 		}
 		user.setPassword(passwordEncoder.encode(changePasswordRequestDTO.getNewPassword()));
 		userRepository.save(user);
+
+		// Invalidate all refresh tokens after password change
+		tokenRepository.revokeAllRefreshTokensByUser(user.getUserId());
 	}
 
 	public void reGenerateCode(User currentUser) {

@@ -7,11 +7,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.exam.exam_system.config.Messages;
+import com.exam.exam_system.config.SwaggerMessages;
 import com.exam.exam_system.dto.*;
 import com.exam.exam_system.service.SubjectService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Subject Controller", description = "API for managing subjects")
@@ -22,28 +24,28 @@ public class SubjectController {
 
 	private final SubjectService subjectService;
 
-	@Operation(summary = "Create new subject")
+	@Operation(summary = SwaggerMessages.CREATE_SUBJECT)
 	@PostMapping
 	@PreAuthorize("hasAuthority('SUBJECT_CREATE')")
-	public ResponseEntity<BasicResponse> createSubject(@RequestBody SubjectCreateRequestDTO request) {
+	public ResponseEntity<BasicResponse> createSubject(@Valid @RequestBody SubjectCreateRequestDTO request) {
 
 		SubjectGetResponseDTO response = subjectService.createSubject(request);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.SUBJECT_ADDED, response));
 	}
 
-	@Operation(summary = "Update existing subject")
+	@Operation(summary = SwaggerMessages.UPDATE_SUBJECT)
 	@PutMapping("/{subjectId}")
 	@PreAuthorize("hasAuthority('SUBJECT_UPDATE')")
 	public ResponseEntity<BasicResponse> updateSubject(@PathVariable("subjectId") Long subjectId,
-			@RequestBody SubjectUpdateRequestDTO request) {
+			@Valid @RequestBody SubjectUpdateRequestDTO request) {
 
 		SubjectGetResponseDTO response = subjectService.updateSubject(subjectId, request);
 
 		return ResponseEntity.ok(new BasicResponse(Messages.SUBJECT_UPDATED, response));
 	}
 
-	@Operation(summary = "Get subject by ID")
+	@Operation(summary = SwaggerMessages.GET_SUBJECT_BY_ID)
 	@GetMapping("/{subjectId}")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getSubjectById(@PathVariable("subjectId") Long subjectId) {
@@ -53,7 +55,7 @@ public class SubjectController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = "Get all subjects")
+	@Operation(summary = SwaggerMessages.GET_ALL_SUBJECTS)
 	@GetMapping
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getAllSubjects(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -64,7 +66,7 @@ public class SubjectController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
 
-	@Operation(summary = "Get subjects by department ID")
+	@Operation(summary = SwaggerMessages.GET_SUBJECTS_BY_DEPARTMENT)
 	@GetMapping("/by-department/{departmentId}")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getSubjectsByDepartmentId(@PathVariable("departmentId") Long departmentId,
@@ -75,7 +77,7 @@ public class SubjectController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
 
-	@Operation(summary = "Get subjects by college ID")
+	@Operation(summary = SwaggerMessages.GET_SUBJECTS_BY_COLLEGE)
 	@GetMapping("/by-college/{collegeId}")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> getSubjectsByCollegeId(@PathVariable("collegeId") Long collegeId,
@@ -86,7 +88,7 @@ public class SubjectController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
 
-	@Operation(summary = "Search subjects by name or code")
+	@Operation(summary = SwaggerMessages.SEARCH_SUBJECTS)
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('SUBJECT_READ')")
 	public ResponseEntity<BasicResponse> searchSubjects(@RequestParam(name = "keyword") String keyword,
@@ -97,7 +99,7 @@ public class SubjectController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, subjects));
 	}
 
-	@Operation(summary = "Delete subject by ID")
+	@Operation(summary = SwaggerMessages.DELETE_SUBJECT)
 	@DeleteMapping("/{subjectId}")
 	@PreAuthorize("hasAuthority('SUBJECT_DELETE')")
 	public ResponseEntity<BasicResponse> deleteSubject(@PathVariable("subjectId") Long subjectId) {

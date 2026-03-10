@@ -1,5 +1,8 @@
 package com.exam.exam_system.config;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.exam.exam_system.repository.UserRepository;
 import com.exam.exam_system.service.JwtService;
@@ -28,16 +34,28 @@ public class SecurityConfig {
 	private final JwtService jwtService;
 	private final UserRepository userRepository;
 
+	@Value("${cors.allowed-origins:http://localhost:3000}")
+	private String allowedOrigins;
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.csrf(c -> c.disable())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/").permitAll().requestMatchers("/images/**")
-						.permitAll().requestMatchers("/actuator/**").permitAll().requestMatchers("/index.html")
-						.permitAll().requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**")
-						.permitAll().requestMatchers("/api/auth/**").permitAll()
-						.requestMatchers("/api/auth/refresh-token").permitAll()
-						.requestMatchers("/api/auth/change-password").permitAll()
+		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+				.csrf(c -> c.disable())
+				.headers(headers -> headers
+						.contentTypeOptions(opts -> {})
+						.frameOptions(frame -> frame.deny())
+						.xssProtection(xss -> {})
+				)
+				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/").permitAll()
+						.requestMatchers("/images/**").permitAll()
+						.requestMatchers("/actuator/health", "/actuator/info").permitAll()
+						.requestMatchers("/index.html").permitAll()
+						.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+						.requestMatchers("/api/auth/login", "/api/auth/forget-password",
+								"/api/auth/reset-password", "/api/auth/refresh-token",
+								"/api/auth/logout").permitAll()
 						.requestMatchers("/api/students/register").permitAll()
 						.requestMatchers("/api/sessions/enter").permitAll()
 						.anyRequest().authenticated())
@@ -62,6 +80,19 @@ public class SecurityConfig {
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
 			throws Exception {
 		return authenticationConfiguration.getAuthenticationManager();
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration config = new CorsConfiguration();
+		config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+		config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+		config.setAllowCredentials(true);
+		config.setMaxAge(3600L);
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", config);
+		return source;
 	}
 
 }

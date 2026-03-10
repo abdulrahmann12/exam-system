@@ -1,7 +1,7 @@
 package com.exam.exam_system.exception;
 
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 
 import org.springframework.security.core.AuthenticationException;
 
@@ -186,12 +186,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<BasicResponse> handleRuntime(RuntimeException ex, WebRequest request) {
-        return buildErrorResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildErrorResponse("An unexpected error occurred. Please try again later.", request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<BasicResponse> handleAll(Exception ex, WebRequest request) {
-        return buildErrorResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildErrorResponse("An unexpected error occurred. Please try again later.", request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
 

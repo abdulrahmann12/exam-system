@@ -10,6 +10,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "users")
 @Data
@@ -31,6 +33,7 @@ public class User implements UserDetails {
 	private String email;
 
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
 
 	private String firstName;
@@ -43,6 +46,7 @@ public class User implements UserDetails {
 	@Builder.Default
 	private Boolean isActive = true;
 	
+	@JsonIgnore
 	private String requestCode;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -50,8 +54,10 @@ public class User implements UserDetails {
 	private Role role;
 	
 	@Column(unique = true)
+	@JsonIgnore
 	private String pendingEmail;
 	
+	@JsonIgnore
 	private LocalDateTime requestCodeExpiry;
 
 

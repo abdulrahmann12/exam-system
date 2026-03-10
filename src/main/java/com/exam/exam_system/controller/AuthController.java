@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exam.exam_system.config.Messages;
+import com.exam.exam_system.config.SwaggerMessages;
 import com.exam.exam_system.dto.*;
 import com.exam.exam_system.entities.User;
 import com.exam.exam_system.service.AuthService;
@@ -18,6 +19,7 @@ import com.exam.exam_system.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Auth Controller", description = "API for user authentication and authorization (login, resst password, etc).")
@@ -29,46 +31,46 @@ public class AuthController {
 	private final AuthService authService;
 	private final AuthenticationManager authenticationManager;
 
-	@Operation(summary = "User login", description = "Authenticate user using username/email and password and return access and refresh tokens.")
+	@Operation(summary = SwaggerMessages.USER_LOGIN, description = "Authenticate user using username/email and password and return access and refresh tokens.")
 	@PostMapping("/login")
-	public ResponseEntity<BasicResponse> login(@RequestBody LoginRequestDTO loginRequest) {
+	public ResponseEntity<BasicResponse> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
 		AuthResponse authResponse = authService.login(loginRequest);
 		return ResponseEntity.ok(new BasicResponse(Messages.LOGIN_SUCCESS, authResponse));
 	}
 
-	@Operation(summary = "Refresh access token", description = "Generate a new access token using a valid refresh token from the request.")
+	@Operation(summary = SwaggerMessages.REFRESH_ACCESS_TOKEN, description = "Generate a new access token using a valid refresh token from the request.")
 	@PostMapping("/refresh-token")
 	public ResponseEntity<BasicResponse> refreshToken(HttpServletRequest request) {
 		AuthResponse authResponse = authService.refreshToken(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.NEW_TOKEN_GENERATED, authResponse));
 	}
 
-	@Operation(summary = "Logout user", description = "Invalidate the current refresh token to log the user out.")
+	@Operation(summary = SwaggerMessages.LOGOUT_USER, description = "Invalidate the current refresh token to log the user out.")
 	@PostMapping("/logout")
 	public ResponseEntity<BasicResponse> logout(HttpServletRequest request) {
 		authService.logoutByRequest(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.LOGOUT_SUCCESS));
 	}
 
-	@Operation(summary = "Create new user", description = "Admin creates a new user account with a specific role.")
+	@Operation(summary = SwaggerMessages.CREATE_NEW_USER, description = "Admin creates a new user account with a specific role.")
 	@PostMapping("/create-user")
 	@PreAuthorize("hasAuthority('USER_CREATE')")
-	public ResponseEntity<BasicResponse> createUser(@RequestBody CreateUserRequestDTO createUserRequestDTO) {
+	public ResponseEntity<BasicResponse> createUser(@Valid @RequestBody CreateUserRequestDTO createUserRequestDTO) {
 		UserResponseDTO userResponseDTO = authService.register(createUserRequestDTO);
 		return ResponseEntity.ok(new BasicResponse(Messages.CREATE_NEW_USER, userResponseDTO));
 	}
 
-	@Operation(summary = "Change user password", description = "Authenticated user changes their current password.")
+	@Operation(summary = SwaggerMessages.CHANGE_USER_PASSWORD, description = "Authenticated user changes their current password.")
 	@PostMapping("/change-password")
 	public ResponseEntity<BasicResponse> changePassword(@AuthenticationPrincipal User user,
-			@RequestBody UserChangePasswordRequestDTO request) {
+			@Valid @RequestBody UserChangePasswordRequestDTO request) {
 		authService.changePassword(user, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.CHANGE_PASSWORD));
 	}
 
-	@Operation(summary = "Regenerate verification code", description = "Send a new verification code to the user’s email.")
+	@Operation(summary = SwaggerMessages.REGENERATE_VERIFICATION_CODE, description = "Send a new verification code to the user's email.")
 	@PostMapping("/regenerate-code")
 	public ResponseEntity<BasicResponse> regenerateCode(@AuthenticationPrincipal User user) {
 
@@ -76,16 +78,16 @@ public class AuthController {
 		return ResponseEntity.ok(new BasicResponse(Messages.CODE_SENT));
 	}
 
-	@Operation(summary = "Forget password", description = "Send a reset code to the user's registered email address.")
+	@Operation(summary = SwaggerMessages.FORGET_PASSWORD, description = "Send a reset code to the user's registered email address.")
 	@PostMapping("/forget-password")
-	public ResponseEntity<BasicResponse> forgetPassword(@RequestBody EmailRequestDTO email) {
+	public ResponseEntity<BasicResponse> forgetPassword(@Valid @RequestBody EmailRequestDTO email) {
 		authService.forgetPassword(email);
 		return ResponseEntity.ok(new BasicResponse(Messages.CODE_SENT));
 	}
 
-	@Operation(summary = "Reset password", description = "Reset the password using the verification code sent via email.")
+	@Operation(summary = SwaggerMessages.RESET_PASSWORD, description = "Reset the password using the verification code sent via email.")
 	@PostMapping("/reset-password")
-	public ResponseEntity<BasicResponse> resetPassword(@RequestBody ResetPasswordRequestDTO resetPasswodDTO) {
+	public ResponseEntity<BasicResponse> resetPassword(@Valid @RequestBody ResetPasswordRequestDTO resetPasswodDTO) {
 		authService.resetPassword(resetPasswodDTO);
 		return ResponseEntity.ok(new BasicResponse(Messages.CHANGE_PASSWORD));
 	}

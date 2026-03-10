@@ -6,11 +6,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.exam.exam_system.config.Messages;
+import com.exam.exam_system.config.SwaggerMessages;
 import com.exam.exam_system.dto.*;
 import com.exam.exam_system.service.ExamService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Exam Controller", description = "API for managing exams")
@@ -21,24 +23,24 @@ public class ExamController {
 
 	private final ExamService examService;
 
-	@Operation(summary = "Create new exam")
+	@Operation(summary = SwaggerMessages.CREATE_EXAM)
 	@PostMapping
 	@PreAuthorize("hasAuthority('EXAM_CREATE')")
-	public ResponseEntity<BasicResponse> createExam(@RequestBody CreateExamRequestDTO request) {
+	public ResponseEntity<BasicResponse> createExam(@Valid @RequestBody CreateExamRequestDTO request) {
 		ExamResponseDTO response = examService.createExam(request);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_CREATED, response));
 	}
 
-	@Operation(summary = "Update existing exam")
+	@Operation(summary = SwaggerMessages.UPDATE_EXAM)
 	@PutMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_UPDATE')")
 	public ResponseEntity<BasicResponse> updateExam(@PathVariable("examId") Long examId,
-			@RequestBody UpdateExamRequestDTO request) {
+			@Valid @RequestBody UpdateExamRequestDTO request) {
 		ExamResponseDTO response = examService.updateExam(examId, request);
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_UPDATED, response));
 	}
 
-	@Operation(summary = "Get exam by ID")
+	@Operation(summary = SwaggerMessages.GET_EXAM_BY_ID)
 	@GetMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getExamById(@PathVariable("examId") Long examId) {
@@ -46,7 +48,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = "Get exams by college (paginated)")
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_COLLEGE)
 	@GetMapping("/college/{collegeId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getByCollege(@PathVariable("collegeId") Long collegeId,
@@ -56,7 +58,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = "Get exams by department (paginated)")
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_DEPARTMENT)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/department/{departmentId}")
 	public ResponseEntity<BasicResponse> getByDepartment(@PathVariable("departmentId") Long departmentId,
@@ -65,7 +67,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = "Get exams by user (paginated)")
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_USER)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<BasicResponse> getByUser(@PathVariable("userId") Long userId,
@@ -75,7 +77,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = "Get my exams (paginated)")
+	@Operation(summary = SwaggerMessages.GET_MY_EXAMS)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/my")
 	public ResponseEntity<BasicResponse> getMyExams(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -85,7 +87,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = "Get exams by subject (paginated)")
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_SUBJECT)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/subject/{subjectId}")
 	public ResponseEntity<BasicResponse> getBySubject(@PathVariable("subjectId") Long subjectId,
@@ -95,7 +97,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = "Get all exams (paginated)")
+	@Operation(summary = SwaggerMessages.GET_ALL_EXAMS)
 	@GetMapping
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getAllExams(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -105,7 +107,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = "Get all Active exams (paginated)")
+	@Operation(summary = SwaggerMessages.GET_ALL_ACTIVE_EXAMS)
 	@GetMapping("/active")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getAllActiveExams(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -115,7 +117,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = "Search exams by keyword (paginated)")
+	@Operation(summary = SwaggerMessages.SEARCH_EXAMS)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/search")
 	public ResponseEntity<BasicResponse> searchExams(@RequestParam(name = "keyword") String keyword,
@@ -125,7 +127,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = "DeActivate exam")
+	@Operation(summary = SwaggerMessages.DEACTIVATE_EXAM)
 	@DeleteMapping("/deactivate/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
 	public ResponseEntity<BasicResponse> deActivateExam(@PathVariable("examId") Long examId) {
@@ -133,7 +135,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
 
-	@Operation(summary = "Delete exam")
+	@Operation(summary = SwaggerMessages.DELETE_EXAM)
 	@DeleteMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
 	public ResponseEntity<BasicResponse> delateExam(@PathVariable("examId") Long examId) {

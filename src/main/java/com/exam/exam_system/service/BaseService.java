@@ -6,11 +6,17 @@ import org.springframework.data.domain.Sort;
 
 public class BaseService {
 
+    private static final int MAX_PAGE_SIZE = 100;
+
     protected Pageable createPageRequest(int page, int size, String sortBy) {
-        return PageRequest.of(page, size, Sort.by(sortBy));
+        int safeSize = Math.min(Math.max(size, 1), MAX_PAGE_SIZE);
+        int safePage = Math.max(page, 0);
+        return PageRequest.of(safePage, safeSize, Sort.by(sortBy));
     }
 
     protected Pageable createPageRequest(int page, int size, String sortBy, Sort.Direction direction) {
-        return PageRequest.of(page, size, Sort.by(direction, sortBy));
+        int safeSize = Math.min(Math.max(size, 1), MAX_PAGE_SIZE);
+        int safePage = Math.max(page, 0);
+        return PageRequest.of(safePage, safeSize, Sort.by(direction, sortBy));
     }
 }

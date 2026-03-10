@@ -1,5 +1,6 @@
 package com.exam.exam_system.service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class JwtService {
 	private String expiration;
 
 	private Key getSignKey() {
-		return Keys.hmacShaKeyFor(secret.getBytes());
+		return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 	}
 
 	public String generateToken(User user) {

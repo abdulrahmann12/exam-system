@@ -65,6 +65,14 @@ public class StudentExamSessionService {
         StudentExamSession session = sessionRepository.findById(dto.getSessionId())
                 .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
 
+        // Verify session belongs to current user
+        User currentUser = userService.getCurrentUser();
+        Student student = studentRepository.findByUser_UserId(currentUser.getUserId())
+                .orElseThrow(StudentNotFoundException::new);
+        if (!session.getStudent().getStudentId().equals(student.getStudentId())) {
+            throw new UnauthorizedActionException("You are not authorized to submit answers for this session");
+        }
+
         if (!session.getIsActive()) {
             throw new UnauthorizedActionException("Session is not active");
         }
@@ -101,6 +109,14 @@ public class StudentExamSessionService {
     public void endSession(Long sessionId) {
         StudentExamSession session = sessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Session not found"));
+
+        // Verify session belongs to current user
+        User currentUser = userService.getCurrentUser();
+        Student student = studentRepository.findByUser_UserId(currentUser.getUserId())
+                .orElseThrow(StudentNotFoundException::new);
+        if (!session.getStudent().getStudentId().equals(student.getStudentId())) {
+            throw new UnauthorizedActionException("You are not authorized to end this session");
+        }
 
         if (!session.getIsActive()) {
             return;
