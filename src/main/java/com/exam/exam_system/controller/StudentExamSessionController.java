@@ -28,7 +28,7 @@ public class StudentExamSessionController {
     @GetMapping("/enter")
     public ResponseEntity<BasicResponse> enterExam(@RequestParam(name = "token") String token) {
         Exam exam = sessionService.validateTokenAndGetExam(token);
-        return ResponseEntity.ok(new BasicResponse("Exam validated successfully", examMapper.toStudentViewDto(exam)));
+        return ResponseEntity.ok(new BasicResponse("Exam validated successfully", examMapper.toSummaryDto(exam)));
     }
 
     @Operation(summary = SwaggerMessages.START_EXAM_SESSION)

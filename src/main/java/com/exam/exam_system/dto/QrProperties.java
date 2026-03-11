@@ -13,4 +13,5 @@ import lombok.Setter;
 public class QrProperties {
 
 	private long expirationMinutes;
+    private String baseUrl;
 }

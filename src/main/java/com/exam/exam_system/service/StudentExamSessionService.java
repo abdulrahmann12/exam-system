@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +37,7 @@ public class StudentExamSessionService {
 
     @Transactional
     public StudentExamSessionResponseDTO startSession(Long examId, String token) {
-        Exam exam = examRepository.findById(examId)
+        Exam exam = examRepository.findExamWithQuestionsAndChoices(examId)
                 .orElseThrow(ExamNotFoundException::new);
 
         if (!token.equals(exam.getQrToken())) {
@@ -79,6 +82,11 @@ public class StudentExamSessionService {
 
         Question question = questionRepository.findById(dto.getQuestionId())
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found"));
+
+        // Verify question belongs to the exam in the session
+        if (!question.getExam().getExamId().equals(session.getExam().getExamId())) {
+            throw new UnauthorizedActionException("This question does not belong to the current exam session");
+        }
 
         StudentAnswer answer = answerRepository.findByStudentSession_SessionIdAndQuestion_QuestionId(
                 session.getSessionId(), question.getQuestionId())
@@ -130,10 +138,13 @@ public class StudentExamSessionService {
         int totalMark = 0;
         int maxMark = 0;
 
+        List<StudentAnswer> allAnswers = answerRepository.findByStudentSession_SessionId(sessionId);
+        Map<Long, StudentAnswer> answerMap = allAnswers.stream()
+                .collect(Collectors.toMap(a -> a.getQuestion().getQuestionId(), a -> a));
+
         for (Question q : session.getExam().getQuestions()) {
             maxMark += q.getMarks();
-            StudentAnswer studentAnswer = answerRepository.findByStudentSession_SessionIdAndQuestion_QuestionId(sessionId, q.getQuestionId())
-                    .orElse(null);
+            StudentAnswer studentAnswer = answerMap.get(q.getQuestionId());
 
             if (studentAnswer != null && Boolean.TRUE.equals(studentAnswer.getIsCorrect())) {
                 totalMark += q.getMarks();
