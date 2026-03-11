@@ -430,7 +430,7 @@ public class ExamService {
 
 		LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(qrProperties.getExpirationMinutes());
 
-		String qrContent = "https://app.com/exams/" + exam.getExamId() + "/enter?token=" + token;
+		String qrContent = qrProperties.getBaseUrl() + "/exams/" + exam.getExamId() + "/enter?token=" + token;
 
 		byte[] qrImage = qrCodeService.generateQrCode(qrContent);
 		String qrUrl = imageService.uploadImage(qrImage);

@@ -73,44 +73,32 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
         ResourceNotFoundException.class,
+        UserNotFoundException.class,
+        DepartmentNotFoundException.class,
+        CollegeNotFoundException.class,
+        RoleNotFoundException.class,
+        SubjectNotFoundException.class,
+        PermissionNotFoundException.class,
+        ExamNotFoundException.class,
+        StudentNotFoundException.class
+    })
+    public ResponseEntity<BasicResponse> handleNotFoundBusinessExceptions(Exception ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({
         InvalidConfirmationCodeException.class,
         InvalidTokenException.class,
         InvalidResetCodeException.class,
         InvalidCurrentPasswordException.class,
-        UserNotFoundException.class,
-        EmailAlreadyExistsException.class,
         InsufficientStockException.class,
-        DepartmentNotFoundException.class,
-        DuplicateResourceException.class,
-        UsernameAlreadyExistsException.class,
-        CollegeAlreadyExistsException.class,
-        CollegeNotFoundException.class,
-        RoleNotFoundException.class,
-        RoleAlreadyExistsException.class,
-        RoleDeletionNotAllowedException.class,
-        CollegeDeletionNotAllowedException.class,
-        DepartmentDeletionNotAllowedException.class,
-        SubjectAlreadyExistsException.class,
-        SubjectCodeAlreadyExistsException.class,
-        SubjectNotFoundException.class,
-        SubjectDeletionNotAllowedException.class,
         DepartmentCollegeMismatchException.class,
-        PhoneAlreadyExistsException.class,
-        UsernameAlreadyExistsException.class,
         InvalidVerificationCodeException.class,
         InvalidEmailChangeRequestException.class,
-        TooManyRequestsException.class,
         VerificationCodeExpiredException.class,
-        UserAlreadyDeactivatedException.class,
-        UserAlreadyActiveException.class,
-        UserDeactivatedException.class,
         ExpiredResetCodeException.class,
-        PermissionNotFoundException.class,
-        PermissionDeletionNotAllowedException.class,
-        PermissionAlreadyExistsException.class,
         InvalidExamTimeException.class,
         ExamStartInPastException.class,
-        ExamNotFoundException.class,
         EmptyExamQuestionsException.class,
         InvalidQuestionTypeException.class,
         InvalidQuestionOrderException.class,
@@ -119,28 +107,60 @@ public class GlobalExceptionHandler {
         InvalidTrueFalseChoicesException.class,
         EssayQuestionHasChoicesException.class,
         CollegeMismatchException.class,
-        UnauthorizedException.class,
-        ExamDeletionNotAllowedException.class,
         ExamLockedException.class,
-        DuplicateQuestionOrderException.class,
-        DepartmentCollegeMismatchException.class,
         SubjectDepartmentMismatchException.class,
         UserDepartmentMismatchException.class,
         UserCollegeMismatchException.class,
-        DuplicateChoiceOrderException.class,
         QuestionNotBelongToExamException.class,
         ChoiceNotBelongToQuestionException.class,
-        ExamAlreadyDeactivatedException.class,
-        QrGenerationException.class,
-        StudentNotFoundException.class,
+        QrGenerationException.class
+    })
+    public ResponseEntity<BasicResponse> handleBadRequestBusinessExceptions(Exception ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({
+        EmailAlreadyExistsException.class,
+        DuplicateResourceException.class,
+        UsernameAlreadyExistsException.class,
+        CollegeAlreadyExistsException.class,
+        RoleAlreadyExistsException.class,
+        SubjectAlreadyExistsException.class,
+        SubjectCodeAlreadyExistsException.class,
+        PhoneAlreadyExistsException.class,
+        PermissionAlreadyExistsException.class,
         StudentAlreadyExistsException.class,
         StudentCodeAlreadyExistsException.class,
-        StudentAlreadyDeactivatedException.class,
+        DuplicateQuestionOrderException.class,
+        DuplicateChoiceOrderException.class,
+        UserAlreadyActiveException.class,
+        UserAlreadyDeactivatedException.class,
         StudentAlreadyActiveException.class,
-        
+        StudentAlreadyDeactivatedException.class,
+        ExamAlreadyDeactivatedException.class
     })
-    public ResponseEntity<BasicResponse> handleNotFoundBusinessExceptions(Exception ex, WebRequest request) {
-        return buildErrorResponse(ex, request, HttpStatus.NOT_FOUND);
+    public ResponseEntity<BasicResponse> handleConflictBusinessExceptions(Exception ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({
+        RoleDeletionNotAllowedException.class,
+        CollegeDeletionNotAllowedException.class,
+        DepartmentDeletionNotAllowedException.class,
+        SubjectDeletionNotAllowedException.class,
+        PermissionDeletionNotAllowedException.class,
+        ExamDeletionNotAllowedException.class,
+        UserDeactivatedException.class,
+        UnauthorizedException.class,
+        UnauthorizedActionException.class
+    })
+    public ResponseEntity<BasicResponse> handleForbiddenBusinessExceptions(Exception ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<BasicResponse> handleTooManyRequests(TooManyRequestsException ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.TOO_MANY_REQUESTS);
     }
 
 
