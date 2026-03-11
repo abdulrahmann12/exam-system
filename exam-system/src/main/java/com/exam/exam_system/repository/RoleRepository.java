@@ -1,6 +1,6 @@
 package com.exam.exam_system.repository;
 
-import com.exam.exam_system.Entities.Role;
+import com.exam.exam_system.entities.Role;
 
 import java.util.Optional;
 

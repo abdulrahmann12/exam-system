@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.Permission;
+import com.exam.exam_system.entities.Permission;
 import com.exam.exam_system.dto.PermissionCreateRequestDTO;
 import com.exam.exam_system.dto.PermissionGetResponseDTO;
 import com.exam.exam_system.dto.PermissionUpdateRequestDTO;

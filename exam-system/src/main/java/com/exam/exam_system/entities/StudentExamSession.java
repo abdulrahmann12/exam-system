@@ -1,4 +1,4 @@
-package com.exam.exam_system.Entities;
+package com.exam.exam_system.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +21,13 @@ public class StudentExamSession {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exam_id", nullable = false)
     private Exam exam;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private Student student;
+
+    private String guestStudentName;
+    private String guestStudentCode;
 
     @Column(nullable = false, unique = true)
     private String sessionCode;

@@ -5,8 +5,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
-import com.exam.exam_system.Entities.Student;
-import com.exam.exam_system.Entities.User;
+import com.exam.exam_system.entities.Student;
+import com.exam.exam_system.entities.User;
 import com.exam.exam_system.dto.StudentCreateRequestDTO;
 import com.exam.exam_system.dto.StudentGetResponseDTO;
 import com.exam.exam_system.dto.StudentProfileResponseDTO;

@@ -1,8 +1,7 @@
 package com.exam.exam_system.exception;
 
 
-import java.nio.file.AccessDeniedException;
-
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 
 import org.springframework.http.HttpStatus;

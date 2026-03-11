@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import com.exam.exam_system.Entities.Permission;
-import com.exam.exam_system.Entities.Role;
+import com.exam.exam_system.entities.Permission;
+import com.exam.exam_system.entities.Role;
 import com.exam.exam_system.dto.RoleCreateRequestDTO;
 import com.exam.exam_system.dto.RoleGetResponseDTO;
 import com.exam.exam_system.dto.RoleUpdateRequestDTO;

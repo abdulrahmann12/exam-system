@@ -3,7 +3,7 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.Permission;
+import com.exam.exam_system.entities.Permission;
 import com.exam.exam_system.dto.PermissionCreateRequestDTO;
 import com.exam.exam_system.dto.PermissionGetResponseDTO;
 import com.exam.exam_system.dto.PermissionUpdateRequestDTO;

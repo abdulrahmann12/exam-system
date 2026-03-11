@@ -1,6 +1,6 @@
 package com.exam.exam_system.repository;
 
-import com.exam.exam_system.Entities.Exam;
+import com.exam.exam_system.entities.Exam;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -133,4 +133,6 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 		    where e.examId = :examId
 		""")
 		Optional<Exam> findExamWithQuestionsAndChoices(@Param("examId") Long examId);
+
+	Optional<Exam> findByQrToken(String qrToken);
 }

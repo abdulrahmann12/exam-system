@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.*;
-import com.exam.exam_system.Entities.User;
+import com.exam.exam_system.entities.User;
 import com.exam.exam_system.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -3,7 +3,7 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.Role;
+import com.exam.exam_system.entities.Role;
 import com.exam.exam_system.dto.RoleCreateRequestDTO;
 import com.exam.exam_system.dto.RoleGetResponseDTO;
 

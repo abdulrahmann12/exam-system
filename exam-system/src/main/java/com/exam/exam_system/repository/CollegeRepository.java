@@ -2,7 +2,7 @@ package com.exam.exam_system.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.exam.exam_system.Entities.College;
+import com.exam.exam_system.entities.College;
 
 import java.util.Optional;
 

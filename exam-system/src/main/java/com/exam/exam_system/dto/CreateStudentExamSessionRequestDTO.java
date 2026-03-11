@@ -10,6 +10,6 @@ public class CreateStudentExamSessionRequestDTO {
     @NotNull(message = "Exam id is required")
     private Long examId;
 
-    @NotBlank(message = "Session code is required")
-    private String sessionCode;
+    private String guestStudentName;
+    private String guestStudentCode;
 }

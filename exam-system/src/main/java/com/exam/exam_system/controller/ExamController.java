@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.exam.exam_system.config.Messages;
 import com.exam.exam_system.dto.*;
 import com.exam.exam_system.service.ExamService;
+import com.exam.exam_system.service.StudentExamSessionService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class ExamController {
 
 	private final ExamService examService;
+	private final StudentExamSessionService sessionService;
 
 	@Operation(summary = "Create new exam")
 	@PostMapping
@@ -147,6 +149,14 @@ public class ExamController {
 
 		ExamQrResponseDTO response = examService.generateQrForExam(examId);
 
+		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
+	}
+
+	@Operation(summary = "Get active student sessions for a specific exam")
+	@GetMapping("/{examId}/active-sessions")
+	@PreAuthorize("hasAuthority('EXAM_READ')")
+	public ResponseEntity<BasicResponse> getActiveSessions(@PathVariable Long examId) {
+		var response = sessionService.getActiveSessionsForExam(examId);
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 

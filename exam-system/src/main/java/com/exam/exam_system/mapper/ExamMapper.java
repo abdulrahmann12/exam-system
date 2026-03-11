@@ -3,7 +3,7 @@ package com.exam.exam_system.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.exam.exam_system.Entities.Exam;
+import com.exam.exam_system.entities.Exam;
 import com.exam.exam_system.dto.*;
 
 @Mapper(componentModel = "spring", uses = { QuestionMapper.class, ChoiceMapper.class })
