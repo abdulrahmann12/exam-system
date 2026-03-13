@@ -108,7 +108,12 @@ public class SwaggerMessages {
 
 	// ==================== Student Exam Session ====================
 	public static final String VALIDATE_QR_TOKEN = "Validate QR token and get exam details";
-	public static final String START_EXAM_SESSION = "Start a new exam session";
+	public static final String ACCESS_EXAM_VIA_QR = "Access exam by scanning QR code (validates token, exam availability, and time window)";
+	public static final String VERIFY_STUDENT_CODE = "Verify student code before starting the exam";
+	public static final String START_EXAM_SESSION = "Start a new exam session (with all validations)";
 	public static final String SUBMIT_ANSWER = "Submit an answer for a question";
 	public static final String END_EXAM_SESSION = "End the exam session and calculate results";
+	public static final String GET_SESSION_QUESTIONS = "Get exam questions for an active session";
+	public static final String GET_MY_EXAM_SESSIONS = "Get all exam sessions for the currently authenticated student";
+	public static final String GET_SESSION_BY_ID = "Get a specific exam session by ID (for resuming)";
 }

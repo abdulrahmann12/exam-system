@@ -191,4 +191,15 @@ public class Messages {
     public static final String STUDENT_DELETED = "Student deleted successfully";
     public static final String STUDENT_DEACTIVATED = "Student deactivated successfully";
     public static final String STUDENT_ACTIVATED = "Student activated successfully";
+    public static final String STUDENT_CODE_MISMATCH = "Student code does not match the authenticated user";
+    public static final String STUDENT_ACCOUNT_DEACTIVATED = "Student account is deactivated";
+
+	// ==================== Exam Access Messages ====================
+	public static final String EXAM_NOT_AVAILABLE = "Exam is not currently available";
+	public static final String EXAM_NOT_STARTED_YET = "Exam has not started yet";
+	public static final String EXAM_ALREADY_ENDED = "Exam has already ended";
+	public static final String EXAM_VALIDATED = "Exam validated successfully";
+	public static final String STUDENT_CODE_VERIFIED = "Student code verified successfully";
+	public static final String EXAM_SESSION_STARTED_SUCCESS = "Exam session started successfully";
+	public static final String DUPLICATE_SESSION = "You have already started a session for this exam";
 }

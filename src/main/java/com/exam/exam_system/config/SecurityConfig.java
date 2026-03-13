@@ -58,6 +58,7 @@ public class SecurityConfig {
 								"/api/auth/logout").permitAll()
 						.requestMatchers("/api/students/register").permitAll()
 						.requestMatchers("/api/sessions/enter").permitAll()
+						.requestMatchers("/api/sessions/access").permitAll()
 						.anyRequest().authenticated())
 				.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

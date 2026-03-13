@@ -137,6 +137,11 @@ public class GlobalExceptionHandler {
         StudentCodeAlreadyExistsException.class,
         StudentAlreadyDeactivatedException.class,
         StudentAlreadyActiveException.class,
+        ExamNotAvailableException.class,
+        DuplicateExamSessionException.class,
+        StudentCodeMismatchException.class,
+        SessionExpiredException.class,
+        SessionNotFoundException.class,
         
     })
     public ResponseEntity<BasicResponse> handleNotFoundBusinessExceptions(Exception ex, WebRequest request) {
