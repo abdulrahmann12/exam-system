@@ -1,3 +1,12 @@
+---
+title: Exam System
+emoji: 📝
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # 📝 Exam System — Online Examination Platform (Backend)
 
 A comprehensive Spring Boot backend for an **Online Exam Management System** that supports user/student management, exam creation with multiple question types (manual or AI-parsed from PDF/CSV files), QR-code-based exam access, timed exam sessions, auto-grading, and result processing. Built with a clean layered architecture, JWT-based security, asynchronous email notifications via RabbitMQ, and full Swagger/OpenAPI documentation.
