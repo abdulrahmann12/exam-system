@@ -60,6 +60,7 @@ public class SwaggerMessages {
 
 	// ==================== Exam ====================
 	public static final String CREATE_EXAM = "Create new exam";
+	public static final String CREATE_EXAM_WITH_FILE = "Create new exam with questions parsed from an uploaded file (PDF/CSV)";
 	public static final String UPDATE_EXAM = "Update existing exam";
 	public static final String GET_EXAM_BY_ID = "Get exam by ID";
 	public static final String GET_EXAMS_BY_COLLEGE = "Get exams by college (paginated)";
@@ -72,6 +73,7 @@ public class SwaggerMessages {
 	public static final String SEARCH_EXAMS = "Search exams by keyword (paginated)";
 	public static final String DEACTIVATE_EXAM = "DeActivate exam";
 	public static final String DELETE_EXAM = "Delete exam";
+	public static final String UPLOAD_EXAM_QUESTIONS = "Upload and parse an exam file (PDF/CSV) to automatically create questions";
 
 	// ==================== User ====================
 	public static final String GET_CURRENT_USER_PROFILE = "Get current user profile";

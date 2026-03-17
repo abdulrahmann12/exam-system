@@ -149,6 +149,18 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(UnauthorizedActionException.class)
+    public ResponseEntity<BasicResponse> handleUnauthorizedAction(UnauthorizedActionException ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.CONFLICT);
+    }
+
+    // === Python Service Exception === //
+
+    @ExceptionHandler(PythonServiceException.class)
+    public ResponseEntity<BasicResponse> handlePythonServiceException(PythonServiceException ex, WebRequest request) {
+        return buildErrorResponse(ex, request, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     // === Validation Exceptions === //
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -202,4 +202,9 @@ public class Messages {
 	public static final String STUDENT_CODE_VERIFIED = "Student code verified successfully";
 	public static final String EXAM_SESSION_STARTED_SUCCESS = "Exam session started successfully";
 	public static final String DUPLICATE_SESSION = "You have already started a session for this exam";
+
+	// ==================== Upload / Python Service Messages ====================
+	public static final String QUESTIONS_UPLOADED_SUCCESSFULLY = "Questions uploaded successfully";
+	public static final String PYTHON_SERVICE_UNAVAILABLE = "Failed to connect to the question parsing service. Please ensure it is running.";
+	public static final String PYTHON_SERVICE_INVALID_RESPONSE = "Received an invalid response from the question parsing service";
 }
