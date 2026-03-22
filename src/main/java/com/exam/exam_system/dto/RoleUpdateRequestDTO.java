@@ -1,5 +1,7 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
+
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -13,10 +15,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class RoleUpdateRequestDTO {
-	@NotBlank(message = "Role name is required")
-	@Size(min = 3, max = 50, message = "Role name must be between 3 and 50 characters")
+	@NotBlank(message = ValidationMessages.ROLE_NAME_REQUIRED)
+	@Size(min = 3, max = 50, message = ValidationMessages.ROLE_NAME_SIZE)
 	private String roleName;
 	
 	private List<Long> permissionIds;
-
 }

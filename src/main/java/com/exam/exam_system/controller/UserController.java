@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "User Controller", description = "API for managing users")
+@Tag(name = SwaggerMessages.TAG_USER, description = SwaggerMessages.TAG_USER_DESC)
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class UserController {
 
 	/* ==================== PROFILE ==================== */
 
-	@Operation(summary = SwaggerMessages.GET_CURRENT_USER_PROFILE)
+	@Operation(summary = SwaggerMessages.GET_CURRENT_USER_PROFILE, description = SwaggerMessages.GET_CURRENT_USER_PROFILE_DESC)
 	@GetMapping("/profile")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<BasicResponse> getProfile() {
@@ -38,7 +38,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.UPDATE_CURRENT_USER_PROFILE)
+	@Operation(summary = SwaggerMessages.UPDATE_CURRENT_USER_PROFILE, description = SwaggerMessages.UPDATE_CURRENT_USER_PROFILE_DESC)
 	@PutMapping("/profile")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<BasicResponse> updateProfile(@AuthenticationPrincipal User user,
@@ -51,7 +51,7 @@ public class UserController {
 
 	/* ==================== USERNAME ==================== */
 
-	@Operation(summary = SwaggerMessages.CHANGE_USERNAME)
+	@Operation(summary = SwaggerMessages.CHANGE_USERNAME, description = SwaggerMessages.CHANGE_USERNAME_DESC)
 	@PutMapping("/profile/username")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<BasicResponse> changeUsername(@AuthenticationPrincipal User user,
@@ -64,7 +64,7 @@ public class UserController {
 
 	/* ==================== EMAIL ==================== */
 
-	@Operation(summary = SwaggerMessages.REQUEST_EMAIL_CHANGE)
+	@Operation(summary = SwaggerMessages.REQUEST_EMAIL_CHANGE, description = SwaggerMessages.REQUEST_EMAIL_CHANGE_DESC)
 	@PostMapping("/profile/email/request")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<BasicResponse> requestEmailChange(@AuthenticationPrincipal User user,
@@ -75,7 +75,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EMAIL_CHANGE_REQUESTED));
 	}
 
-	@Operation(summary = SwaggerMessages.CONFIRM_EMAIL_CHANGE)
+	@Operation(summary = SwaggerMessages.CONFIRM_EMAIL_CHANGE, description = SwaggerMessages.CONFIRM_EMAIL_CHANGE_DESC)
 	@PostMapping("/profile/email/confirm")
 	@PreAuthorize("isAuthenticated()")
 	public ResponseEntity<BasicResponse> confirmEmailChange(@AuthenticationPrincipal User user,
@@ -88,7 +88,7 @@ public class UserController {
 
 	/* ==================== ADMIN ==================== */
 
-	@Operation(summary = SwaggerMessages.GET_USER_BY_ID)
+	@Operation(summary = SwaggerMessages.GET_USER_BY_ID, description = SwaggerMessages.GET_USER_BY_ID_DESC)
 	@GetMapping("/{userId:\\d+}")
 	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUserById(@PathVariable("userId") Long userId) {
@@ -98,7 +98,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_USERS)
+	@Operation(summary = SwaggerMessages.GET_ALL_USERS, description = SwaggerMessages.GET_ALL_USERS_DESC)
 	@GetMapping
 	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getAllUsers(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -109,7 +109,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_USERS_BY_COLLEGE)
+	@Operation(summary = SwaggerMessages.GET_USERS_BY_COLLEGE, description = SwaggerMessages.GET_USERS_BY_COLLEGE_DESC)
 	@GetMapping("/by-college/{collegeId}")
 	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUsersByCollege(@PathVariable("collegeId") Long collegeId,
@@ -120,7 +120,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_USERS_BY_DEPARTMENT)
+	@Operation(summary = SwaggerMessages.GET_USERS_BY_DEPARTMENT, description = SwaggerMessages.GET_USERS_BY_DEPARTMENT_DESC)
 	@GetMapping("/by-department/{departmentId}")
 	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUsersByDepartment(@PathVariable("departmentId") Long departmentId,
@@ -131,7 +131,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_USERS_BY_ROLE)
+	@Operation(summary = SwaggerMessages.GET_USERS_BY_ROLE, description = SwaggerMessages.GET_USERS_BY_ROLE_DESC)
 	@GetMapping("/by-role")
 	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> getUsersByRole(@RequestParam("roleName") String roleName,
@@ -142,7 +142,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, users));
 	}
 
-	@Operation(summary = SwaggerMessages.UPDATE_USER_BY_ADMIN)
+	@Operation(summary = SwaggerMessages.UPDATE_USER_BY_ADMIN, description = SwaggerMessages.UPDATE_USER_BY_ADMIN_DESC)
 	@PutMapping("/{userId:\\d+}")
 	@PreAuthorize("hasAuthority('USER_UPDATE')")
 	public ResponseEntity<BasicResponse> adminUpdateUser(@PathVariable("userId") Long userId,
@@ -153,7 +153,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.UPDATE_USER, response));
 	}
 
-	@Operation(summary = SwaggerMessages.DEACTIVATE_USER)
+	@Operation(summary = SwaggerMessages.DEACTIVATE_USER, description = SwaggerMessages.DEACTIVATE_USER_DESC)
 	@DeleteMapping("/{userId:\\d+}")
 	@PreAuthorize("hasAuthority('USER_UPDATE')")
 	public ResponseEntity<BasicResponse> deactivateUser(@PathVariable("userId") Long userId) {
@@ -163,7 +163,7 @@ public class UserController {
 		return ResponseEntity.ok(new BasicResponse(Messages.DEACTIVATE_USER));
 	}
 
-	@Operation(summary = SwaggerMessages.ACTIVATE_USER)
+	@Operation(summary = SwaggerMessages.ACTIVATE_USER, description = SwaggerMessages.ACTIVATE_USER_DESC)
 	@PutMapping("/{userId:\\d+}/activate")
 	@PreAuthorize("hasAuthority('USER_UPDATE')")
 	public ResponseEntity<BasicResponse> activateUser(@PathVariable("userId") Long userId) {
@@ -175,7 +175,7 @@ public class UserController {
 
 	/* ==================== SEARCH ==================== */
 
-	@Operation(summary = SwaggerMessages.SEARCH_USERS)
+	@Operation(summary = SwaggerMessages.SEARCH_USERS, description = SwaggerMessages.SEARCH_USERS_DESC)
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('USER_READ')")
 	public ResponseEntity<BasicResponse> searchUsers(@RequestParam(name = "keyword", required = false) String keyword,

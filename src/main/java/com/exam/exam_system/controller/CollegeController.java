@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "College Controller", description = "API for managing colleges")
+@Tag(name = SwaggerMessages.TAG_COLLEGE, description = SwaggerMessages.TAG_COLLEGE_DESC)
 @RestController
 @RequestMapping("/api/colleges")
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class CollegeController {
 
 	private final CollegeService collegeService;
 
-	@Operation(summary = SwaggerMessages.CREATE_COLLEGE)
+	@Operation(summary = SwaggerMessages.CREATE_COLLEGE, description = SwaggerMessages.CREATE_COLLEGE_DESC)
 	@PostMapping
 	@PreAuthorize("hasAuthority('COLLEGE_CREATE')")
 	public ResponseEntity<BasicResponse> createCollege(@Valid @RequestBody CollegeCreateRequestDTO request) {
@@ -32,7 +32,7 @@ public class CollegeController {
 		return ResponseEntity.ok(new BasicResponse(Messages.ADD_COLLEGE, response));
 	}
 
-	@Operation(summary = SwaggerMessages.UPDATE_COLLEGE)
+	@Operation(summary = SwaggerMessages.UPDATE_COLLEGE, description = SwaggerMessages.UPDATE_COLLEGE_DESC)
 	@PutMapping("/{collegeId}")
 	@PreAuthorize("hasAuthority('COLLEGE_UPDATE')")
 	public ResponseEntity<BasicResponse> updateCollege(@PathVariable("collegeId") Long collegeId,
@@ -42,7 +42,7 @@ public class CollegeController {
 		return ResponseEntity.ok(new BasicResponse(Messages.COLLEGE_UPDATE, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_COLLEGE_BY_ID)
+	@Operation(summary = SwaggerMessages.GET_COLLEGE_BY_ID, description = SwaggerMessages.GET_COLLEGE_BY_ID_DESC)
 	@GetMapping("/{collegeId}")
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
 	public ResponseEntity<BasicResponse> getCollegeById(@PathVariable("collegeId") Long collegeId) {
@@ -51,7 +51,7 @@ public class CollegeController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_COLLEGE_BY_NAME)
+	@Operation(summary = SwaggerMessages.GET_COLLEGE_BY_NAME, description = SwaggerMessages.GET_COLLEGE_BY_NAME_DESC)
 	@GetMapping("/by-name")
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
 	public ResponseEntity<BasicResponse> getCollegeByName(@RequestParam(name = "collegeName") String collegeName) {
@@ -60,7 +60,7 @@ public class CollegeController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.SEARCH_COLLEGES)
+	@Operation(summary = SwaggerMessages.SEARCH_COLLEGES, description = SwaggerMessages.SEARCH_COLLEGES_DESC)
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
 	public ResponseEntity<BasicResponse> searchColleges(@RequestParam(name = "keyword") String keyword,
@@ -71,7 +71,7 @@ public class CollegeController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, colleges));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_COLLEGES)
+	@Operation(summary = SwaggerMessages.GET_ALL_COLLEGES, description = SwaggerMessages.GET_ALL_COLLEGES_DESC)
 	@GetMapping
 	@PreAuthorize("hasAuthority('COLLEGE_READ')")
 	public ResponseEntity<BasicResponse> getAllColleges(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -81,7 +81,7 @@ public class CollegeController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, colleges));
 	}
 
-	@Operation(summary = SwaggerMessages.DELETE_COLLEGE)
+	@Operation(summary = SwaggerMessages.DELETE_COLLEGE, description = SwaggerMessages.DELETE_COLLEGE_DESC)
 	@DeleteMapping("/{collegeId}")
 	@PreAuthorize("hasAuthority('COLLEGE_DELETE')")
 	public ResponseEntity<BasicResponse> deleteCollege(@PathVariable("collegeId") Long collegeId) {

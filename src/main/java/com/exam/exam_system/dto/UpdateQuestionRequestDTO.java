@@ -2,6 +2,7 @@ package com.exam.exam_system.dto;
 
 import java.util.List;
 
+import com.exam.exam_system.config.ValidationMessages;
 import com.exam.exam_system.entities.QuestionType;
 
 import jakarta.validation.Valid;
@@ -14,21 +15,21 @@ import lombok.Data;
 @Data
 public class UpdateQuestionRequestDTO {
 
-    @NotNull(message = "Question id is required for update")
+    @NotNull(message = ValidationMessages.QUESTION_ID_REQUIRED)
     private Long questionId;
     
-    @NotBlank
+    @NotBlank(message = ValidationMessages.QUESTION_TEXT_REQUIRED)
     @Size(min = 5, max = 2000)
     private String questionText;
 
-    @NotNull(message = "Question type cannot be null")
+    @NotNull(message = ValidationMessages.QUESTION_TYPE_REQUIRED)
     private QuestionType questionType;
     
-    @NotNull(message = "Question order cannot be null")
+    @NotNull(message = ValidationMessages.QUESTION_ORDER_REQUIRED)
     private Integer questionOrder;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = ValidationMessages.QUESTION_MARKS_REQUIRED)
+    @Min(value = 1, message = ValidationMessages.QUESTION_MARKS_MIN)
     private Integer marks;
 
     private List<@Valid UpdateChoiceRequestDTO> choices;

@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Permission Controller", description = "API for managing system permissions")
+@Tag(name = SwaggerMessages.TAG_PERMISSION, description = SwaggerMessages.TAG_PERMISSION_DESC)
 @RestController
 @RequestMapping("/api/permissions")
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class PermissionController {
 
 	private final PermissionService permissionService;
 
-	@Operation(summary = SwaggerMessages.CREATE_PERMISSION)
+	@Operation(summary = SwaggerMessages.CREATE_PERMISSION, description = SwaggerMessages.CREATE_PERMISSION_DESC)
 	@PostMapping
 	@PreAuthorize("hasAuthority('PERMISSION_CREATE')")
 	public ResponseEntity<BasicResponse> createPermission(@Valid @RequestBody PermissionCreateRequestDTO request) {
@@ -40,7 +40,7 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.ADD_PERMISSION, response));
 	}
 
-	@Operation(summary = SwaggerMessages.UPDATE_PERMISSION)
+	@Operation(summary = SwaggerMessages.UPDATE_PERMISSION, description = SwaggerMessages.UPDATE_PERMISSION_DESC)
 	@PutMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_UPDATE')")
 	public ResponseEntity<BasicResponse> updatePermission(@PathVariable("permissionId") Long permissionId,
@@ -49,7 +49,7 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.PERMISSION_UPDATE, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_PERMISSION_BY_ID)
+	@Operation(summary = SwaggerMessages.GET_PERMISSION_BY_ID, description = SwaggerMessages.GET_PERMISSION_BY_ID_DESC)
 	@GetMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public ResponseEntity<BasicResponse> getPermissionById(@PathVariable("permissionId") Long permissionId) {
@@ -57,7 +57,7 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSIONS)
+	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSIONS, description = SwaggerMessages.GET_ALL_PERMISSIONS_DESC)
 	@GetMapping
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public ResponseEntity<BasicResponse> getAllPermissions(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -66,7 +66,7 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, permissions));
 	}
 
-	@Operation(summary = SwaggerMessages.DELETE_PERMISSION)
+	@Operation(summary = SwaggerMessages.DELETE_PERMISSION, description = SwaggerMessages.DELETE_PERMISSION_DESC)
 	@DeleteMapping("/{permissionId}")
 	@PreAuthorize("hasAuthority('PERMISSION_DELETE')")
 	public ResponseEntity<BasicResponse> deletePermission(@PathVariable("permissionId") Long permissionId) {
@@ -74,14 +74,14 @@ public class PermissionController {
 		return ResponseEntity.ok(new BasicResponse(Messages.DELETE_PERMISSION));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSION_MODULES)
+	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSION_MODULES, description = SwaggerMessages.GET_ALL_PERMISSION_MODULES_DESC)
 	@GetMapping("/modules")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public List<String> getModules() {
 		return Arrays.stream(PermissionModules.values()).map(Enum::name).collect(Collectors.toList());
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSION_ACTIONS)
+	@Operation(summary = SwaggerMessages.GET_ALL_PERMISSION_ACTIONS, description = SwaggerMessages.GET_ALL_PERMISSION_ACTIONS_DESC)
 	@GetMapping("/actions")
 	@PreAuthorize("hasAuthority('PERMISSION_READ')")
 	public List<String> getActions() {

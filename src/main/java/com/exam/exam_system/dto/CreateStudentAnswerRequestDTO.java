@@ -1,15 +1,17 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
 public class CreateStudentAnswerRequestDTO {
 
-    @NotNull(message = "Session id is required")
+    @NotNull(message = ValidationMessages.SESSION_ID_REQUIRED)
     private Long sessionId;
 
-    @NotNull(message = "Question id is required")
+    @NotNull(message = ValidationMessages.QUESTION_ID_REQUIRED)
     private Long questionId;
 
     private Long choiceId;

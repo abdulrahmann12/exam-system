@@ -1,5 +1,7 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class VerifyEmailChangeRequestDTO {
 
-	@NotBlank(message = "Code must not be blank")
+	@NotBlank(message = ValidationMessages.VERIFICATION_CODE_REQUIRED)
 	private String code;
 }

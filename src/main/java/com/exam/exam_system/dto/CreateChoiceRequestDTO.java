@@ -1,5 +1,7 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -7,15 +9,14 @@ import lombok.Data;
 @Data
 public class CreateChoiceRequestDTO {
 
-    @NotBlank(message = "Choice text cannot be blank")
+    @NotBlank(message = ValidationMessages.CHOICE_TEXT_REQUIRED)
     @Size(max = 1000)
     private String choiceText;
 
-    @NotNull(message = "isCorrect cannot be null")
+    @NotNull(message = ValidationMessages.CHOICE_IS_CORRECT_REQUIRED)
     private Boolean isCorrect;
 
-    @NotNull(message = "Choice order cannot be null")
-    @Min(value = 1, message = "Choice order must be at least 1")
+    @NotNull(message = ValidationMessages.CHOICE_ORDER_REQUIRED)
+    @Min(value = 1, message = ValidationMessages.CHOICE_ORDER_MIN)
     private Integer choiceOrder;
 }
-

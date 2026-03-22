@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Student Exam Session Controller", description = "API for student exam access and session management")
+@Tag(name = SwaggerMessages.TAG_SESSION, description = SwaggerMessages.TAG_SESSION_DESC)
 @RestController
 @RequestMapping("/api/sessions")
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class StudentExamSessionController {
 
     // ======================== Step 1: Access Exam via QR ========================
 
-    @Operation(summary = SwaggerMessages.ACCESS_EXAM_VIA_QR)
+    @Operation(summary = SwaggerMessages.ACCESS_EXAM_VIA_QR, description = SwaggerMessages.ACCESS_EXAM_VIA_QR_DESC)
     @GetMapping("/access")
     public ResponseEntity<BasicResponse> accessExamViaQr(@RequestParam(name = "token") String token) {
         ExamAccessResponseDTO examAccess = examAccessService.accessExamViaQr(token);
@@ -35,7 +35,7 @@ public class StudentExamSessionController {
 
     // ======================== Step 2: Verify Student Code ========================
 
-    @Operation(summary = SwaggerMessages.VERIFY_STUDENT_CODE)
+    @Operation(summary = SwaggerMessages.VERIFY_STUDENT_CODE, description = SwaggerMessages.VERIFY_STUDENT_CODE_DESC)
     @PostMapping("/verify-student")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> verifyStudentCode(@Valid @RequestBody VerifyStudentCodeRequestDTO dto) {
@@ -45,7 +45,7 @@ public class StudentExamSessionController {
 
     // ======================== Step 3: Start Exam ========================
 
-    @Operation(summary = SwaggerMessages.START_EXAM_SESSION)
+    @Operation(summary = SwaggerMessages.START_EXAM_SESSION, description = SwaggerMessages.START_EXAM_SESSION_DESC)
     @PostMapping("/start")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> startExam(@Valid @RequestBody StartExamRequestDTO dto) {
@@ -55,7 +55,7 @@ public class StudentExamSessionController {
 
     // ======================== Get My Exams (Student) ========================
 
-    @Operation(summary = SwaggerMessages.GET_MY_EXAM_SESSIONS)
+    @Operation(summary = SwaggerMessages.GET_MY_EXAM_SESSIONS, description = SwaggerMessages.GET_MY_EXAM_SESSIONS_DESC)
     @GetMapping("/my-exams")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> getMyExams() {
@@ -64,7 +64,7 @@ public class StudentExamSessionController {
 
     // ======================== Get Session By ID ========================
 
-    @Operation(summary = SwaggerMessages.GET_SESSION_BY_ID)
+    @Operation(summary = SwaggerMessages.GET_SESSION_BY_ID, description = SwaggerMessages.GET_SESSION_BY_ID_DESC)
     @GetMapping("/{sessionId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> getSessionById(@PathVariable("sessionId") Long sessionId) {
@@ -74,7 +74,7 @@ public class StudentExamSessionController {
 
     // ======================== Step 4: Get Exam Questions ========================
 
-    @Operation(summary = SwaggerMessages.GET_SESSION_QUESTIONS)
+    @Operation(summary = SwaggerMessages.GET_SESSION_QUESTIONS, description = SwaggerMessages.GET_SESSION_QUESTIONS_DESC)
     @GetMapping("/{sessionId}/questions")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> getExamQuestions(@PathVariable("sessionId") Long sessionId) {
@@ -84,7 +84,7 @@ public class StudentExamSessionController {
 
     // ======================== Submit Answer ========================
 
-    @Operation(summary = SwaggerMessages.SUBMIT_ANSWER)
+    @Operation(summary = SwaggerMessages.SUBMIT_ANSWER, description = SwaggerMessages.SUBMIT_ANSWER_DESC)
     @PostMapping("/submit-answer")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> submitAnswer(@Valid @RequestBody CreateStudentAnswerRequestDTO answerDto) {
@@ -94,7 +94,7 @@ public class StudentExamSessionController {
 
     // ======================== End Session ========================
 
-    @Operation(summary = SwaggerMessages.END_EXAM_SESSION)
+    @Operation(summary = SwaggerMessages.END_EXAM_SESSION, description = SwaggerMessages.END_EXAM_SESSION_DESC)
     @PostMapping("/end/{sessionId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> endSession(@PathVariable("sessionId") Long sessionId) {
@@ -105,7 +105,7 @@ public class StudentExamSessionController {
     // ======================== Legacy: Start session (backward compat) ========================
 
     @Deprecated
-    @Operation(summary = SwaggerMessages.START_EXAM_SESSION)
+    @Operation(summary = SwaggerMessages.START_EXAM_SESSION, description = SwaggerMessages.START_EXAM_SESSION_LEGACY_DESC)
     @PostMapping("/start/{examId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<BasicResponse> startSession(@PathVariable("examId") Long examId, @RequestParam(name = "token") String token) {

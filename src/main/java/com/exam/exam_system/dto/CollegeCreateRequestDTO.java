@@ -1,5 +1,6 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,6 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 public class CollegeCreateRequestDTO {
 	
-    @NotBlank(message = "College name is required")
+    @NotBlank(message = ValidationMessages.COLLEGE_NAME_REQUIRED)
     private String collegeName;
 }

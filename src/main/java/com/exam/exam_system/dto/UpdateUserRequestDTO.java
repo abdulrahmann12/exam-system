@@ -1,38 +1,39 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
+
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
 public class UpdateUserRequestDTO {
 
-    @NotBlank(message = "Username is required")
-    @Size(min = 3, max = 30, message = "Username must be between 3 and 30 characters")
+    @NotBlank(message = ValidationMessages.USERNAME_REQUIRED)
+    @Size(min = 3, max = 30, message = ValidationMessages.USERNAME_SIZE)
     private String username;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
+    @NotBlank(message = ValidationMessages.EMAIL_REQUIRED)
+    @Email(message = ValidationMessages.EMAIL_INVALID)
     private String email;
     
-    @NotBlank(message = "First name is required")
+    @NotBlank(message = ValidationMessages.FIRST_NAME_REQUIRED)
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
+    @NotBlank(message = ValidationMessages.LAST_NAME_REQUIRED)
     private String lastName;
 
     @Pattern(
         regexp = "^01[0-2,5]{1}[0-9]{8}$",
-        message = "Invalid Egyptian phone number"
+        message = ValidationMessages.PHONE_INVALID
     )
     private String phone;
 
-    @NotNull(message = "Role is required")
+    @NotNull(message = ValidationMessages.ROLE_ID_REQUIRED)
     private Long roleId;
 
-    @NotNull(message = "College is required")
+    @NotNull(message = ValidationMessages.COLLEGE_ID_REQUIRED)
     private Long collegeId;
 
-    @NotNull(message = "Department is required")
+    @NotNull(message = ValidationMessages.DEPARTMENT_ID_REQUIRED)
     private Long departmentId;
 }
-

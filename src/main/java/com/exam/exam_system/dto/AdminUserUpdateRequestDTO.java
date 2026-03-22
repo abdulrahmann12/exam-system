@@ -1,5 +1,7 @@
 package com.exam.exam_system.dto;
 
+import com.exam.exam_system.config.ValidationMessages;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,13 +14,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AdminUserUpdateRequestDTO {
 
-    @NotNull(message = "Role is required")
+    @NotNull(message = ValidationMessages.ROLE_ID_REQUIRED)
     private Long roleId;
 
-    @NotNull(message = "College is required")
+    @NotNull(message = ValidationMessages.COLLEGE_ID_REQUIRED)
     private Long collegeId;
 
-    @NotNull(message = "Department is required")
+    @NotNull(message = ValidationMessages.DEPARTMENT_ID_REQUIRED)
     private Long departmentId;
     
 	private Boolean isActive;

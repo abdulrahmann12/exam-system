@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Exam Controller", description = "API for managing exams")
+@Tag(name = SwaggerMessages.TAG_EXAM, description = SwaggerMessages.TAG_EXAM_DESC)
 @RestController
 @RequestMapping("/api/exams")
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class ExamController {
 	private final ExamUploadService examUploadService;
 	private final ObjectMapper objectMapper;
 
-	@Operation(summary = SwaggerMessages.CREATE_EXAM)
+	@Operation(summary = SwaggerMessages.CREATE_EXAM, description = SwaggerMessages.CREATE_EXAM_DESC)
 	@PostMapping
 	@PreAuthorize("hasAuthority('EXAM_CREATE')")
 	public ResponseEntity<BasicResponse> createExam(@Valid @RequestBody CreateExamRequestDTO request) {
@@ -37,7 +37,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_CREATED, response));
 	}
 
-	@Operation(summary = SwaggerMessages.CREATE_EXAM_WITH_FILE)
+	@Operation(summary = SwaggerMessages.CREATE_EXAM_WITH_FILE, description = SwaggerMessages.CREATE_EXAM_WITH_FILE_DESC)
 	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@PreAuthorize("hasAuthority('EXAM_CREATE')")
 	public ResponseEntity<BasicResponse> createExamWithFile(
@@ -48,7 +48,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_CREATED, response));
 	}
 
-	@Operation(summary = SwaggerMessages.UPDATE_EXAM)
+	@Operation(summary = SwaggerMessages.UPDATE_EXAM, description = SwaggerMessages.UPDATE_EXAM_DESC)
 	@PutMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_UPDATE')")
 	public ResponseEntity<BasicResponse> updateExam(@PathVariable("examId") Long examId,
@@ -57,7 +57,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_UPDATED, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_EXAM_BY_ID)
+	@Operation(summary = SwaggerMessages.GET_EXAM_BY_ID, description = SwaggerMessages.GET_EXAM_BY_ID_DESC)
 	@GetMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getExamById(@PathVariable("examId") Long examId) {
@@ -65,7 +65,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_COLLEGE)
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_COLLEGE, description = SwaggerMessages.GET_EXAMS_BY_COLLEGE_DESC)
 	@GetMapping("/college/{collegeId}")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getByCollege(@PathVariable("collegeId") Long collegeId,
@@ -76,7 +76,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_DEPARTMENT)
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_DEPARTMENT, description = SwaggerMessages.GET_EXAMS_BY_DEPARTMENT_DESC)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/department/{departmentId}")
 	public ResponseEntity<BasicResponse> getByDepartment(@PathVariable("departmentId") Long departmentId,
@@ -86,7 +86,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_USER)
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_USER, description = SwaggerMessages.GET_EXAMS_BY_USER_DESC)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/user/{userId}")
 	public ResponseEntity<BasicResponse> getByUser(@PathVariable("userId") Long userId,
@@ -97,7 +97,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = SwaggerMessages.GET_MY_EXAMS)
+	@Operation(summary = SwaggerMessages.GET_MY_EXAMS, description = SwaggerMessages.GET_MY_EXAMS_DESC)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/my")
 	public ResponseEntity<BasicResponse> getMyExams(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -107,7 +107,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_SUBJECT)
+	@Operation(summary = SwaggerMessages.GET_EXAMS_BY_SUBJECT, description = SwaggerMessages.GET_EXAMS_BY_SUBJECT_DESC)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/subject/{subjectId}")
 	public ResponseEntity<BasicResponse> getBySubject(@PathVariable("subjectId") Long subjectId,
@@ -118,7 +118,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_EXAMS)
+	@Operation(summary = SwaggerMessages.GET_ALL_EXAMS, description = SwaggerMessages.GET_ALL_EXAMS_DESC)
 	@GetMapping
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getAllExams(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -128,7 +128,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_ACTIVE_EXAMS)
+	@Operation(summary = SwaggerMessages.GET_ALL_ACTIVE_EXAMS, description = SwaggerMessages.GET_ALL_ACTIVE_EXAMS_DESC)
 	@GetMapping("/active")
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	public ResponseEntity<BasicResponse> getAllActiveExams(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -138,7 +138,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = SwaggerMessages.SEARCH_EXAMS)
+	@Operation(summary = SwaggerMessages.SEARCH_EXAMS, description = SwaggerMessages.SEARCH_EXAMS_DESC)
 	@PreAuthorize("hasAuthority('EXAM_READ')")
 	@GetMapping("/search")
 	public ResponseEntity<BasicResponse> searchExams(@RequestParam(name = "keyword") String keyword,
@@ -149,7 +149,7 @@ public class ExamController {
 
 	}
 
-	@Operation(summary = SwaggerMessages.DEACTIVATE_EXAM)
+	@Operation(summary = SwaggerMessages.DEACTIVATE_EXAM, description = SwaggerMessages.DEACTIVATE_EXAM_DESC)
 	@DeleteMapping("/deactivate/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
 	public ResponseEntity<BasicResponse> deActivateExam(@PathVariable("examId") Long examId) {
@@ -157,7 +157,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
 
-	@Operation(summary = SwaggerMessages.DELETE_EXAM)
+	@Operation(summary = SwaggerMessages.DELETE_EXAM, description = SwaggerMessages.DELETE_EXAM_DESC)
 	@DeleteMapping("/{examId}")
 	@PreAuthorize("hasAuthority('EXAM_DELETE')")
 	public ResponseEntity<BasicResponse> delateExam(@PathVariable("examId") Long examId) {
@@ -165,6 +165,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.EXAM_DELETED, null));
 	}
 
+	@Operation(summary = SwaggerMessages.GENERATE_QR, description = SwaggerMessages.GENERATE_QR_DESC)
 	@PostMapping("/{examId}/qr")
 	@PreAuthorize("hasAuthority('EXAM_CREATE')")
 	public ResponseEntity<BasicResponse> generateQr(@PathVariable("examId") Long examId) {
@@ -174,7 +175,7 @@ public class ExamController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.UPLOAD_EXAM_QUESTIONS)
+	@Operation(summary = SwaggerMessages.UPLOAD_EXAM_QUESTIONS, description = SwaggerMessages.UPLOAD_EXAM_QUESTIONS_DESC)
 	@PostMapping(value = "/{examId}/upload-questions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@PreAuthorize("hasAuthority('EXAM_CREATE')")
 	@Deprecated(since = "2026-06", forRemoval = true)

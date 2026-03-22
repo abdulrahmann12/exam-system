@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Department Controller", description = "API for managing departments")
+@Tag(name = SwaggerMessages.TAG_DEPARTMENT, description = SwaggerMessages.TAG_DEPARTMENT_DESC)
 @RestController
 @RequestMapping("/api/departments")
 @RequiredArgsConstructor
@@ -24,7 +24,7 @@ public class DepartmentController {
 
 	private final DepartmentService departmentService;
 
-	@Operation(summary = SwaggerMessages.CREATE_DEPARTMENT)
+	@Operation(summary = SwaggerMessages.CREATE_DEPARTMENT, description = SwaggerMessages.CREATE_DEPARTMENT_DESC)
 	@PostMapping
 	@PreAuthorize("hasAuthority('DEPARTMENT_CREATE')")
 	public ResponseEntity<BasicResponse> createDepartment(@Valid @RequestBody DepartmentCreateRequestDTO request) {
@@ -34,7 +34,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.ADD_DEPARTMENT, response));
 	}
 
-	@Operation(summary = SwaggerMessages.UPDATE_DEPARTMENT)
+	@Operation(summary = SwaggerMessages.UPDATE_DEPARTMENT, description = SwaggerMessages.UPDATE_DEPARTMENT_DESC)
 	@PutMapping("/{departmentId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_UPDATE')")
 	public ResponseEntity<BasicResponse> updateDepartment(@PathVariable("departmentId") Long departmentId,
@@ -45,7 +45,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.DEPARTMENT_UPDATE, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_DEPARTMENT_BY_ID)
+	@Operation(summary = SwaggerMessages.GET_DEPARTMENT_BY_ID, description = SwaggerMessages.GET_DEPARTMENT_BY_ID_DESC)
 	@GetMapping("/{departmentId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getDepartmentById(@PathVariable("departmentId") Long departmentId) {
@@ -55,7 +55,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_DEPARTMENT_BY_NAME)
+	@Operation(summary = SwaggerMessages.GET_DEPARTMENT_BY_NAME, description = SwaggerMessages.GET_DEPARTMENT_BY_NAME_DESC)
 	@GetMapping("/by-name")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getDepartmentByName(@RequestParam(name = "departmentName") String departmentName) {
@@ -65,7 +65,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, response));
 	}
 
-	@Operation(summary = SwaggerMessages.SEARCH_DEPARTMENTS)
+	@Operation(summary = SwaggerMessages.SEARCH_DEPARTMENTS, description = SwaggerMessages.SEARCH_DEPARTMENTS_DESC)
 	@GetMapping("/search")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> searchDepartments(@RequestParam(name = "keyword") String keyword,
@@ -76,7 +76,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, departments));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_ALL_DEPARTMENTS)
+	@Operation(summary = SwaggerMessages.GET_ALL_DEPARTMENTS, description = SwaggerMessages.GET_ALL_DEPARTMENTS_DESC)
 	@GetMapping
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getAllDepartments(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -87,7 +87,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, departments));
 	}
 
-	@Operation(summary = SwaggerMessages.GET_DEPARTMENTS_BY_COLLEGE)
+	@Operation(summary = SwaggerMessages.GET_DEPARTMENTS_BY_COLLEGE, description = SwaggerMessages.GET_DEPARTMENTS_BY_COLLEGE_DESC)
 	@GetMapping("/by-college/{collegeId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_READ')")
 	public ResponseEntity<BasicResponse> getDepartmentsByCollegeId(@PathVariable("collegeId") Long collegeId,
@@ -98,7 +98,7 @@ public class DepartmentController {
 		return ResponseEntity.ok(new BasicResponse(Messages.FETCH_SUCCESS, departments));
 	}
 
-	@Operation(summary = SwaggerMessages.DELETE_DEPARTMENT)
+	@Operation(summary = SwaggerMessages.DELETE_DEPARTMENT, description = SwaggerMessages.DELETE_DEPARTMENT_DESC)
 	@DeleteMapping("/{departmentId}")
 	@PreAuthorize("hasAuthority('DEPARTMENT_DELETE')")
 	public ResponseEntity<BasicResponse> deleteDepartment(@PathVariable("departmentId") Long departmentId) {
