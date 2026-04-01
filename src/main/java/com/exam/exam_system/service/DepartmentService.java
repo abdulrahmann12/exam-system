@@ -21,6 +21,9 @@ import com.exam.exam_system.repository.CollegeRepository;
 import com.exam.exam_system.repository.DepartmentRepository;
 import com.exam.exam_system.repository.SubjectRepository;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class DepartmentService {
 	private final CollegeRepository collegeRepository;
 
 	@Transactional
+	@CacheEvict(value = "departments", allEntries = true)
 	public DepartmentGetResponseDTO createDepartment(@Valid DepartmentCreateRequestDTO dto) {
 		if (departmentRepository.existsByDepartmentNameAndCollege_CollegeId(dto.getDepartmentName(),
 				dto.getCollegeId())) {
@@ -52,6 +56,7 @@ public class DepartmentService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "departments", allEntries = true)
 	public DepartmentGetResponseDTO updateDepartment(Long departmentId, @Valid DepartmentUpdateRequestDTO dto) {
 
 		Department department = departmentRepository.findById(departmentId)
@@ -71,6 +76,7 @@ public class DepartmentService {
 		return departmentMapper.toDto(savedDepartment);
 	}
 
+	@Cacheable(value = "departments", key = "#p0")
 	public DepartmentGetResponseDTO getDepartmentById(Long departmentId) {
 
 		Department department = departmentRepository.findById(departmentId)
@@ -79,6 +85,7 @@ public class DepartmentService {
 		return departmentMapper.toDto(department);
 	}
 
+	@Cacheable(value = "departments", key = "#p0")
 	public DepartmentGetResponseDTO getDepartmentByName(String departmentName) {
 
 		Department department = departmentRepository.findByDepartmentName(departmentName)
@@ -119,6 +126,7 @@ public class DepartmentService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "departments", allEntries = true)
 	public void deleteDepartmentById(Long departmentId) {
 
 		if (!departmentRepository.existsById(departmentId)) {

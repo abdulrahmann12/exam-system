@@ -22,6 +22,9 @@ import com.exam.exam_system.exception.*;
 import com.exam.exam_system.mapper.*;
 import com.exam.exam_system.repository.*;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -129,6 +132,7 @@ public class ExamService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "exams", key = "#examId")
 	public ExamResponseDTO updateExam(Long examId, @Valid UpdateExamRequestDTO dto) {
 
 		Exam exam = examRepository.findById(examId).orElseThrow(ExamNotFoundException::new);
@@ -240,6 +244,7 @@ public class ExamService {
 		return examMapper.toDto(examRepository.save(exam));
 	}
 
+	@Cacheable(value = "exams", key = "#p0")
 	public ExamFullAdminViewDTO getExamById(Long examId) {
 		Exam exam = examRepository.findExamWithQuestionsAndChoices(examId).orElseThrow(ExamNotFoundException::new);
 
@@ -301,6 +306,7 @@ public class ExamService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "exams", key = "#examId")
 	public void deActivateExam(Long examId) {
 		Exam exam = examRepository.findById(examId).orElseThrow(ExamNotFoundException::new);
 
@@ -316,6 +322,7 @@ public class ExamService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "exams", key = "#examId")
 	public void deleteExam(Long examId) {
 
 		Exam exam = examRepository.findById(examId).orElseThrow(ExamNotFoundException::new);

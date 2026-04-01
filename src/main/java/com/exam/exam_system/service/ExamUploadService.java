@@ -8,7 +8,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +20,9 @@ import com.exam.exam_system.entities.*;
 import com.exam.exam_system.exception.*;
 import com.exam.exam_system.mapper.ExamMapper;
 import com.exam.exam_system.repository.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.springframework.cache.annotation.CacheEvict;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +43,7 @@ public class ExamUploadService {
 
     private final ExamMapper examMapper;
     private final UserService userService;
+    private final ObjectMapper objectMapper;
 
     /**
      * Single endpoint: create exam + parse questions from uploaded file.
@@ -79,10 +84,6 @@ public class ExamUploadService {
         // 2. Send file to Python service
         ParsedExamDTO parsedExam = sendFileToPythonService(file);
 
-        if (parsedExam == null || parsedExam.getQuestions() == null || parsedExam.getQuestions().isEmpty()) {
-            throw new PythonServiceException(Messages.PYTHON_SERVICE_INVALID_RESPONSE);
-        }
-
         // 3. Build exam entity
         Exam exam = examMapper.toEntity(dto);
         exam.setCollege(college);
@@ -92,33 +93,7 @@ public class ExamUploadService {
         exam.setQrCodeUrl(null);
 
         // 4. Map parsed questions to entities
-        List<Question> questions = new ArrayList<>();
-
-        for (ParsedQuestionDTO parsedQuestion : parsedExam.getQuestions()) {
-            Question question = Question.builder()
-                    .questionText(parsedQuestion.getQuestionText())
-                    .questionType(QuestionType.valueOf(parsedQuestion.getQuestionType()))
-                    .marks(parsedQuestion.getMarks())
-                    .questionOrder(parsedQuestion.getQuestionOrder())
-                    .exam(exam)
-                    .build();
-
-            if (parsedQuestion.getChoices() != null && !parsedQuestion.getChoices().isEmpty()) {
-                List<Choice> choices = new ArrayList<>();
-                for (ParsedChoiceDTO parsedChoice : parsedQuestion.getChoices()) {
-                    Choice choice = Choice.builder()
-                            .choiceText(parsedChoice.getChoiceText())
-                            .isCorrect(parsedChoice.getIsCorrect())
-                            .choiceOrder(parsedChoice.getChoiceOrder())
-                            .question(question)
-                            .build();
-                    choices.add(choice);
-                }
-                question.setChoices(choices);
-            }
-
-            questions.add(question);
-        }
+        List<Question> questions = mapParsedQuestions(parsedExam, exam);
 
         exam.setQuestions(questions);
         exam.setTotalQuestions(questions.size());
@@ -133,43 +108,14 @@ public class ExamUploadService {
      * Existing: upload questions to an already-created exam.
      */
     @Transactional
+    @CacheEvict(value = "exams", key = "#examId")
     public UploadQuestionsResponseDTO uploadAndParseQuestions(Long examId, MultipartFile file) {
         Exam exam = examRepository.findById(examId)
                 .orElseThrow(ExamNotFoundException::new);
 
         ParsedExamDTO parsedExam = sendFileToPythonService(file);
 
-        if (parsedExam == null || parsedExam.getQuestions() == null || parsedExam.getQuestions().isEmpty()) {
-            throw new PythonServiceException(Messages.PYTHON_SERVICE_INVALID_RESPONSE);
-        }
-
-        List<Question> questions = new ArrayList<>();
-
-        for (ParsedQuestionDTO parsedQuestion : parsedExam.getQuestions()) {
-            Question question = Question.builder()
-                    .questionText(parsedQuestion.getQuestionText())
-                    .questionType(QuestionType.valueOf(parsedQuestion.getQuestionType()))
-                    .marks(parsedQuestion.getMarks())
-                    .questionOrder(parsedQuestion.getQuestionOrder())
-                    .exam(exam)
-                    .build();
-
-            if (parsedQuestion.getChoices() != null && !parsedQuestion.getChoices().isEmpty()) {
-                List<Choice> choices = new ArrayList<>();
-                for (ParsedChoiceDTO parsedChoice : parsedQuestion.getChoices()) {
-                    Choice choice = Choice.builder()
-                            .choiceText(parsedChoice.getChoiceText())
-                            .isCorrect(parsedChoice.getIsCorrect())
-                            .choiceOrder(parsedChoice.getChoiceOrder())
-                            .question(question)
-                            .build();
-                    choices.add(choice);
-                }
-                question.setChoices(choices);
-            }
-
-            questions.add(question);
-        }
+        List<Question> questions = mapParsedQuestions(parsedExam, exam);
 
         questionRepository.saveAll(questions);
 
@@ -212,9 +158,19 @@ public class ExamUploadService {
                 throw new PythonServiceException(Messages.PYTHON_SERVICE_INVALID_RESPONSE);
             }
 
-            return response.getBody();
+            ParsedExamDTO parsedExam = response.getBody();
 
-        } catch (RestClientException ex) {
+            if (parsedExam.getQuestions() == null || parsedExam.getQuestions().isEmpty()) {
+                throw new PythonServiceException(Messages.PYTHON_SERVICE_INVALID_RESPONSE);
+            }
+
+            return parsedExam;
+
+        } catch (HttpClientErrorException ex) {
+            throw handlePythonHttpError(ex.getResponseBodyAsString(), ex);
+        } catch (HttpServerErrorException ex) {
+            throw handlePythonHttpError(ex.getResponseBodyAsString(), ex);
+        } catch (ResourceAccessException ex) {
             log.error("Failed to connect to Python parsing service: {}", ex.getMessage());
             throw new PythonServiceException(Messages.PYTHON_SERVICE_UNAVAILABLE, ex);
         } catch (PythonServiceException ex) {
@@ -225,6 +181,25 @@ public class ExamUploadService {
         }
     }
 
+    private PythonServiceException handlePythonHttpError(String responseBody, Exception cause) {
+        try {
+            PythonErrorResponseDTO errorResponse = objectMapper.readValue(responseBody, PythonErrorResponseDTO.class);
+            if (errorResponse.getErrorCode() != null && errorResponse.getMessage() != null) {
+                log.error("Python service error [{}]: {}", errorResponse.getErrorCode(), errorResponse.getMessage());
+                return new PythonServiceException(
+                        errorResponse.getErrorCode(),
+                        errorResponse.getMessage(),
+                        errorResponse.getDetails(),
+                        cause
+                );
+            }
+        } catch (Exception parseEx) {
+            log.error("Failed to parse Python error response body: {}", responseBody);
+        }
+        return new PythonServiceException("UNKNOWN_ERROR",
+                "Unexpected error from parsing service: " + responseBody, null, cause);
+    }
+
     private HttpHeaders createFileHeaders(MultipartFile file) {
         HttpHeaders fileHeaders = new HttpHeaders();
         fileHeaders.setContentType(MediaType.parseMediaType(
@@ -232,5 +207,37 @@ public class ExamUploadService {
         ));
         fileHeaders.setContentDispositionFormData("file", file.getOriginalFilename());
         return fileHeaders;
+    }
+
+    private List<Question> mapParsedQuestions(ParsedExamDTO parsedExam, Exam exam) {
+        List<Question> questions = new ArrayList<>();
+
+        for (ParsedQuestionDTO parsedQuestion : parsedExam.getQuestions()) {
+            Question question = Question.builder()
+                    .questionText(parsedQuestion.getQuestionText())
+                    .questionType(QuestionType.valueOf(parsedQuestion.getQuestionType()))
+                    .marks(parsedQuestion.getMarks())
+                    .questionOrder(parsedQuestion.getQuestionOrder())
+                    .exam(exam)
+                    .build();
+
+            if (parsedQuestion.getChoices() != null && !parsedQuestion.getChoices().isEmpty()) {
+                List<Choice> choices = new ArrayList<>();
+                for (ParsedChoiceDTO parsedChoice : parsedQuestion.getChoices()) {
+                    Choice choice = Choice.builder()
+                            .choiceText(parsedChoice.getChoiceText())
+                            .isCorrect(parsedChoice.getIsCorrect())
+                            .choiceOrder(parsedChoice.getChoiceOrder())
+                            .question(question)
+                            .build();
+                    choices.add(choice);
+                }
+                question.setChoices(choices);
+            }
+
+            questions.add(question);
+        }
+
+        return questions;
     }
 }

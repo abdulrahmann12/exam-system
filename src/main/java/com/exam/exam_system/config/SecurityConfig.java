@@ -11,16 +11,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.exam.exam_system.repository.UserRepository;
 import com.exam.exam_system.service.JwtService;
 
 import lombok.RequiredArgsConstructor;
@@ -32,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtService jwtService;
-	private final UserRepository userRepository;
+	private final UserDetailsService cachedUserDetailsService;
 
 	@Value("${cors.allowed-origins:http://localhost:3000}")
 	private String allowedOrigins;
@@ -68,13 +65,7 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtAuthenticationFilter jwtAuthenticationFilter() {
-		return new JwtAuthenticationFilter(jwtService, userDetailsService());
-	}
-
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return input -> (UserDetails) userRepository.findByUsername(input).or(() -> userRepository.findByEmail(input))
-				.orElseThrow(() -> new UsernameNotFoundException(Messages.USER_NOT_FOUND));
+		return new JwtAuthenticationFilter(jwtService, cachedUserDetailsService);
 	}
 
 	@Bean

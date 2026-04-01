@@ -27,6 +27,9 @@ import com.exam.exam_system.repository.DepartmentRepository;
 import com.exam.exam_system.repository.ExamRepository;
 import com.exam.exam_system.repository.SubjectRepository;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +46,7 @@ public class SubjectService {
 	private final ExamRepository examRepository;
 
 	@Transactional
+	@CacheEvict(value = "subjects", allEntries = true)
 	public SubjectGetResponseDTO createSubject(@Valid SubjectCreateRequestDTO dto) {
 		if (subjectRepository.existsBySubjectNameAndDepartment_DepartmentId(dto.getSubjectName(),
 				dto.getDepartmentId())) {
@@ -68,6 +72,7 @@ public class SubjectService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "subjects", allEntries = true)
 	public SubjectGetResponseDTO updateSubject(Long subjectId, @Valid SubjectUpdateRequestDTO dto) {
 		Subject subject = subjectRepository.findById(subjectId).orElseThrow(SubjectNotFoundException::new);
 
@@ -97,6 +102,7 @@ public class SubjectService {
 		return subjectMapper.toDto(updatedSubject);
 	}
 
+	@Cacheable(value = "subjects", key = "#p0")
 	public SubjectGetResponseDTO getSubjectById(Long subjectId) {
 
 		Subject subject = subjectRepository.findByIdWithRelations(subjectId).orElseThrow(SubjectNotFoundException::new);
@@ -142,6 +148,7 @@ public class SubjectService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "subjects", allEntries = true)
 	public void deleteSubject(Long subjectId) {
 		if (!subjectRepository.existsById(subjectId)) {
 			throw new SubjectNotFoundException();

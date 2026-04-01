@@ -2,6 +2,8 @@ package com.exam.exam_system.service;
 
 import java.time.LocalDateTime;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -97,6 +99,7 @@ public class StudentService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "students", key = "#studentId")
 	public StudentGetResponseDTO updateStudent(Long studentId, @Valid StudentUpdateRequestDTO dto) {
 
 		Student student = studentRepository.findById(studentId).orElseThrow(StudentNotFoundException::new);
@@ -122,10 +125,21 @@ public class StudentService extends BaseService {
 
 		studentMapper.updateStudentProfileFromDto(dto, student);
 
-		return studentMapper.toProfileDto(studentRepository.save(student));
+		Student saved = studentRepository.save(student);
+
+		// Evict this specific student from cache after resolving studentId
+		evictStudentCache(saved.getStudentId());
+
+		return studentMapper.toProfileDto(saved);
+	}
+
+	@CacheEvict(value = "students", key = "#studentId")
+	public void evictStudentCache(Long studentId) {
+		// intentionally empty — annotation handles eviction
 	}
 
 	@Transactional(readOnly = true)
+	@Cacheable(value = "students", key = "#p0")
 	public StudentGetResponseDTO getStudentById(Long studentId) {
 
 		Student student = studentRepository.findById(studentId).orElseThrow(StudentNotFoundException::new);
@@ -150,6 +164,7 @@ public class StudentService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "students", key = "#studentId")
 	public void deleteStudent(Long studentId) {
 
 		if (!studentRepository.existsById(studentId)) {
@@ -160,6 +175,7 @@ public class StudentService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "students", key = "#studentId")
 	public void deactivateStudent(Long studentId) {
 
 		Student student = studentRepository.findById(studentId).orElseThrow(StudentNotFoundException::new);
@@ -175,6 +191,7 @@ public class StudentService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "students", key = "#studentId")
 	public void activateStudent(Long studentId) {
 
 		Student student = studentRepository.findById(studentId).orElseThrow(StudentNotFoundException::new);
@@ -199,6 +216,7 @@ public class StudentService extends BaseService {
 	}
 
 	@Transactional(readOnly = true)
+	@Cacheable(value = "studentStats", key = "'countByYear_' + #year")
 	public long countStudentsByYear(Integer year) {
 		return studentRepository.countByAcademicYear(year);
 	}
@@ -222,6 +240,7 @@ public class StudentService extends BaseService {
 	}
 
 	@Transactional(readOnly = true)
+	@Cacheable(value = "studentStats", key = "'countActive'")
 	public long countActiveStudents() {
 		return studentRepository.countByIsActiveTrue();
 	}

@@ -16,6 +16,9 @@ import com.exam.exam_system.exception.*;
 import com.exam.exam_system.mapper.UserMapper;
 import com.exam.exam_system.repository.*;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class UserService extends BaseService {
 	private final UserMapper userMapper;
 	private final RabbitTemplate rabbitTemplate;
 	private final AuthService authService;
+	private final CachedUserDetailsService cachedUserDetailsService;
 
 	@Transactional(readOnly = true)
 	public UserProfileResponseDTO getProfile() {
@@ -47,6 +51,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "users", key = "#user.userId")
 	public UserProfileResponseDTO updateProfile(User user, @Valid UserUpdateProfileRequestDTO dto) {
 
 		if (dto.getPhone() != null && userRepository.existsByPhoneAndUserIdNot(dto.getPhone(), user.getUserId())) {
@@ -61,6 +66,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "users", key = "#user.userId")
 	public void changeUsername(User user, @Valid ChangeUsernameRequestDTO dto) {
 
 		if (dto.getNewUsername().equals(user.getUsername())) {
@@ -70,6 +76,9 @@ public class UserService extends BaseService {
 		if (userRepository.existsByUsernameAndUserIdNot(dto.getNewUsername(), user.getUserId())) {
 			throw new UsernameAlreadyExistsException();
 		}
+
+		// Evict old username from auth cache before overwriting
+		cachedUserDetailsService.evictUserDetails(user.getUsername());
 
 		user.setUsername(dto.getNewUsername());
 		userRepository.save(user);
@@ -101,6 +110,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "users", key = "#user.userId")
 	public void confirmEmailChange(User user, @Valid VerifyEmailChangeRequestDTO dto) {
 
 		if (user.getRequestCode() == null || user.getPendingEmail() == null) {
@@ -115,6 +125,9 @@ public class UserService extends BaseService {
 			throw new VerificationCodeExpiredException();
 		}
 
+		// Evict old email from auth cache before overwriting
+		cachedUserDetailsService.evictUserDetails(user.getUsername());
+
 		user.setEmail(user.getPendingEmail());
 		user.setPendingEmail(null);
 		user.setRequestCode(null);
@@ -126,6 +139,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional(readOnly = true)
+	@Cacheable(value = "users", key = "#p0")
 	public UserResponseDTO getUserById(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 		return userMapper.toDTO(user);
@@ -139,6 +153,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "users", key = "#userId")
 	public void deactivateUser(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
@@ -148,6 +163,9 @@ public class UserService extends BaseService {
 		user.setIsActive(false);
 		userRepository.save(user);
 
+		// Evict from auth cache — deactivated user must not pass JWT filter
+		cachedUserDetailsService.evictUserDetails(user.getUsername());
+
 		studentRepository.findByUser_UserId(userId).ifPresent(student -> {
 			student.setIsActive(false);
 			student.setDeactivatedAt(LocalDateTime.now());
@@ -156,6 +174,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "users", key = "#userId")
 	public void activateUser(Long userId) {
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
@@ -165,6 +184,9 @@ public class UserService extends BaseService {
 		user.setIsActive(true);
 		userRepository.save(user);
 
+		// Evict from auth cache — reactivated user state must be fresh
+		cachedUserDetailsService.evictUserDetails(user.getUsername());
+
 		studentRepository.findByUser_UserId(userId).ifPresent(student -> {
 			student.setIsActive(true);
 			student.setDeactivatedAt(null);
@@ -173,6 +195,7 @@ public class UserService extends BaseService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "users", key = "#userId")
 	public UserResponseDTO adminUpdateUser(Long userId, @Valid AdminUserUpdateRequestDTO dto) {
 
 		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
@@ -192,6 +215,9 @@ public class UserService extends BaseService {
 		user.setCollege(college);
 		user.setDepartment(department);
 		user.setIsActive(dto.getIsActive());
+
+		// Evict from auth cache — role/active change affects permissions
+		cachedUserDetailsService.evictUserDetails(user.getUsername());
 
 		return userMapper.toDTO(userRepository.save(user));
 	}

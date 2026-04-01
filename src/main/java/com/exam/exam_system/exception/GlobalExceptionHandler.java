@@ -157,8 +157,29 @@ public class GlobalExceptionHandler {
     // === Python Service Exception === //
 
     @ExceptionHandler(PythonServiceException.class)
-    public ResponseEntity<BasicResponse> handlePythonServiceException(PythonServiceException ex, WebRequest request) {
+    public ResponseEntity<?> handlePythonServiceException(PythonServiceException ex, WebRequest request) {
+        if (ex.getErrorCode() != null) {
+            HttpStatus status = mapPythonErrorCodeToStatus(ex.getErrorCode());
+            com.exam.exam_system.dto.PythonServiceErrorResponseDTO errorResponse =
+                    new com.exam.exam_system.dto.PythonServiceErrorResponseDTO(
+                            ex.getErrorCode(),
+                            ex.getMessage(),
+                            ex.getDetails(),
+                            request.getDescription(false)
+                    );
+            return new ResponseEntity<>(errorResponse, status);
+        }
         return buildErrorResponse(ex, request, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
+    private HttpStatus mapPythonErrorCodeToStatus(String errorCode) {
+        return switch (errorCode) {
+            case "FILE_READ_ERROR", "EMPTY_FILE", "REQUEST_VALIDATION_ERROR" -> HttpStatus.BAD_REQUEST;
+            case "UNSUPPORTED_FILE_TYPE" -> HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+            case "PARSE_ERROR", "NO_QUESTIONS_FOUND", "VALIDATION_ERROR" -> HttpStatus.UNPROCESSABLE_ENTITY;
+            case "INTERNAL_ERROR" -> HttpStatus.INTERNAL_SERVER_ERROR;
+            default -> HttpStatus.BAD_REQUEST;
+        };
     }
 
     // === Validation Exceptions === //

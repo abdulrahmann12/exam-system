@@ -21,6 +21,9 @@ import com.exam.exam_system.repository.CollegeRepository;
 import com.exam.exam_system.repository.DepartmentRepository;
 import com.exam.exam_system.repository.SubjectRepository;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +39,7 @@ public class CollegeService {
 	private final DepartmentRepository departmentRepository;
 
 	@Transactional
+	@CacheEvict(value = "colleges", allEntries = true)
 	public CollegeGetResponseDTO createCollege(@Valid CollegeCreateRequestDTO dto) {
 
 		if (collegeRepository.existsByCollegeName(dto.getCollegeName())) {
@@ -49,6 +53,7 @@ public class CollegeService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "colleges", allEntries = true)
 	public CollegeGetResponseDTO updateCollege(Long collegeId, @Valid CollegeUpdateRequestDTO dto) {
 
 		College college = collegeRepository.findById(collegeId).orElseThrow(CollegeNotFoundException::new);
@@ -63,6 +68,7 @@ public class CollegeService {
 		return collegeMapper.toDto(savedCollege);
 	}
 
+	@Cacheable(value = "colleges", key = "#p0")
 	public CollegeGetResponseDTO getCollegeById(Long collegeId) {
 
 		College college = collegeRepository.findById(collegeId).orElseThrow(CollegeNotFoundException::new);
@@ -70,6 +76,7 @@ public class CollegeService {
 		return collegeMapper.toDto(college);
 	}
 
+	@Cacheable(value = "colleges", key = "#p0")
 	public CollegeGetResponseDTO getCollegeByName(String collegeName) {
 
 		College college = collegeRepository.findByCollegeName(collegeName).orElseThrow(CollegeNotFoundException::new);
@@ -96,6 +103,7 @@ public class CollegeService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "colleges", allEntries = true)
 	public void deleteCollegeById(Long collegeId) {
 
 		if (!collegeRepository.existsById(collegeId)) {

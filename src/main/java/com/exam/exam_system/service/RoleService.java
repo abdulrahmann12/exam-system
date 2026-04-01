@@ -26,6 +26,9 @@ import com.exam.exam_system.repository.PermissionRepository;
 import com.exam.exam_system.repository.RoleRepository;
 import com.exam.exam_system.repository.UserRepository;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +42,10 @@ public class RoleService {
 	private final RoleMapper roleMapper;
 	private final UserRepository userRepository;
 	private final PermissionRepository permissionRepository;
+	private final CachedUserDetailsService cachedUserDetailsService;
 
 	@Transactional
+	@CacheEvict(value = "roles", allEntries = true)
 	public RoleGetResponseDTO createRole(@Valid RoleCreateRequestDTO dto) {
 
 		if (roleRepository.existsByRoleName(dto.getRoleName())) {
@@ -69,6 +74,7 @@ public class RoleService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "roles", allEntries = true)
 	public RoleGetResponseDTO updateRole(Long roleId, @Valid RoleUpdateRequestDTO dto) {
 
 		Role role = roleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
@@ -93,15 +99,21 @@ public class RoleService {
 
 		role.setRoleName(dto.getRoleName());
 		Role savedRole = roleRepository.save(role);
+
+		// Role permission changes affect all users with this role — evict all auth cache
+		cachedUserDetailsService.evictAllUserDetails();
+
 		return roleMapper.toDto(savedRole);
 
 	}
 
+	@Cacheable(value = "roles", key = "#p0.toUpperCase()")
 	public RoleGetResponseDTO getRoleByName(String roleName) {
 		Role role = roleRepository.findByRoleName(roleName.toUpperCase()).orElseThrow(RoleNotFoundException::new);
 		return roleMapper.toDto(role);
 	}
 
+	@Cacheable(value = "roles", key = "#p0")
 	public RoleGetResponseDTO getRoleById(Long roleId) {
 		Role role = roleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
 		return roleMapper.toDto(role);
@@ -117,6 +129,7 @@ public class RoleService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "roles", allEntries = true)
 	public void deleteRoleById(Long roleId) {
 		if (!roleRepository.existsById(roleId)) {
 			throw new RoleNotFoundException();

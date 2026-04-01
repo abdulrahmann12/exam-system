@@ -1,10 +1,11 @@
 package com.exam.exam_system.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -30,6 +31,7 @@ public class PermissionService {
 	private final PermissionMapper permissionMapper;
 
 	@Transactional
+	@CacheEvict(value = "permissions", allEntries = true)
 	public PermissionGetResponseDTO createPermission(@Valid PermissionCreateRequestDTO dto) {
 
 		String code = dto.getModule().name().toUpperCase() + "_" + dto.getAction().name().toUpperCase();
@@ -45,6 +47,7 @@ public class PermissionService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "permissions", allEntries = true)
 	public PermissionGetResponseDTO updatePermission(Long permissionId, @Valid PermissionUpdateRequestDTO dto) {
 		String code = dto.getModule().name().toUpperCase() + "_" + dto.getAction().name().toUpperCase();
 
@@ -63,6 +66,7 @@ public class PermissionService {
 		return permissionMapper.toDto(saved);
 	}
 
+	@Cacheable(value = "permissions", key = "#p0")
 	public PermissionGetResponseDTO getPermissionById(Long permissionId) {
 		Permission permission = permissionRepository.findById(permissionId)
 				.orElseThrow(PermissionNotFoundException::new);
@@ -79,6 +83,7 @@ public class PermissionService {
 	}
 
 	@Transactional
+	@CacheEvict(value = "permissions", allEntries = true)
 	public void deletePermissionById(Long permissionId) {
 		Permission permission = permissionRepository.findById(permissionId)
 				.orElseThrow(PermissionNotFoundException::new);
