@@ -7,9 +7,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "student_exam_sessions", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"exam_id", "student_id"}, name = "uk_student_exam_session")
-})
+@Table(name = "student_exam_sessions",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"exam_id", "student_id"}, name = "uk_student_exam_session")
+    },
+    indexes = {
+        @Index(name = "idx_ses_student_started", columnList = "student_id, started_at")
+    }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

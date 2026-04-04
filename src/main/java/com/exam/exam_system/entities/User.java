@@ -13,7 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+	@Index(name = "idx_users_role", columnList = "role_id"),
+	@Index(name = "idx_users_college", columnList = "college_id"),
+	@Index(name = "idx_users_department", columnList = "department_id")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

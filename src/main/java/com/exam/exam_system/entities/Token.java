@@ -17,7 +17,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tokens", indexes = { @Index(name = "idx_tokens_user", columnList = "user_id") })
+@Table(name = "tokens", indexes = {
+	@Index(name = "idx_tokens_user_valid", columnList = "user_id, expired, revoked")
+})
 @Data
 @Builder
 @NoArgsConstructor

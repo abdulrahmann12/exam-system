@@ -20,7 +20,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", indexes = {
+	@Index(name = "idx_roles_name", columnList = "role_name")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

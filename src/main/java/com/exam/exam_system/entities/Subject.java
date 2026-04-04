@@ -8,6 +8,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
@@ -24,6 +25,10 @@ import lombok.NoArgsConstructor;
 uniqueConstraints = {
         @UniqueConstraint(columnNames = {"subject_code"}),
 		@UniqueConstraint(columnNames = {"subject_name", "department_id"})
+},
+indexes = {
+	@Index(name = "idx_subjects_department", columnList = "department_id"),
+	@Index(name = "idx_subjects_college", columnList = "college_id")
 }
 )@Data
 @Builder

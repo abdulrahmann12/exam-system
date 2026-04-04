@@ -7,7 +7,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "exams")
+@Table(name = "exams", indexes = {
+    @Index(name = "idx_exams_qr_token", columnList = "qr_token", unique = true),
+    @Index(name = "idx_exams_college", columnList = "college_id"),
+    @Index(name = "idx_exams_department", columnList = "department_id"),
+    @Index(name = "idx_exams_subject", columnList = "subject_id"),
+    @Index(name = "idx_exams_created_by", columnList = "createdBy"),
+    @Index(name = "idx_exams_active", columnList = "is_active")
+})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
