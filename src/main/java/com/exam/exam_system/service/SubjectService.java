@@ -56,7 +56,7 @@ public class SubjectService {
 		if (subjectRepository.existsBySubjectCode(dto.getSubjectCode())) {
 			throw new SubjectCodeAlreadyExistsException();
 		}
-		Department department = departmentRepository.findById(dto.getDepartmentId())
+		Department department = departmentRepository.findByIdWithCollege(dto.getDepartmentId())
 				.orElseThrow(DepartmentNotFoundException::new);
 		College college = collegeRepository.findById(dto.getCollegeId()).orElseThrow(CollegeNotFoundException::new);
 
@@ -85,7 +85,7 @@ public class SubjectService {
 			throw new SubjectCodeAlreadyExistsException();
 		}
 
-		Department department = departmentRepository.findById(dto.getDepartmentId())
+		Department department = departmentRepository.findByIdWithCollege(dto.getDepartmentId())
 				.orElseThrow(DepartmentNotFoundException::new);
 		College college = collegeRepository.findById(dto.getCollegeId()).orElseThrow(CollegeNotFoundException::new);
 

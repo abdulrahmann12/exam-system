@@ -79,7 +79,7 @@ public class DepartmentService {
 	@Cacheable(value = "departments", key = "#p0")
 	public DepartmentGetResponseDTO getDepartmentById(Long departmentId) {
 
-		Department department = departmentRepository.findById(departmentId)
+		Department department = departmentRepository.findByIdWithCollege(departmentId)
 				.orElseThrow(DepartmentNotFoundException::new);
 
 		return departmentMapper.toDto(department);
@@ -107,7 +107,7 @@ public class DepartmentService {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by("departmentName"));
 
-		Page<Department> departments = departmentRepository.findAll(pageable);
+		Page<Department> departments = departmentRepository.findAllWithCollege(pageable);
 
 		return departments.map(departmentMapper::toDto);
 	}

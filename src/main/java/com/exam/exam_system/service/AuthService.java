@@ -46,8 +46,8 @@ public class AuthService {
 
 	@Transactional
 	public AuthResponse login(@Valid LoginRequestDTO loginRequestDTO) {
-		User user = userRepository.findByUsername(loginRequestDTO.getUsernameOrEmail())
-				.or(() -> userRepository.findByEmail(loginRequestDTO.getUsernameOrEmail()))
+		User user = userRepository.findByUsernameWithPermissions(loginRequestDTO.getUsernameOrEmail())
+				.or(() -> userRepository.findByEmailWithPermissions(loginRequestDTO.getUsernameOrEmail()))
 				.orElseThrow(UserNotFoundException::new);
 
 		if (!user.getIsActive()) {
@@ -84,7 +84,7 @@ public class AuthService {
 		if (createUserRequestDTO.getPhone() != null && userRepository.existsByPhone(createUserRequestDTO.getPhone())) {
 			throw new PhoneAlreadyExistsException();
 		}
-		Department department = departmentRepository.findById(createUserRequestDTO.getDepartmentId())
+		Department department = departmentRepository.findByIdWithCollege(createUserRequestDTO.getDepartmentId())
 				.orElseThrow(DepartmentNotFoundException::new);
 
 		College college = collegeRepository.findById(createUserRequestDTO.getCollegeId())
@@ -195,7 +195,7 @@ public class AuthService {
 
 		String hashed = hashToken(refreshToken);
 
-		Token storedToken = tokenRepository.findByToken(hashed)
+		Token storedToken = tokenRepository.findByTokenWithUser(hashed)
 				.orElseThrow(() -> new InvalidTokenException(Messages.INVALID_REFRESH_TOKEN));
 
 		if (storedToken.isExpired() || storedToken.isRevoked()) {
@@ -244,14 +244,7 @@ public class AuthService {
 
 	@Transactional
 	public void logoutAllTokensForUser(Long userId) {
-		List<Token> tokens = tokenRepository.findAllValidTokensByUser(userId);
-
-		for (Token token : tokens) {
-			token.setExpired(true);
-			token.setRevoked(true);
-			tokenRepository.save(token);
-		}
-
+		tokenRepository.revokeAllRefreshTokensByUser(userId);
 		SecurityContextHolder.clearContext();
 	}
 

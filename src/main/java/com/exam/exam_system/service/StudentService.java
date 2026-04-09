@@ -65,7 +65,7 @@ public class StudentService extends BaseService {
 
 		College college = collegeRepository.findById(dto.getCollegeId()).orElseThrow(CollegeNotFoundException::new);
 
-		Department department = departmentRepository.findById(dto.getDepartmentId())
+		Department department = departmentRepository.findByIdWithCollege(dto.getDepartmentId())
 				.orElseThrow(DepartmentNotFoundException::new);
 
 		if (!department.getCollege().getCollegeId().equals(college.getCollegeId())) {
@@ -93,7 +93,7 @@ public class StudentService extends BaseService {
 	public StudentProfileResponseDTO getMyProfile() {
 
 		User user = userService.getCurrentUser();
-		Student student = studentRepository.findByUser_UserId(user.getUserId())
+		Student student = studentRepository.findByUserIdWithFullProfile(user.getUserId())
 				.orElseThrow(StudentNotFoundException::new);
 		return studentMapper.toProfileDto(student);
 	}
@@ -152,7 +152,7 @@ public class StudentService extends BaseService {
 
 		Pageable pageable = createPageRequest(page, size, "studentCode");
 
-		return studentRepository.findAll(pageable).map(studentMapper::toDto);
+		return studentRepository.findAllWithUser(pageable).map(studentMapper::toDto);
 	}
 
 	@Transactional(readOnly = true)
@@ -160,7 +160,7 @@ public class StudentService extends BaseService {
 
 		Pageable pageable = createPageRequest(page, size, "studentCode");
 
-		return studentRepository.findByIsActiveTrue(pageable).map(studentMapper::toDto);
+		return studentRepository.findByIsActiveTrueWithUser(pageable).map(studentMapper::toDto);
 	}
 
 	@Transactional
@@ -227,7 +227,7 @@ public class StudentService extends BaseService {
 			throw new DepartmentNotFoundException();
 		}
 		Pageable pageable = createPageRequest(page, size, "studentCode");
-		return studentRepository.findByUser_Department_DepartmentId(departmentId, pageable).map(studentMapper::toDto);
+		return studentRepository.findByUser_Department_DepartmentIdWithUser(departmentId, pageable).map(studentMapper::toDto);
 	}
 
 	@Transactional(readOnly = true)
@@ -236,7 +236,7 @@ public class StudentService extends BaseService {
 			throw new CollegeNotFoundException();
 		}
 		Pageable pageable = createPageRequest(page, size, "studentCode");
-		return studentRepository.findByUser_College_CollegeId(collegeId, pageable).map(studentMapper::toDto);
+		return studentRepository.findByUser_College_CollegeIdWithUser(collegeId, pageable).map(studentMapper::toDto);
 	}
 
 	@Transactional(readOnly = true)

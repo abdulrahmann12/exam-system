@@ -2,6 +2,7 @@ package com.exam.exam_system.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -40,86 +41,49 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
 			""")
 	Optional<Exam> findExamFull(@Param("examId") Long examId);
 
-	@Query("""
-			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
-			    where e.isActive = true
-			""")
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = "select e from Exam e where e.isActive = true",
+	       countQuery = "select count(e) from Exam e where e.isActive = true")
 	Page<Exam> findAllActive(Pageable pageable);
 
-	@Query("""
-			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
-			""")
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = "select e from Exam e",
+	       countQuery = "select count(e) from Exam e")
 	Page<Exam> findAll(Pageable pageable);
 
-	@Query("""
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = """
 			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
+			    where e.isActive = true
+			      and (lower(e.title) like lower(concat('%', :keyword, '%'))
+			           or lower(e.description) like lower(concat('%', :keyword, '%')))
+			""",
+	       countQuery = """
+			    select count(e) from Exam e
 			    where e.isActive = true
 			      and (lower(e.title) like lower(concat('%', :keyword, '%'))
 			           or lower(e.description) like lower(concat('%', :keyword, '%')))
 			""")
 	Page<Exam> searchExams(@Param("keyword") String keyword, Pageable pageable);
 
-	@Query("""
-			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
-			    where c.collegeId = :collegeId
-			      and e.isActive = true
-			""")
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = "select e from Exam e where e.college.collegeId = :collegeId and e.isActive = true",
+	       countQuery = "select count(e) from Exam e where e.college.collegeId = :collegeId and e.isActive = true")
 	Page<Exam> findByCollegeId(@Param("collegeId") Long collegeId, Pageable pageable);
 
-	@Query("""
-			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
-			    where d.departmentId = :departmentId
-			      and e.isActive = true
-			""")
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = "select e from Exam e where e.department.departmentId = :departmentId and e.isActive = true",
+	       countQuery = "select count(e) from Exam e where e.department.departmentId = :departmentId and e.isActive = true")
 	Page<Exam> findByDepartmentId(@Param("departmentId") Long departmentId, Pageable pageable);
 
-	@Query("""
-			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
-			    where u.userId = :userId
-			      and e.isActive = true
-			""")
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = "select e from Exam e where e.createdBy.userId = :userId and e.isActive = true",
+	       countQuery = "select count(e) from Exam e where e.createdBy.userId = :userId and e.isActive = true")
 	Page<Exam> findByUserId(@Param("userId") Long userId, Pageable pageable);
 
-	@Query("""
-			    select e from Exam e
-			    join fetch e.college c
-			    join fetch e.department d
-			    join fetch d.college dc
-			    join fetch e.subject s
-			    join fetch e.createdBy u
-			    where s.subjectId = :subjectId
-			      and e.isActive = true
-			""")
+	@EntityGraph(attributePaths = {"college", "department", "department.college", "subject", "createdBy"})
+	@Query(value = "select e from Exam e where e.subject.subjectId = :subjectId and e.isActive = true",
+	       countQuery = "select count(e) from Exam e where e.subject.subjectId = :subjectId and e.isActive = true")
 	Page<Exam> findBySubjectId(@Param("subjectId") Long subjectId, Pageable pageable);
 
 	@Query("""

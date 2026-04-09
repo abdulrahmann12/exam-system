@@ -53,7 +53,7 @@ public class User implements UserDetails {
 	@JsonIgnore
 	private String requestCode;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 	

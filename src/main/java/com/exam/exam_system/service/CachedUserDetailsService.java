@@ -35,10 +35,10 @@ public class CachedUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    @Cacheable(value = "userDetails", key = "#username")
+    @Cacheable(value = "userDetails", key = "#p0")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return (UserDetails) userRepository.findByUsername(username)
-                .or(() -> userRepository.findByEmail(username))
+        return (UserDetails) userRepository.findByUsernameWithPermissions(username)
+                .or(() -> userRepository.findByEmailWithPermissions(username))
                 .orElseThrow(() -> new UsernameNotFoundException(Messages.USER_NOT_FOUND));
     }
 
@@ -46,7 +46,7 @@ public class CachedUserDetailsService implements UserDetailsService {
      * Evict a specific user from the userDetails cache.
      * Called when username, email, role, or active status changes.
      */
-    @CacheEvict(value = "userDetails", key = "#username")
+    @CacheEvict(value = "userDetails", key = "#p0")
     public void evictUserDetails(String username) {
         // intentionally empty — annotation handles eviction
     }

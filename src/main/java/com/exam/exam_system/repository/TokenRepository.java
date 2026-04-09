@@ -14,11 +14,10 @@ import com.exam.exam_system.entities.Token;
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long> {
     Optional<Token> findByToken(String token);
-    @Query("""
-    	    SELECT t FROM Token t WHERE t.user.id = :userId AND t.expired = false AND t.revoked = false
-    	""")
-    	List<Token> findAllValidTokenByUser(Long userId);
-    
+
+    @Query("SELECT t FROM Token t JOIN FETCH t.user WHERE t.token = :token")
+    Optional<Token> findByTokenWithUser(@Param("token") String token);
+
     @Query("select t from Token t where t.user.userId = :userId and t.expired = false and t.revoked = false")
     List<Token> findAllValidTokensByUser(@Param("userId") Long userId);
 

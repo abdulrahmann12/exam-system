@@ -77,7 +77,7 @@ public class RoleService {
 	@CacheEvict(value = "roles", allEntries = true)
 	public RoleGetResponseDTO updateRole(Long roleId, @Valid RoleUpdateRequestDTO dto) {
 
-		Role role = roleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
+		Role role = roleRepository.findByIdWithPermissions(roleId).orElseThrow(RoleNotFoundException::new);
 
 		if (roleRepository.existsByRoleNameAndRoleIdNot(dto.getRoleName(), roleId)) {
 			throw new RoleAlreadyExistsException();
@@ -109,13 +109,13 @@ public class RoleService {
 
 	@Cacheable(value = "roles", key = "#p0.toUpperCase()")
 	public RoleGetResponseDTO getRoleByName(String roleName) {
-		Role role = roleRepository.findByRoleName(roleName.toUpperCase()).orElseThrow(RoleNotFoundException::new);
+		Role role = roleRepository.findByRoleNameWithPermissions(roleName.toUpperCase()).orElseThrow(RoleNotFoundException::new);
 		return roleMapper.toDto(role);
 	}
 
 	@Cacheable(value = "roles", key = "#p0")
 	public RoleGetResponseDTO getRoleById(Long roleId) {
-		Role role = roleRepository.findById(roleId).orElseThrow(RoleNotFoundException::new);
+		Role role = roleRepository.findByIdWithPermissions(roleId).orElseThrow(RoleNotFoundException::new);
 		return roleMapper.toDto(role);
 	}
 
@@ -123,7 +123,16 @@ public class RoleService {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by("roleName"));
 
-		Page<Role> rolesPage = roleRepository.findAll(pageable);
+		// Fetch all roles with permissions eagerly (since permissions is now LAZY)
+		List<Role> allRoles = roleRepository.findAllWithPermissions();
+
+		// Manual pagination over the pre-fetched list
+		int start = (int) pageable.getOffset();
+		int end = Math.min(start + pageable.getPageSize(), allRoles.size());
+
+		List<Role> pageContent = start >= allRoles.size() ? List.of() : allRoles.subList(start, end);
+
+		Page<Role> rolesPage = new org.springframework.data.domain.PageImpl<>(pageContent, pageable, allRoles.size());
 
 		return rolesPage.map(roleMapper::toDto);
 	}

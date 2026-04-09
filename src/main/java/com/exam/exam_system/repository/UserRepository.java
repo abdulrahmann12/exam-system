@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,6 +19,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	Optional<User> findByEmail(String email);
 
+	@Query("SELECT u FROM User u JOIN FETCH u.role r LEFT JOIN FETCH r.permissions WHERE u.username = :username")
+	Optional<User> findByUsernameWithPermissions(@Param("username") String username);
+
+	@Query("SELECT u FROM User u JOIN FETCH u.role r LEFT JOIN FETCH r.permissions WHERE u.email = :email")
+	Optional<User> findByEmailWithPermissions(@Param("email") String email);
+
+	@EntityGraph(attributePaths = {"role", "college", "department"})
+	@Query("SELECT u FROM User u WHERE u.userId = :userId")
+	Optional<User> findByIdWithDetails(@Param("userId") Long userId);
+
 	boolean existsByUsername(String username);
 
 	boolean existsByEmail(String email);
@@ -28,16 +39,28 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	boolean existsByPhoneAndUserIdNot(String phone, Long userId);
 
-	Page<User> findByRole_RoleName(String roleName, Pageable pageable);
+	@EntityGraph(attributePaths = {"role", "college", "department"})
+	@Query("SELECT u FROM User u WHERE u.role.roleName = :roleName")
+	Page<User> findByRole_RoleName(@Param("roleName") String roleName, Pageable pageable);
 
-	Page<User> findByCollege_CollegeId(Long collegeId, Pageable pageable);
+	@EntityGraph(attributePaths = {"role", "college", "department"})
+	@Query("SELECT u FROM User u WHERE u.college.collegeId = :collegeId")
+	Page<User> findByCollege_CollegeId(@Param("collegeId") Long collegeId, Pageable pageable);
 
-	Page<User> findByDepartment_DepartmentId(Long departmentId, Pageable pageable);
+	@EntityGraph(attributePaths = {"role", "college", "department"})
+	@Query("SELECT u FROM User u WHERE u.department.departmentId = :departmentId")
+	Page<User> findByDepartment_DepartmentId(@Param("departmentId") Long departmentId, Pageable pageable);
 
 	boolean existsByUsernameAndUserIdNot(String username, Long userId);
 
 	boolean existsByEmailAndUserIdNot(String email, Long userId);
 
+	@EntityGraph(attributePaths = {"role", "college", "department"})
+	@Query(value = "SELECT u FROM User u",
+	       countQuery = "SELECT COUNT(u) FROM User u")
+	Page<User> findAllWithDetails(Pageable pageable);
+
+	@EntityGraph(attributePaths = {"role", "college", "department"})
 	@Query(
 			 value = """
 			    SELECT u FROM User u

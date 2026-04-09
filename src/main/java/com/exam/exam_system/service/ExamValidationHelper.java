@@ -134,16 +134,16 @@ public class ExamValidationHelper {
 
     /**
      * Validates session ownership — ensures the session belongs to the authenticated student.
+     * Uses the already JOIN FETCH'd student from the session to avoid redundant DB queries.
      */
     public Student validateSessionOwnership(StudentExamSession session) {
         User currentUser = userService.getCurrentUser();
-        Student student = studentRepository.findByUser_UserId(currentUser.getUserId())
-                .orElseThrow(StudentNotFoundException::new);
+        Student sessionStudent = session.getStudent(); // already loaded via JOIN FETCH
 
-        if (!session.getStudent().getStudentId().equals(student.getStudentId())) {
+        if (!sessionStudent.getStudentId().equals(currentUser.getUserId())) {
             throw new UnauthorizedActionException(Messages.UNAUTHORIZED);
         }
 
-        return student;
+        return sessionStudent;
     }
 }

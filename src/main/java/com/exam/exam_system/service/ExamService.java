@@ -25,7 +25,7 @@ import com.exam.exam_system.repository.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -55,7 +55,7 @@ public class ExamService {
 		College college = collegeRepository.findById(dto.getCollegeId())
 				.orElseThrow(() -> new CollegeNotFoundException());
 
-		Department department = departmentRepository.findById(dto.getDepartmentId())
+		Department department = departmentRepository.findByIdWithCollege(dto.getDepartmentId())
 				.orElseThrow(() -> new DepartmentNotFoundException());
 
 		Subject subject = subjectRepository.findById(dto.getSubjectId())
@@ -135,7 +135,7 @@ public class ExamService {
 	@CacheEvict(value = "exams", key = "#examId")
 	public ExamResponseDTO updateExam(Long examId, @Valid UpdateExamRequestDTO dto) {
 
-		Exam exam = examRepository.findById(examId).orElseThrow(ExamNotFoundException::new);
+		Exam exam = examRepository.findExamWithQuestionsAndChoices(examId).orElseThrow(ExamNotFoundException::new);
 
 		if (LocalDateTime.now().isAfter(exam.getStartTime())) {
 			throw new ExamLockedException();
@@ -154,7 +154,7 @@ public class ExamService {
 
 		College college = collegeRepository.findById(dto.getCollegeId()).orElseThrow(CollegeNotFoundException::new);
 
-		Department department = departmentRepository.findById(dto.getDepartmentId())
+		Department department = departmentRepository.findByIdWithCollege(dto.getDepartmentId())
 				.orElseThrow(DepartmentNotFoundException::new);
 
 		Subject subject = subjectRepository.findById(dto.getSubjectId()).orElseThrow(SubjectNotFoundException::new);
@@ -244,6 +244,7 @@ public class ExamService {
 		return examMapper.toDto(examRepository.save(exam));
 	}
 
+	@Transactional(readOnly = true)
 	@Cacheable(value = "exams", key = "#p0")
 	public ExamFullAdminViewDTO getExamById(Long examId) {
 		Exam exam = examRepository.findExamWithQuestionsAndChoices(examId).orElseThrow(ExamNotFoundException::new);
@@ -251,6 +252,7 @@ public class ExamService {
 		return examMapper.toAdminViewDTO(exam);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getExamsByCollege(Long collegeId, int page, int size) {
 		if (!collegeRepository.existsById(collegeId)) {
 			throw new CollegeNotFoundException();
@@ -260,6 +262,7 @@ public class ExamService {
 		return examRepository.findByCollegeId(collegeId, pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getExamsByDepartment(Long departmentId, int page, int size) {
 		if (!departmentRepository.existsById(departmentId)) {
 			throw new DepartmentNotFoundException();
@@ -268,6 +271,7 @@ public class ExamService {
 		return examRepository.findByDepartmentId(departmentId, pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getExamsByUser(Long userId, int page, int size) {
 		if (!userRepository.existsById(userId)) {
 			throw new UserNotFoundException();
@@ -276,12 +280,14 @@ public class ExamService {
 		return examRepository.findByUserId(userId, pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getMyExams(int page, int size) {
 		User user = userService.getCurrentUser();
 		Pageable pageable = PageRequest.of(page, size);
 		return examRepository.findByUserId(user.getUserId(), pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getExamsBySubject(Long subjectId, int page, int size) {
 		if (!subjectRepository.existsById(subjectId)) {
 			throw new SubjectNotFoundException();
@@ -290,16 +296,19 @@ public class ExamService {
 		return examRepository.findBySubjectId(subjectId, pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> searchExams(String keyword, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
 		return examRepository.searchExams(keyword, pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getAllActiveExams(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return examRepository.findAllActive(pageable).map(examMapper::toDto);
 	}
 
+	@Transactional(readOnly = true)
 	public Page<ExamResponseDTO> getAllExams(int page, int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		return examRepository.findAll(pageable).map(examMapper::toDto);

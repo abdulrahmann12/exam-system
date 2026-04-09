@@ -45,7 +45,7 @@ public class UserService extends BaseService {
 	public UserProfileResponseDTO getProfile() {
 
 		User user = getCurrentUser();
-		User freshUser = userRepository.findById(user.getUserId()).orElseThrow(UserNotFoundException::new);
+		User freshUser = userRepository.findByIdWithDetails(user.getUserId()).orElseThrow(UserNotFoundException::new);
 
 		return userMapper.toUserProfileResponseDTO(freshUser);
 	}
@@ -141,7 +141,7 @@ public class UserService extends BaseService {
 	@Transactional(readOnly = true)
 	@Cacheable(value = "users", key = "#p0")
 	public UserResponseDTO getUserById(Long userId) {
-		User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+		User user = userRepository.findByIdWithDetails(userId).orElseThrow(UserNotFoundException::new);
 		return userMapper.toDTO(user);
 	}
 
@@ -149,7 +149,7 @@ public class UserService extends BaseService {
 	public Page<UserResponseDTO> getAllUsers(int page, int size) {
 
 		Pageable pageable = createPageRequest(page, size, "username");
-		return userRepository.findAll(pageable).map(userMapper::toDTO);
+		return userRepository.findAllWithDetails(pageable).map(userMapper::toDTO);
 	}
 
 	@Transactional
@@ -206,7 +206,7 @@ public class UserService extends BaseService {
 				: collegeRepository.findById(dto.getCollegeId()).orElseThrow(CollegeNotFoundException::new);
 
 		Department department = dto.getDepartmentId() == null ? null
-				: departmentRepository.findById(dto.getDepartmentId()).orElseThrow(DepartmentNotFoundException::new);
+				: departmentRepository.findByIdWithCollege(dto.getDepartmentId()).orElseThrow(DepartmentNotFoundException::new);
 
 		if (!department.getCollege().getCollegeId().equals(college.getCollegeId())) {
 			throw new DepartmentCollegeMismatchException();
@@ -269,8 +269,13 @@ public class UserService extends BaseService {
 			throw new UnauthorizedException();
 		}
 
-		String username = authentication.getName();
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof User user) {
+			return user;
+		}
 
+		// Fallback: resolve from DB if principal is not a User instance
+		String username = authentication.getName();
 		return userRepository.findByUsername(username).or(() -> userRepository.findByEmail(username))
 				.orElseThrow(UserNotFoundException::new);
 	}

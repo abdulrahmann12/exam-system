@@ -55,7 +55,7 @@ public class ExamUploadService {
         College college = collegeRepository.findById(dto.getCollegeId())
                 .orElseThrow(CollegeNotFoundException::new);
 
-        Department department = departmentRepository.findById(dto.getDepartmentId())
+        Department department = departmentRepository.findByIdWithCollege(dto.getDepartmentId())
                 .orElseThrow(DepartmentNotFoundException::new);
 
         Subject subject = subjectRepository.findById(dto.getSubjectId())
